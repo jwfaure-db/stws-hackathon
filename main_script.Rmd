@@ -39,9 +39,10 @@ set.seed(73)
 #create a list of the files from your target directory
 file_list <- list.files(path = "./raw_data")
 
-# for (i in 1:length(file_list)){
-#   temp_data <- readxl::read_excel(file_list[i], range = cell_cols("A:H")) #each file will be read in, specify which columns you need read in to avoid any errors
-#   temp_data$Class <- sapply(strsplit(gsub(".xlsx", "", file_list[i]), "_"), function(x){x[2]}) #clean the data as needed, in this case I am creating a new column that indicates which file each row of data came from
-#   dataset <- rbind(dataset, temp_data) #for each iteration, bind the new data to the building dataset
-# }
+files = list()
+for (i in 1:length(file_list)){
+  path_to_file = paste0("./raw_data/", file_list[i])
+  files[[i]] <- readr::read_csv(path_to_file) #each file will be read in
+}
+files %>% unlist()
 ```
