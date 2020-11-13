@@ -3,6 +3,31 @@ title: "Sports Tech World Series (STWS) Challenge Australia"
 author: "The Sterile Injectables"
 date: "14/11/2020"
 output: html_document
+  bookdown::html_document2:
+    code_folding: hide
+    toc: yes
+    number_sections: true
+    toc_depth: 3
+    toc_float: yes
+    theme: paper
+  # bookdown::word_document2:
+  #   toc: no
+editor options:
+  chunk_output_type: console
 ---
 
+```{r global-options, include=FALSE}
+knitr::opts_chunk$set(fig.path = "plots/", echo = TRUE, warning = FALSE, message = FALSE, scipen = 999)
+```
 
+```{r, echo = FALSE}
+library(tidyverse)
+library(ggplot2)
+library(janitor)
+library(purrr)
+library(RColorBrewer)
+library(broom)
+library(knitr)
+`%notin%` <- Negate(`%in%`)
+set.seed(73)
+```
