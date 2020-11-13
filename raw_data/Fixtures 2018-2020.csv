@@ -1,0 +1,577 @@
+"MATCH_ID","SEASON_ID","GROUP_ROUND_NO","MATCH_DATE","MATCH_TIME","MATCH_TIME_MELB","MATCH_TYPE","FINALS_DESC","HOME_SQUAD_ID","HOME_SQUAD","HOME_SCORE","HOME_SQUAD_TRAVEL","AWAY_SQUAD_ID","AWAY_SQUAD","AWAY_SCORE","AWAY_SQUAD_TRAVEL","VENUE_NAME","VENUE_STATE","VENUE_LOCATION","ATTENDANCE"
+182691954,2018,1,"2018-03-22","19:25","19:25","Regular Season","",120,"Richmond",121,"L",30,"Carlton",95,"L","MCG","VIC","Melbourne",90151
+182690355,2018,1,"2018-03-23","19:50","19:50","Regular Season","",50,"Essendon",99,"L",10,"Adelaide Crows",87,"I","Etihad Stadium","VIC","Melbourne",43016
+182698624,2018,1,"2018-03-24","15:35","15:35","Regular Season","",130,"St Kilda",107,"L",20,"Brisbane Lions",82,"I","Etihad Stadium","VIC","Melbourne",23731
+182701664,2018,1,"2018-03-24","16:05","16:35","Regular Season","",110,"Port Adelaide",110,"L",60,"Fremantle",60,"I","Adelaide Oval","SA","Adelaide",38324
+182700256,2018,1,"2018-03-24","18:25","19:25","Regular Season","",1000,"Gold Coast Suns",55,"L",100,"North Melbourne",39,"I","Cazaly's Stadium","QLD","Cairns",
+182698064,2018,1,"2018-03-24","19:25","19:25","Regular Season","",80,"Hawthorn",101,"L",40,"Collingwood",67,"L","MCG","VIC","Melbourne",58051
+182698737,2018,1,"2018-03-25","13:10","13:10","Regular Season","",1010,"GWS Giants",133,"I",140,"Western Bulldogs",51,"I","UNSW Canberra Oval","ACT","Canberra",10454
+182700625,2018,1,"2018-03-25","15:20","15:20","Regular Season","",90,"Melbourne",94,"L",70,"Geelong Cats",97,"L","MCG","VIC","Melbourne",54112
+182699665,2018,1,"2018-03-25","16:20","19:20","Regular Season","",150,"West Coast Eagles",86,"L",160,"Sydney Swans",115,"I","Optus Stadium","WA","Perth",53553
+182708737,2018,2,"2018-03-29","19:20","19:50","Regular Season","",10,"Adelaide Crows",118,"L",120,"Richmond",82,"I","Adelaide Oval","SA","Adelaide",49743
+182707298,2018,2,"2018-03-30","16:20","16:20","Regular Season","",100,"North Melbourne",95,"L",130,"St Kilda",43,"L","Etihad Stadium","VIC","Melbourne",33966
+182709779,2018,2,"2018-03-31","13:45","13:45","Regular Season","",30,"Carlton",67,"L",1000,"Gold Coast Suns",101,"I","Etihad Stadium","VIC","Melbourne",28025
+182708259,2018,2,"2018-03-31","16:35","16:35","Regular Season","",40,"Collingwood",79,"L",1010,"GWS Giants",95,"I","MCG","VIC","Melbourne",30941
+182709299,2018,2,"2018-03-31","17:10","20:10","Regular Season","",60,"Fremantle",106,"L",50,"Essendon",90,"I","Optus Stadium","WA","Perth",49021
+182707219,2018,2,"2018-03-31","18:25","19:25","Regular Season","",20,"Brisbane Lions",74,"L",90,"Melbourne",100,"I","Gabba","QLD","Brisbane",17141
+182717569,2018,2,"2018-04-01","15:20","15:20","Regular Season","",140,"Western Bulldogs",70,"L",150,"West Coast Eagles",121,"I","Etihad Stadium","VIC","Melbourne",22868
+182714529,2018,2,"2018-04-01","16:40","16:40","Regular Season","",160,"Sydney Swans",71,"L",110,"Port Adelaide",94,"I","SCG","NSW","Sydney",34636
+182715970,2018,2,"2018-04-02","15:20","15:20","Regular Season","",70,"Geelong Cats",117,"L",80,"Hawthorn",118,"L","MCG","VIC","Melbourne",73189
+182726162,2018,3,"2018-04-06","19:50","19:50","Regular Season","",30,"Carlton",76,"L",40,"Collingwood",100,"L","MCG","VIC","Melbourne",68548
+182726243,2018,3,"2018-04-07","13:15","13:45","Regular Season","",110,"Port Adelaide",97,"L",20,"Brisbane Lions",92,"I","Adelaide Oval","SA","Adelaide",36363
+182725203,2018,3,"2018-04-07","14:10","14:10","Regular Season","",90,"Melbourne",123,"L",100,"North Melbourne",86,"L","MCG","VIC","Melbourne",35518
+182724835,2018,3,"2018-04-07","14:35","16:35","Regular Season","",1000,"Gold Coast Suns",68,"I",60,"Fremantle",96,"L","Optus Stadium","WA","Perth",33388
+182722723,2018,3,"2018-04-07","19:25","19:25","Regular Season","",160,"Sydney Swans",103,"L",1010,"GWS Giants",87,"L","SCG","NSW","Sydney",34711
+182723203,2018,3,"2018-04-07","19:25","19:25","Regular Season","",130,"St Kilda",55,"L",10,"Adelaide Crows",104,"I","Etihad Stadium","VIC","Melbourne",19324
+182732912,2018,3,"2018-04-08","13:10","13:10","Regular Season","",120,"Richmond",102,"L",80,"Hawthorn",89,"L","MCG","VIC","Melbourne",70701
+182732432,2018,3,"2018-04-08","14:40","16:40","Regular Season","",150,"West Coast Eagles",95,"L",70,"Geelong Cats",80,"I","Optus Stadium","WA","Perth",54535
+182733952,2018,3,"2018-04-08","15:20","15:20","Regular Season","",140,"Western Bulldogs",104,"L",50,"Essendon",83,"L","Etihad Stadium","VIC","Melbourne",40499
+182741505,2018,4,"2018-04-13","19:20","19:50","Regular Season","",10,"Adelaide Crows",58,"L",40,"Collingwood",106,"I","Adelaide Oval","SA","Adelaide",45495
+182739698,2018,4,"2018-04-14","13:45","13:45","Regular Season","",1010,"GWS Giants",82,"I",60,"Fremantle",51,"I","UNSW Canberra Oval","ACT","Canberra",11356
+182741106,2018,4,"2018-04-14","14:10","14:10","Regular Season","",120,"Richmond",110,"L",20,"Brisbane Lions",17,"I","MCG","VIC","Melbourne",32870
+182742146,2018,4,"2018-04-14","16:35","16:35","Regular Season","",140,"Western Bulldogs",79,"L",160,"Sydney Swans",86,"I","Etihad Stadium","VIC","Melbourne",28058
+182740626,2018,4,"2018-04-14","18:10","20:10","Regular Season","",150,"West Coast Eagles",139,"L",1000,"Gold Coast Suns",59,"I","Optus Stadium","WA","Perth",51774
+182740066,2018,4,"2018-04-14","19:25","19:25","Regular Season","",100,"North Melbourne",116,"I",30,"Carlton",30,"I","Blundstone Arena","TAS","Hobart",14266
+182739507,2018,4,"2018-04-15","13:10","13:10","Regular Season","",50,"Essendon",106,"L",110,"Port Adelaide",84,"I","Etihad Stadium","VIC","Melbourne",30900
+182739027,2018,4,"2018-04-15","15:20","15:20","Regular Season","",80,"Hawthorn",115,"L",90,"Melbourne",48,"L","MCG","VIC","Melbourne",41973
+182740547,2018,4,"2018-04-15","16:40","16:40","Regular Season","",70,"Geelong Cats",103,"L",130,"St Kilda",56,"L","GMHBA Stadium","VIC","Geelong",27338
+182755488,2018,5,"2018-04-20","19:50","19:50","Regular Season","",160,"Sydney Swans",75,"L",10,"Adelaide Crows",85,"I","SCG","NSW","Sydney",
+182755969,2018,5,"2018-04-21","13:45","13:45","Regular Season","",130,"St Kilda",73,"L",1010,"GWS Giants",73,"I","Etihad Stadium","VIC","Melbourne",14956
+182758929,2018,5,"2018-04-21","16:35","16:35","Regular Season","",30,"Carlton",69,"L",150,"West Coast Eagles",79,"I","MCG","VIC","Melbourne",27900
+182758449,2018,5,"2018-04-21","18:15","20:15","Regular Season","",60,"Fremantle",108,"L",140,"Western Bulldogs",54,"I","Optus Stadium","WA","Perth",43056
+182759009,2018,5,"2018-04-21","19:10","19:40","Regular Season","",110,"Port Adelaide",50,"L",70,"Geelong Cats",84,"I","Adelaide Oval","SA","Adelaide",45372
+182756450,2018,5,"2018-04-22","15:20","15:20","Regular Season","",100,"North Melbourne",98,"L",80,"Hawthorn",70,"L","Etihad Stadium","VIC","Melbourne",27981
+182756370,2018,5,"2018-04-22","16:45","16:45","Regular Season","",20,"Brisbane Lions",71,"L",1000,"Gold Coast Suns",76,"L","Gabba","QLD","Brisbane",16087
+182766160,2018,5,"2018-04-24","19:25","19:25","Regular Season","",90,"Melbourne",56,"L",120,"Richmond",102,"L","MCG","VIC","Melbourne",77071
+182765601,2018,5,"2018-04-25","15:20","15:20","Regular Season","",40,"Collingwood",101,"L",50,"Essendon",52,"L","MCG","VIC","Melbourne",91440
+182766723,2018,6,"2018-04-27","19:50","19:50","Regular Season","",140,"Western Bulldogs",80,"L",30,"Carlton",59,"L","Etihad Stadium","VIC","Melbourne",33915
+182773312,2018,6,"2018-04-28","13:45","13:45","Regular Season","",70,"Geelong Cats",69,"L",160,"Sydney Swans",86,"I","GMHBA Stadium","VIC","Geelong",31036
+182772832,2018,6,"2018-04-28","14:10","14:10","Regular Season","",100,"North Melbourne",69,"L",110,"Port Adelaide",102,"I","Etihad Stadium","VIC","Melbourne",17617
+182772464,2018,6,"2018-04-28","16:35","16:35","Regular Season","",1010,"GWS Giants",77,"L",20,"Brisbane Lions",43,"I","Spotless Stadium","NSW","Sydney",
+182774272,2018,6,"2018-04-28","19:10","19:40","Regular Season","",10,"Adelaide Crows",110,"L",1000,"Gold Coast Suns",62,"I","Adelaide Oval","SA","Adelaide",44835
+182771792,2018,6,"2018-04-28","19:25","19:25","Regular Season","",80,"Hawthorn",89,"I",130,"St Kilda",54,"I","University of Tasmania Stadium","TAS","Launceston",15741
+182772273,2018,6,"2018-04-29","13:10","13:10","Regular Season","",50,"Essendon",72,"L",90,"Melbourne",108,"L","Etihad Stadium","VIC","Melbourne",35964
+182774833,2018,6,"2018-04-29","14:40","16:40","Regular Season","",60,"Fremantle",81,"L",150,"West Coast Eagles",89,"L","Optus Stadium","WA","Perth",56521
+182773793,2018,6,"2018-04-29","15:20","15:20","Regular Season","",40,"Collingwood",70,"L",120,"Richmond",113,"L","MCG","VIC","Melbourne",72157
+182789696,2018,7,"2018-05-04","19:50","19:50","Regular Season","",70,"Geelong Cats",93,"L",1010,"GWS Giants",32,"I","GMHBA Stadium","VIC","Geelong",
+182791297,2018,7,"2018-05-05","13:45","13:45","Regular Season","",140,"Western Bulldogs",81,"L",1000,"Gold Coast Suns",72,"I","Mars Stadium","VIC","Ballarat",6833
+182788657,2018,7,"2018-05-05","14:10","14:10","Regular Season","",50,"Essendon",67,"L",80,"Hawthorn",90,"L","MCG","VIC","Melbourne",53018
+182789777,2018,7,"2018-05-05","14:35","16:35","Regular Season","",150,"West Coast Eagles",102,"L",110,"Port Adelaide",60,"I","Optus Stadium","WA","Perth",50516
+182790657,2018,7,"2018-05-05","19:10","19:40","Regular Season","",10,"Adelaide Crows",125,"L",30,"Carlton",70,"I","Adelaide Oval","SA","Adelaide",47422
+182788257,2018,7,"2018-05-05","19:25","19:25","Regular Season","",160,"Sydney Swans",66,"L",100,"North Melbourne",68,"I","SCG","NSW","Sydney",29124
+182790258,2018,7,"2018-05-06","13:10","13:10","Regular Season","",120,"Richmond",110,"L",60,"Fremantle",33,"I","MCG","VIC","Melbourne",43240
+182788738,2018,7,"2018-05-06","15:20","15:20","Regular Season","",130,"St Kilda",67,"L",90,"Melbourne",106,"L","Etihad Stadium","VIC","Melbourne",25496
+182789138,2018,7,"2018-05-06","16:40","16:40","Regular Season","",20,"Brisbane Lions",114,"L",40,"Collingwood",121,"I","Gabba","QLD","Brisbane",21850
+182796371,2018,8,"2018-05-11","19:50","19:50","Regular Season","",80,"Hawthorn",71,"L",160,"Sydney Swans",79,"I","MCG","VIC","Melbourne",32784
+182805232,2018,8,"2018-05-12","13:45","13:45","Regular Season","",1010,"GWS Giants",61,"L",150,"West Coast Eagles",86,"I","Spotless Stadium","NSW","Sydney",9253
+182808080,2018,8,"2018-05-12","14:10","14:10","Regular Season","",30,"Carlton",91,"L",50,"Essendon",78,"L","MCG","VIC","Melbourne",44669
+182806752,2018,8,"2018-05-12","16:35","16:35","Regular Season","",1000,"Gold Coast Suns",77,"L",90,"Melbourne",146,"I","Gabba","QLD","Brisbane",6060
+182808160,2018,8,"2018-05-12","16:40","17:10","Regular Season","",110,"Port Adelaide",95,"L",10,"Adelaide Crows",90,"L","Adelaide Oval","SA","Adelaide",50967
+182807600,2018,8,"2018-05-12","18:10","20:10","Regular Season","",60,"Fremantle",89,"L",130,"St Kilda",59,"I","Optus Stadium","WA","Perth",41752
+182807680,2018,8,"2018-05-12","19:25","19:25","Regular Season","",140,"Western Bulldogs",107,"L",20,"Brisbane Lions",93,"I","Etihad Stadium","VIC","Melbourne",20865
+182805601,2018,8,"2018-05-13","13:10","13:10","Regular Season","",100,"North Melbourne",72,"L",120,"Richmond",82,"L","Etihad Stadium","VIC","Melbourne",29153
+182806561,2018,8,"2018-05-13","15:20","15:20","Regular Season","",40,"Collingwood",45,"L",70,"Geelong Cats",66,"L","MCG","VIC","Melbourne",44602
+182815234,2018,9,"2018-05-18","19:20","19:50","Regular Season","",10,"Adelaide Crows",63,"L",140,"Western Bulldogs",26,"I","Adelaide Oval","SA","Adelaide",39407
+182814947,2018,9,"2018-05-19","13:15","15:15","Regular Season","",1000,"Gold Coast Suns",42,"I",110,"Port Adelaide",82,"I","Adelaide Arena at Jiangwan Stadium","","Shanghai",
+182813795,2018,9,"2018-05-19","13:45","13:45","Regular Season","",100,"North Melbourne",112,"I",1010,"GWS Giants",69,"I","Blundstone Arena","TAS","Hobart",7194
+182813235,2018,9,"2018-05-19","16:35","16:35","Regular Season","",50,"Essendon",84,"L",70,"Geelong Cats",50,"L","MCG","VIC","Melbourne",50228
+182813315,2018,9,"2018-05-19","19:25","19:25","Regular Season","",130,"St Kilda",72,"L",40,"Collingwood",100,"L","Etihad Stadium","VIC","Melbourne",33994
+182812835,2018,9,"2018-05-19","19:25","19:25","Regular Season","",160,"Sydney Swans",111,"L",60,"Fremantle",52,"I","SCG","NSW","Sydney",27481
+182824464,2018,9,"2018-05-20","13:10","13:10","Regular Season","",30,"Carlton",50,"L",90,"Melbourne",159,"L","MCG","VIC","Melbourne",44122
+182822544,2018,9,"2018-05-20","14:40","16:40","Regular Season","",150,"West Coast Eagles",130,"L",120,"Richmond",83,"I","Optus Stadium","WA","Perth",57616
+182821904,2018,9,"2018-05-20","15:20","15:20","Regular Season","",20,"Brisbane Lions",129,"L",80,"Hawthorn",73,"I","Gabba","QLD","Brisbane",20628
+182831137,2018,10,"2018-05-25","19:50","19:50","Regular Season","",40,"Collingwood",90,"L",140,"Western Bulldogs",55,"L","Etihad Stadium","VIC","Melbourne",37985
+182831218,2018,10,"2018-05-26","13:45","13:45","Regular Season","",120,"Richmond",105,"L",130,"St Kilda",77,"L","MCG","VIC","Melbourne",48850
+182830098,2018,10,"2018-05-26","16:35","16:35","Regular Season","",20,"Brisbane Lions",49,"L",160,"Sydney Swans",67,"I","Gabba","QLD","Brisbane",18702
+182829810,2018,10,"2018-05-26","19:25","19:25","Regular Season","",1010,"GWS Giants",60,"L",50,"Essendon",95,"I","Spotless Stadium","NSW","Sydney",
+182830658,2018,10,"2018-05-26","19:25","19:25","Regular Season","",70,"Geelong Cats",73,"L",30,"Carlton",45,"L","GMHBA Stadium","VIC","Geelong",31090
+182829139,2018,10,"2018-05-27","13:10","13:10","Regular Season","",80,"Hawthorn",60,"L",150,"West Coast Eagles",75,"I","Etihad Stadium","VIC","Melbourne",28077
+182832179,2018,10,"2018-05-27","14:40","16:40","Regular Season","",60,"Fremantle",58,"L",100,"North Melbourne",86,"I","Optus Stadium","WA","Perth",37575
+182831699,2018,10,"2018-05-27","14:50","15:20","Regular Season","",90,"Melbourne",146,"I",10,"Adelaide Crows",55,"I","TIO Traeger Park","NT","Alice Springs",6989
+182845601,2018,11,"2018-06-01","19:50","19:50","Regular Season","",160,"Sydney Swans",91,"L",30,"Carlton",61,"I","SCG","NSW","Sydney",27011
+182848642,2018,11,"2018-06-02","13:45","13:45","Regular Season","",140,"Western Bulldogs",51,"L",90,"Melbourne",100,"L","Etihad Stadium","VIC","Melbourne",28485
+182845522,2018,11,"2018-06-02","14:10","14:10","Regular Season","",80,"Hawthorn",64,"I",110,"Port Adelaide",61,"I","University of Tasmania Stadium","TAS","Launceston",13007
+182847714,2018,11,"2018-06-02","16:35","16:35","Regular Season","",1000,"Gold Coast Suns",36,"L",70,"Geelong Cats",121,"I","Metricon Stadium","QLD","Gold Coast",17490
+182847122,2018,11,"2018-06-02","18:10","20:10","Regular Season","",150,"West Coast Eagles",101,"L",130,"St Kilda",88,"I","Optus Stadium","WA","Perth",54188
+182846002,2018,11,"2018-06-02","19:25","19:25","Regular Season","",50,"Essendon",43,"L",120,"Richmond",114,"L","MCG","VIC","Melbourne",81046
+182846563,2018,11,"2018-06-03","13:10","13:10","Regular Season","",100,"North Melbourne",141,"L",20,"Brisbane Lions",87,"I","Etihad Stadium","VIC","Melbourne",22133
+182847523,2018,11,"2018-06-03","15:20","15:20","Regular Season","",40,"Collingwood",138,"L",60,"Fremantle",77,"I","MCG","VIC","Melbourne",34542
+182848003,2018,11,"2018-06-03","16:10","16:40","Regular Season","",10,"Adelaide Crows",81,"L",1010,"GWS Giants",97,"I","Adelaide Oval","SA","Adelaide",44120
+182865504,2018,12,"2018-06-08","19:20","19:50","Regular Season","",110,"Port Adelaide",72,"L",120,"Richmond",58,"I","Adelaide Oval","SA","Adelaide",39936
+182863425,2018,12,"2018-06-09","13:45","13:45","Regular Season","",70,"Geelong Cats",96,"L",100,"North Melbourne",59,"L","GMHBA Stadium","VIC","Geelong",31265
+182862577,2018,12,"2018-06-09","16:35","16:35","Regular Season","",1010,"GWS Giants",134,"L",1000,"Gold Coast Suns",26,"I","Spotless Stadium","NSW","Sydney",7131
+182862465,2018,12,"2018-06-09","19:25","19:25","Regular Season","",130,"St Kilda",55,"L",160,"Sydney Swans",126,"I","Etihad Stadium","VIC","Melbourne",27569
+182862866,2018,12,"2018-06-10","13:10","13:10","Regular Season","",20,"Brisbane Lions",62,"L",50,"Essendon",84,"I","Gabba","QLD","Brisbane",20476
+182864946,2018,12,"2018-06-10","14:40","16:40","Regular Season","",60,"Fremantle",71,"L",10,"Adelaide Crows",68,"I","Optus Stadium","WA","Perth",33421
+182864467,2018,12,"2018-06-11","15:20","15:20","Regular Season","",90,"Melbourne",91,"L",40,"Collingwood",133,"L","MCG","VIC","Melbourne",83518
+182873698,2018,13,"2018-06-14","19:20","19:50","Regular Season","",110,"Port Adelaide",132,"L",140,"Western Bulldogs",75,"I","Adelaide Oval","SA","Adelaide",26137
+182870179,2018,13,"2018-06-15","19:50","19:50","Regular Season","",160,"Sydney Swans",72,"L",150,"West Coast Eagles",57,"I","SCG","NSW","Sydney",36402
+182881808,2018,13,"2018-06-16","13:45","13:45","Regular Season","",30,"Carlton",46,"L",60,"Fremantle",103,"I","Etihad Stadium","VIC","Melbourne",21430
+182880480,2018,13,"2018-06-16","16:35","16:35","Regular Season","",1000,"Gold Coast Suns",78,"L",130,"St Kilda",80,"I","Metricon Stadium","QLD","Gold Coast",10181
+182878288,2018,13,"2018-06-16","19:25","19:25","Regular Season","",80,"Hawthorn",88,"L",10,"Adelaide Crows",32,"I","MCG","VIC","Melbourne",26693
+182879809,2018,13,"2018-06-17","15:20","15:20","Regular Season","",70,"Geelong Cats",65,"L",120,"Richmond",83,"L","MCG","VIC","Melbourne",46423
+182888081,2018,14,"2018-06-21","18:10","20:10","Regular Season","",150,"West Coast Eagles",52,"L",50,"Essendon",80,"I","Optus Stadium","WA","Perth",51409
+182890082,2018,14,"2018-06-22","19:20","19:50","Regular Season","",110,"Port Adelaide",75,"L",90,"Melbourne",65,"I","Adelaide Oval","SA","Adelaide",40751
+182886483,2018,14,"2018-06-23","13:45","13:45","Regular Season","",80,"Hawthorn",96,"I",1000,"Gold Coast Suns",43,"I","University of Tasmania Stadium","TAS","Launceston",9007
+182887443,2018,14,"2018-06-23","16:35","16:35","Regular Season","",20,"Brisbane Lions",82,"L",1010,"GWS Giants",109,"I","Gabba","QLD","Brisbane",11267
+182889603,2018,14,"2018-06-23","19:25","19:25","Regular Season","",140,"Western Bulldogs",75,"L",100,"North Melbourne",77,"L","Etihad Stadium","VIC","Melbourne",
+182896672,2018,14,"2018-06-24","15:20","15:20","Regular Season","",40,"Collingwood",79,"L",30,"Carlton",59,"L","MCG","VIC","Melbourne",53706
+182904944,2018,15,"2018-06-28","19:20","19:20","Regular Season","",120,"Richmond",93,"L",160,"Sydney Swans",67,"I","Etihad Stadium","VIC","Melbourne",43519
+182905985,2018,15,"2018-06-29","19:50","19:50","Regular Season","",140,"Western Bulldogs",103,"L",70,"Geelong Cats",101,"L","Etihad Stadium","VIC","Melbourne",29499
+182906386,2018,15,"2018-06-30","13:45","13:45","Regular Season","",30,"Carlton",69,"L",110,"Port Adelaide",90,"I","MCG","VIC","Melbourne",26562
+182905346,2018,15,"2018-06-30","16:05","16:35","Regular Season","",10,"Adelaide Crows",88,"L",150,"West Coast Eagles",78,"I","Adelaide Oval","SA","Adelaide",44771
+182905058,2018,15,"2018-06-30","19:25","19:25","Regular Season","",1000,"Gold Coast Suns",60,"L",40,"Collingwood",99,"I","Metricon Stadium","QLD","Gold Coast",13637
+182903538,2018,15,"2018-06-30","19:25","19:25","Regular Season","",1010,"GWS Giants",95,"L",80,"Hawthorn",84,"I","Spotless Stadium","NSW","Sydney",10866
+182913617,2018,15,"2018-07-01","13:10","13:10","Regular Season","",90,"Melbourne",117,"L",130,"St Kilda",119,"L","MCG","VIC","Melbourne",38910
+182914097,2018,15,"2018-07-01","14:40","16:40","Regular Season","",60,"Fremantle",64,"L",20,"Brisbane Lions",119,"I","Optus Stadium","WA","Perth",41674
+182911537,2018,15,"2018-07-01","15:20","15:20","Regular Season","",50,"Essendon",125,"L",100,"North Melbourne",108,"L","Etihad Stadium","VIC","Melbourne",45580
+182919329,2018,16,"2018-07-05","19:20","19:20","Regular Season","",160,"Sydney Swans",59,"L",70,"Geelong Cats",71,"I","SCG","NSW","Sydney",34363
+182921330,2018,16,"2018-07-06","19:50","19:50","Regular Season","",120,"Richmond",103,"L",10,"Adelaide Crows",56,"I","MCG","VIC","Melbourne",54934
+182920211,2018,16,"2018-07-07","13:45","13:45","Regular Season","",20,"Brisbane Lions",120,"L",30,"Carlton",55,"I","Gabba","QLD","Brisbane",21074
+182922851,2018,16,"2018-07-07","16:05","16:35","Regular Season","",110,"Port Adelaide",86,"L",130,"St Kilda",50,"I","Adelaide Oval","SA","Adelaide",36253
+182921811,2018,16,"2018-07-07","19:10","19:40","Regular Season","",90,"Melbourne",102,"I",60,"Fremantle",48,"I","TIO Stadium","NT","Darwin",8689
+182922371,2018,16,"2018-07-07","19:25","19:25","Regular Season","",140,"Western Bulldogs",59,"L",80,"Hawthorn",122,"L","Etihad Stadium","VIC","Melbourne",35320
+182928480,2018,16,"2018-07-08","13:10","13:10","Regular Season","",100,"North Melbourne",95,"L",1000,"Gold Coast Suns",58,"I","Etihad Stadium","VIC","Melbourne",14389
+182929040,2018,16,"2018-07-08","14:40","16:40","Regular Season","",150,"West Coast Eagles",86,"L",1010,"GWS Giants",75,"I","Optus Stadium","WA","Perth",52105
+182927920,2018,16,"2018-07-08","15:20","15:20","Regular Season","",50,"Essendon",62,"L",40,"Collingwood",78,"L","MCG","VIC","Melbourne",
+182938112,2018,17,"2018-07-12","19:20","19:50","Regular Season","",10,"Adelaide Crows",112,"L",70,"Geelong Cats",97,"I","Adelaide Oval","SA","Adelaide",46095
+182936193,2018,17,"2018-07-13","19:50","19:50","Regular Season","",130,"St Kilda",116,"L",30,"Carlton",52,"L","Etihad Stadium","VIC","Melbourne",33780
+182935634,2018,17,"2018-07-14","13:45","13:45","Regular Season","",80,"Hawthorn",65,"I",20,"Brisbane Lions",98,"I","University of Tasmania Stadium","TAS","Launceston",12557
+182938194,2018,17,"2018-07-14","16:35","16:35","Regular Season","",90,"Melbourne",119,"L",140,"Western Bulldogs",69,"L","MCG","VIC","Melbourne",30305
+182936306,2018,17,"2018-07-14","19:25","19:25","Regular Season","",1010,"GWS Giants",79,"L",120,"Richmond",77,"I","Spotless Stadium","NSW","Sydney",14456
+182937826,2018,17,"2018-07-14","19:25","19:25","Regular Season","",1000,"Gold Coast Suns",51,"L",50,"Essendon",95,"I","Metricon Stadium","QLD","Gold Coast",13061
+182937635,2018,17,"2018-07-15","13:10","13:10","Regular Season","",40,"Collingwood",67,"L",150,"West Coast Eagles",102,"I","MCG","VIC","Melbourne",53439
+182938675,2018,17,"2018-07-15","14:40","16:40","Regular Season","",60,"Fremantle",59,"L",110,"Port Adelaide",50,"I","Optus Stadium","WA","Perth",33190
+182936675,2018,17,"2018-07-15","15:20","15:20","Regular Season","",100,"North Melbourne",98,"L",160,"Sydney Swans",104,"I","Etihad Stadium","VIC","Melbourne",25633
+182952576,2018,18,"2018-07-20","19:50","19:50","Regular Season","",130,"St Kilda",57,"L",120,"Richmond",111,"L","Etihad Stadium","VIC","Melbourne",36269
+182954017,2018,18,"2018-07-21","13:45","13:45","Regular Season","",40,"Collingwood",130,"L",100,"North Melbourne",64,"L","MCG","VIC","Melbourne",50393
+182952097,2018,18,"2018-07-21","14:10","14:10","Regular Season","",160,"Sydney Swans",64,"L",1000,"Gold Coast Suns",88,"I","SCG","NSW","Sydney",32565
+182952497,2018,18,"2018-07-21","16:35","16:35","Regular Season","",50,"Essendon",99,"L",60,"Fremantle",70,"I","Etihad Stadium","VIC","Melbourne",31564
+182953537,2018,18,"2018-07-21","19:25","19:25","Regular Season","",70,"Geelong Cats",100,"L",90,"Melbourne",98,"L","GMHBA Stadium","VIC","Geelong",30125
+182952977,2018,18,"2018-07-21","19:25","19:25","Regular Season","",20,"Brisbane Lions",88,"L",10,"Adelaide Crows",93,"I","Gabba","QLD","Brisbane",20475
+182955538,2018,18,"2018-07-22","13:10","13:10","Regular Season","",30,"Carlton",52,"L",80,"Hawthorn",124,"L","Etihad Stadium","VIC","Melbourne",30405
+182953618,2018,18,"2018-07-22","13:20","15:20","Regular Season","",150,"West Coast Eagles",100,"L",140,"Western Bulldogs",46,"I","Optus Stadium","WA","Perth",46854
+182955618,2018,18,"2018-07-22","16:10","16:40","Regular Season","",110,"Port Adelaide",58,"L",1010,"GWS Giants",80,"I","Adelaide Oval","SA","Adelaide",34693
+182960691,2018,19,"2018-07-27","19:50","19:50","Regular Season","",50,"Essendon",109,"L",160,"Sydney Swans",66,"I","Etihad Stadium","VIC","Melbourne",42251
+182970480,2018,19,"2018-07-28","13:45","13:45","Regular Season","",120,"Richmond",105,"L",40,"Collingwood",77,"L","MCG","VIC","Melbourne",88180
+182969920,2018,19,"2018-07-28","14:10","14:10","Regular Season","",70,"Geelong Cats",120,"L",20,"Brisbane Lions",78,"I","GMHBA Stadium","VIC","Geelong",28226
+182969072,2018,19,"2018-07-28","16:35","16:35","Regular Season","",1010,"GWS Giants",86,"L",130,"St Kilda",61,"I","Spotless Stadium","NSW","Sydney",12014
+182970880,2018,19,"2018-07-28","19:10","19:40","Regular Season","",10,"Adelaide Crows",77,"L",90,"Melbourne",90,"I","Adelaide Oval","SA","Adelaide",45880
+182970592,2018,19,"2018-07-28","19:25","19:25","Regular Season","",1000,"Gold Coast Suns",44,"L",30,"Carlton",79,"I","Metricon Stadium","QLD","Gold Coast",10776
+182969441,2018,19,"2018-07-29","13:10","13:10","Regular Season","",100,"North Melbourne",81,"I",150,"West Coast Eagles",41,"I","Blundstone Arena","TAS","Hobart",11176
+182971441,2018,19,"2018-07-29","14:40","16:40","Regular Season","",60,"Fremantle",53,"L",80,"Hawthorn",112,"I","Optus Stadium","WA","Perth",41845
+182971521,2018,19,"2018-07-29","15:20","15:20","Regular Season","",140,"Western Bulldogs",34,"L",110,"Port Adelaide",78,"I","Mars Stadium","VIC","Ballarat",6450
+182458483,2018,20,"2018-08-03","19:50","19:50","Regular Season","",120,"Richmond",85,"L",70,"Geelong Cats",82,"L","MCG","VIC","Melbourne",67054
+182464592,2018,20,"2018-08-04","13:45","13:45","Regular Season","",80,"Hawthorn",107,"L",50,"Essendon",103,"L","MCG","VIC","Melbourne",68857
+182465552,2018,20,"2018-08-04","14:10","14:10","Regular Season","",20,"Brisbane Lions",104,"L",100,"North Melbourne",107,"I","Gabba","QLD","Brisbane",18395
+182467072,2018,20,"2018-08-04","16:05","16:35","Regular Season","",10,"Adelaide Crows",96,"L",110,"Port Adelaide",93,"L","Adelaide Oval","SA","Adelaide",50377
+182465152,2018,20,"2018-08-04","19:25","19:25","Regular Season","",130,"St Kilda",68,"L",140,"Western Bulldogs",103,"L","Etihad Stadium","VIC","Melbourne",20748
+182464672,2018,20,"2018-08-04","19:25","19:25","Regular Season","",160,"Sydney Swans",73,"L",40,"Collingwood",71,"I","SCG","NSW","Sydney",39238
+182468113,2018,20,"2018-08-05","13:10","13:10","Regular Season","",30,"Carlton",46,"L",1010,"GWS Giants",151,"I","Etihad Stadium","VIC","Melbourne",16697
+182466193,2018,20,"2018-08-05","14:40","16:40","Regular Season","",150,"West Coast Eagles",142,"L",60,"Fremantle",84,"L","Optus Stadium","WA","Perth",57375
+182467153,2018,20,"2018-08-05","15:20","15:20","Regular Season","",90,"Melbourne",143,"L",1000,"Gold Coast Suns",47,"I","MCG","VIC","Melbourne",23072
+182473266,2018,21,"2018-08-10","19:50","19:50","Regular Season","",50,"Essendon",122,"L",130,"St Kilda",79,"L","Etihad Stadium","VIC","Melbourne",37483
+182472787,2018,21,"2018-08-11","13:45","13:45","Regular Season","",80,"Hawthorn",71,"L",70,"Geelong Cats",60,"L","MCG","VIC","Melbourne",59529
+182474979,2018,21,"2018-08-11","14:10","14:10","Regular Season","",1000,"Gold Coast Suns",51,"L",120,"Richmond",125,"I","Metricon Stadium","QLD","Gold Coast",18102
+182476387,2018,21,"2018-08-11","16:05","16:35","Regular Season","",110,"Port Adelaide",58,"L",150,"West Coast Eagles",62,"I","Adelaide Oval","SA","Adelaide",32534
+182474787,2018,21,"2018-08-11","19:25","19:25","Regular Season","",40,"Collingwood",104,"L",20,"Brisbane Lions",73,"I","Etihad Stadium","VIC","Melbourne",33390
+182473459,2018,21,"2018-08-11","19:25","19:25","Regular Season","",1010,"GWS Giants",106,"I",10,"Adelaide Crows",92,"I","UNSW Canberra Oval","ACT","Canberra",13249
+182482016,2018,21,"2018-08-12","13:10","13:10","Regular Season","",100,"North Melbourne",85,"L",140,"Western Bulldogs",92,"L","Etihad Stadium","VIC","Melbourne",27031
+182484016,2018,21,"2018-08-12","14:40","16:40","Regular Season","",60,"Fremantle",101,"L",30,"Carlton",72,"I","Optus Stadium","WA","Perth",40028
+182483536,2018,21,"2018-08-12","15:20","15:20","Regular Season","",90,"Melbourne",78,"L",160,"Sydney Swans",87,"I","MCG","VIC","Melbourne",51424
+182491249,2018,22,"2018-08-17","19:50","19:50","Regular Season","",120,"Richmond",81,"L",50,"Essendon",73,"L","MCG","VIC","Melbourne",76424
+182491170,2018,22,"2018-08-18","13:45","13:45","Regular Season","",40,"Collingwood",115,"L",110,"Port Adelaide",64,"I","MCG","VIC","Melbourne",46286
+182490690,2018,22,"2018-08-18","14:10","14:10","Regular Season","",70,"Geelong Cats",158,"L",60,"Fremantle",25,"I","GMHBA Stadium","VIC","Geelong",24507
+182489842,2018,22,"2018-08-18","16:35","16:35","Regular Season","",1010,"GWS Giants",60,"L",160,"Sydney Swans",80,"L","Spotless Stadium","NSW","Sydney",
+182489730,2018,22,"2018-08-18","19:25","19:25","Regular Season","",130,"St Kilda",76,"L",80,"Hawthorn",80,"L","Etihad Stadium","VIC","Melbourne",24752
+182491362,2018,22,"2018-08-18","19:25","19:25","Regular Season","",1000,"Gold Coast Suns",74,"L",20,"Brisbane Lions",78,"L","Metricon Stadium","QLD","Gold Coast",11907
+182492691,2018,22,"2018-08-19","13:10","13:10","Regular Season","",30,"Carlton",49,"L",140,"Western Bulldogs",66,"L","Etihad Stadium","VIC","Melbourne",24143
+182490771,2018,22,"2018-08-19","13:20","15:20","Regular Season","",150,"West Coast Eagles",91,"L",90,"Melbourne",108,"I","Optus Stadium","WA","Perth",55824
+182491651,2018,22,"2018-08-19","16:10","16:40","Regular Season","",10,"Adelaide Crows",86,"L",100,"North Melbourne",77,"I","Adelaide Oval","SA","Adelaide",41444
+182509152,2018,23,"2018-08-24","19:20","19:50","Regular Season","",110,"Port Adelaide",89,"L",50,"Essendon",111,"I","Adelaide Oval","SA","Adelaide",39168
+182507072,2018,23,"2018-08-25","13:45","13:45","Regular Season","",70,"Geelong Cats",142,"L",1000,"Gold Coast Suns",40,"I","GMHBA Stadium","VIC","Geelong",28004
+182507632,2018,23,"2018-08-25","14:10","14:10","Regular Season","",120,"Richmond",98,"L",140,"Western Bulldogs",95,"L","MCG","VIC","Melbourne",56998
+182508592,2018,23,"2018-08-25","14:35","16:35","Regular Season","",60,"Fremantle",67,"L",40,"Collingwood",76,"I","Optus Stadium","WA","Perth",41320
+182509072,2018,23,"2018-08-25","19:25","19:25","Regular Season","",30,"Carlton",61,"L",10,"Adelaide Crows",165,"I","Etihad Stadium","VIC","Melbourne",17000
+182505632,2018,23,"2018-08-25","19:25","19:25","Regular Season","",160,"Sydney Swans",74,"L",80,"Hawthorn",83,"I","SCG","NSW","Sydney",39660
+182506512,2018,23,"2018-08-26","13:10","13:10","Regular Season","",20,"Brisbane Lions",72,"L",150,"West Coast Eagles",98,"I","Gabba","QLD","Brisbane",16367
+182508112,2018,23,"2018-08-26","15:20","15:20","Regular Season","",90,"Melbourne",102,"L",1010,"GWS Giants",57,"I","MCG","VIC","Melbourne",37285
+182506112,2018,23,"2018-08-26","16:40","16:40","Regular Season","",130,"St Kilda",94,"L",100,"North Melbourne",117,"L","Etihad Stadium","VIC","Melbourne",19866
+104110101,2018,24,"2018-09-06","19:20","19:20","Final","Qualifying Final",120,"Richmond",95,"L",80,"Hawthorn",64,"L","MCG","VIC","Melbourne",91446
+104110103,2018,24,"2018-09-07","19:50","19:50","Final","Elimination Final",90,"Melbourne",75,"L",70,"Geelong Cats",46,"L","MCG","VIC","Melbourne",91767
+104110104,2018,24,"2018-09-08","16:20","16:20","Final","Elimination Final",160,"Sydney Swans",30,"L",1010,"GWS Giants",79,"L","SCG","NSW","Sydney",40350
+104110102,2018,24,"2018-09-08","18:10","20:10","Final","Qualifying Final",150,"West Coast Eagles",86,"L",40,"Collingwood",70,"I","Optus Stadium","WA","Perth",
+104110202,2018,25,"2018-09-14","19:50","19:50","Final","Semi Final",80,"Hawthorn",71,"L",90,"Melbourne",104,"L","MCG","VIC","Melbourne",
+104110201,2018,25,"2018-09-15","19:25","19:25","Final","Semi Final",40,"Collingwood",69,"L",1010,"GWS Giants",59,"I","MCG","VIC","Melbourne",72504
+104110301,2018,26,"2018-09-21","19:50","19:50","Final","Preliminary Final",120,"Richmond",58,"L",40,"Collingwood",97,"L","MCG","VIC","Melbourne",94959
+104110302,2018,26,"2018-09-22","13:20","15:20","Final","Preliminary Final",150,"West Coast Eagles",121,"L",90,"Melbourne",55,"I","Optus Stadium","WA","Perth",59608
+104110401,2018,27,"2018-09-29","14:30","14:30","Final","Grand Final",150,"West Coast Eagles",79,"I",40,"Collingwood",74,"L","MCG","VIC","Melbourne",100022
+199470609,2019,1,"2019-03-21","19:25","19:25","Regular Season","",30,"Carlton",64,"L",120,"Richmond",97,"L","MCG","VIC","Melbourne",85016
+199469090,2019,1,"2019-03-22","19:50","19:50","Regular Season","",40,"Collingwood",65,"L",70,"Geelong Cats",72,"L","MCG","VIC","Melbourne",78017
+199469651,2019,1,"2019-03-23","13:45","13:45","Regular Season","",90,"Melbourne",61,"L",110,"Port Adelaide",87,"I","MCG","VIC","Melbourne",38866
+199469571,2019,1,"2019-03-23","16:05","16:35","Regular Season","",10,"Adelaide Crows",55,"L",80,"Hawthorn",87,"I","Adelaide Oval","SA","Adelaide",50180
+199468051,2019,1,"2019-03-23","19:20","20:20","Regular Season","",20,"Brisbane Lions",102,"L",150,"West Coast Eagles",58,"I","Gabba","QLD","Brisbane",20029
+199470211,2019,1,"2019-03-23","19:25","19:25","Regular Season","",140,"Western Bulldogs",82,"L",160,"Sydney Swans",65,"I","Marvel Stadium","VIC","Melbourne",32303
+199475840,2019,1,"2019-03-24","13:10","13:10","Regular Season","",130,"St Kilda",85,"L",1000,"Gold Coast Suns",84,"I","Marvel Stadium","VIC","Melbourne",
+199475952,2019,1,"2019-03-24","15:20","15:20","Regular Season","",1010,"GWS Giants",112,"L",50,"Essendon",40,"I","GIANTS Stadium","NSW","Sydney",15424
+199478320,2019,1,"2019-03-24","15:20","18:20","Regular Season","",60,"Fremantle",141,"L",100,"North Melbourne",59,"I","Optus Stadium","WA","Perth",40033
+199485552,2019,2,"2019-03-28","19:20","19:20","Regular Season","",120,"Richmond",66,"L",40,"Collingwood",110,"L","MCG","VIC","Melbourne",
+199483553,2019,2,"2019-03-29","19:50","19:50","Regular Season","",160,"Sydney Swans",62,"L",10,"Adelaide Crows",88,"I","SCG","NSW","Sydney",32575
+199483954,2019,2,"2019-03-30","16:35","16:35","Regular Season","",50,"Essendon",65,"L",130,"St Kilda",76,"L","Marvel Stadium","VIC","Melbourne",44252
+199487074,2019,2,"2019-03-30","16:40","17:10","Regular Season","",110,"Port Adelaide",88,"L",30,"Carlton",72,"I","Adelaide Oval","SA","Adelaide",41552
+199485074,2019,2,"2019-03-30","17:10","20:10","Regular Season","",150,"West Coast Eagles",104,"L",1010,"GWS Giants",52,"I","Optus Stadium","WA","Perth",54985
+199484994,2019,2,"2019-03-30","19:25","19:25","Regular Season","",70,"Geelong Cats",126,"L",90,"Melbourne",46,"L","GMHBA Stadium","VIC","Geelong",27561
+199484515,2019,2,"2019-03-31","13:10","13:10","Regular Season","",100,"North Melbourne",87,"L",20,"Brisbane Lions",107,"I","Marvel Stadium","VIC","Melbourne",23110
+199483475,2019,2,"2019-03-31","15:20","15:20","Regular Season","",80,"Hawthorn",87,"L",140,"Western Bulldogs",106,"L","MCG","VIC","Melbourne",39368
+199485667,2019,2,"2019-03-31","15:40","16:40","Regular Season","",1000,"Gold Coast Suns",61,"L",60,"Fremantle",58,"I","Metricon Stadium","QLD","Gold Coast",10119
+199502336,2019,3,"2019-04-04","19:20","19:50","Regular Season","",10,"Adelaide Crows",75,"L",70,"Geelong Cats",99,"I","Adelaide Oval","SA","Adelaide",45631
+199502417,2019,3,"2019-04-05","19:50","19:50","Regular Season","",90,"Melbourne",112,"L",50,"Essendon",130,"L","MCG","VIC","Melbourne",52475
+199503378,2019,3,"2019-04-06","13:45","13:45","Regular Season","",30,"Carlton",74,"L",160,"Sydney Swans",93,"I","Marvel Stadium","VIC","Melbourne",39290
+199500530,2019,3,"2019-04-06","16:35","16:35","Regular Season","",1010,"GWS Giants",125,"L",120,"Richmond",76,"I","GIANTS Stadium","NSW","Sydney",12697
+199500818,2019,3,"2019-04-06","18:25","19:25","Regular Season","",20,"Brisbane Lions",107,"L",110,"Port Adelaide",90,"I","Gabba","QLD","Brisbane",19958
+199501858,2019,3,"2019-04-06","19:25","19:25","Regular Season","",40,"Collingwood",76,"L",150,"West Coast Eagles",98,"I","MCG","VIC","Melbourne",60878
+199502979,2019,3,"2019-04-07","14:20","14:20","Regular Season","",140,"Western Bulldogs",68,"L",1000,"Gold Coast Suns",73,"I","Marvel Stadium","VIC","Melbourne",22499
+199502899,2019,3,"2019-04-07","15:20","17:20","Regular Season","",60,"Fremantle",71,"L",130,"St Kilda",66,"I","Optus Stadium","WA","Perth",38277
+199499859,2019,3,"2019-04-07","15:20","15:20","Regular Season","",80,"Hawthorn",87,"L",100,"North Melbourne",71,"L","MCG","VIC","Melbourne",36174
+199508131,2019,4,"2019-04-11","19:20","19:20","Regular Season","",160,"Sydney Swans",78,"L",90,"Melbourne",100,"I","SCG","NSW","Sydney",26669
+199518240,2019,4,"2019-04-12","19:50","19:50","Regular Season","",40,"Collingwood",78,"L",140,"Western Bulldogs",64,"L","MCG","VIC","Melbourne",59257
+199517761,2019,4,"2019-04-13","13:45","13:45","Regular Season","",70,"Geelong Cats",75,"L",1010,"GWS Giants",79,"I","GMHBA Stadium","VIC","Geelong",28780
+199516721,2019,4,"2019-04-13","14:10","14:10","Regular Season","",50,"Essendon",112,"L",20,"Brisbane Lions",65,"I","MCG","VIC","Melbourne",48289
+199519841,2019,4,"2019-04-13","16:05","16:35","Regular Season","",110,"Port Adelaide",92,"L",120,"Richmond",99,"I","Adelaide Oval","SA","Adelaide",38864
+199517841,2019,4,"2019-04-13","18:10","20:10","Regular Season","",150,"West Coast Eagles",69,"L",60,"Fremantle",56,"L","Optus Stadium","WA","Perth",58219
+199517281,2019,4,"2019-04-13","19:25","19:25","Regular Season","",100,"North Melbourne",71,"L",10,"Adelaide Crows",59,"I","Marvel Stadium","VIC","Melbourne",17207
+199518434,2019,4,"2019-04-14","14:40","14:40","Regular Season","",1000,"Gold Coast Suns",59,"L",30,"Carlton",57,"I","Metricon Stadium","QLD","Gold Coast",14176
+199516802,2019,4,"2019-04-14","15:20","15:20","Regular Season","",130,"St Kilda",74,"L",80,"Hawthorn",69,"L","Marvel Stadium","VIC","Melbourne",35883
+199525394,2019,5,"2019-04-18","19:35","19:35","Regular Season","",20,"Brisbane Lions",61,"L",40,"Collingwood",123,"I","Gabba","QLD","Brisbane",34017
+199525475,2019,5,"2019-04-19","16:20","16:20","Regular Season","",100,"North Melbourne",58,"L",50,"Essendon",116,"L","Marvel Stadium","VIC","Melbourne",48278
+199526035,2019,5,"2019-04-19","18:10","20:10","Regular Season","",150,"West Coast Eagles",53,"L",110,"Port Adelaide",95,"I","Optus Stadium","WA","Perth",49290
+199533296,2019,5,"2019-04-20","13:45","13:45","Regular Season","",1010,"GWS Giants",82,"I",60,"Fremantle",106,"I","UNSW Canberra Oval","ACT","Canberra",11277
+199535184,2019,5,"2019-04-20","16:35","16:35","Regular Season","",90,"Melbourne",55,"L",130,"St Kilda",95,"L","MCG","VIC","Melbourne",35558
+199534704,2019,5,"2019-04-20","19:25","19:25","Regular Season","",120,"Richmond",89,"L",160,"Sydney Swans",67,"I","Marvel Stadium","VIC","Melbourne",40053
+199535745,2019,5,"2019-04-21","13:10","13:10","Regular Season","",140,"Western Bulldogs",57,"L",30,"Carlton",101,"L","Marvel Stadium","VIC","Melbourne",35069
+199535105,2019,5,"2019-04-21","16:10","16:40","Regular Season","",10,"Adelaide Crows",119,"L",1000,"Gold Coast Suns",46,"I","Adelaide Oval","SA","Adelaide",40847
+199532626,2019,5,"2019-04-22","15:20","15:20","Regular Season","",80,"Hawthorn",90,"L",70,"Geelong Cats",113,"L","MCG","VIC","Melbourne",66347
+199542896,2019,6,"2019-04-24","19:35","19:35","Regular Season","",120,"Richmond",85,"L",90,"Melbourne",42,"L","MCG","VIC","Melbourne",72774
+199541297,2019,6,"2019-04-25","15:20","15:20","Regular Season","",50,"Essendon",69,"L",40,"Collingwood",73,"L","MCG","VIC","Melbourne",92241
+199544418,2019,6,"2019-04-26","19:20","19:50","Regular Season","",110,"Port Adelaide",88,"L",100,"North Melbourne",72,"I","Adelaide Oval","SA","Adelaide",36099
+199543011,2019,6,"2019-04-27","13:45","13:45","Regular Season","",1000,"Gold Coast Suns",62,"L",20,"Brisbane Lions",111,"L","Metricon Stadium","QLD","Gold Coast",13694
+199541379,2019,6,"2019-04-27","16:35","16:35","Regular Season","",130,"St Kilda",68,"L",10,"Adelaide Crows",97,"I","Marvel Stadium","VIC","Melbourne",28421
+199543859,2019,6,"2019-04-27","18:10","20:10","Regular Season","",60,"Fremantle",88,"L",140,"Western Bulldogs",69,"I","Optus Stadium","WA","Perth",43732
+199540899,2019,6,"2019-04-27","19:25","19:25","Regular Season","",160,"Sydney Swans",79,"L",1010,"GWS Giants",120,"L","SCG","NSW","Sydney",29780
+199549008,2019,6,"2019-04-28","15:20","15:20","Regular Season","",80,"Hawthorn",93,"I",30,"Carlton",88,"I","University of Tasmania Stadium","TAS","Launceston",15888
+199550528,2019,6,"2019-04-28","16:40","16:40","Regular Season","",70,"Geelong Cats",104,"L",150,"West Coast Eagles",46,"I","GMHBA Stadium","VIC","Geelong",28085
+199559203,2019,7,"2019-05-03","19:50","19:50","Regular Season","",40,"Collingwood",108,"L",110,"Port Adelaide",69,"I","Marvel Stadium","VIC","Melbourne",37559
+199567952,2019,7,"2019-05-04","13:45","13:45","Regular Season","",90,"Melbourne",79,"L",80,"Hawthorn",74,"L","MCG","VIC","Melbourne",40864
+199566064,2019,7,"2019-05-04","13:45","13:45","Regular Season","",1010,"GWS Giants",114,"I",130,"St Kilda",70,"I","UNSW Canberra Oval","ACT","Canberra",12633
+199566352,2019,7,"2019-05-04","16:35","16:35","Regular Season","",20,"Brisbane Lions",103,"L",160,"Sydney Swans",81,"I","Gabba","QLD","Brisbane",20075
+199566992,2019,7,"2019-05-04","18:10","20:10","Regular Season","",150,"West Coast Eagles",80,"L",1000,"Gold Coast Suns",57,"I","Optus Stadium","WA","Perth",47497
+199568512,2019,7,"2019-05-04","19:25","19:25","Regular Season","",140,"Western Bulldogs",99,"L",120,"Richmond",52,"L","Marvel Stadium","VIC","Melbourne",36151
+199568913,2019,7,"2019-05-05","13:10","13:10","Regular Season","",30,"Carlton",62,"L",100,"North Melbourne",120,"L","Marvel Stadium","VIC","Melbourne",42430
+199566913,2019,7,"2019-05-05","15:20","15:20","Regular Season","",70,"Geelong Cats",86,"L",50,"Essendon",54,"L","MCG","VIC","Melbourne",63527
+199567873,2019,7,"2019-05-05","16:10","16:40","Regular Season","",10,"Adelaide Crows",51,"L",60,"Fremantle",34,"I","Adelaide Oval","SA","Adelaide",42383
+199573666,2019,8,"2019-05-10","19:50","19:50","Regular Season","",160,"Sydney Swans",77,"L",50,"Essendon",72,"I","SCG","NSW","Sydney",26502
+199577107,2019,8,"2019-05-11","13:45","13:45","Regular Season","",30,"Carlton",87,"L",40,"Collingwood",106,"L","MCG","VIC","Melbourne",69289
+199576707,2019,8,"2019-05-11","13:45","13:45","Regular Season","",140,"Western Bulldogs",92,"L",20,"Brisbane Lions",76,"I","Mars Stadium","VIC","Ballarat",9039
+199575779,2019,8,"2019-05-11","16:35","16:35","Regular Season","",1000,"Gold Coast Suns",60,"L",90,"Melbourne",61,"I","Metricon Stadium","QLD","Gold Coast",
+199577187,2019,8,"2019-05-11","19:10","19:40","Regular Season","",110,"Port Adelaide",68,"L",10,"Adelaide Crows",88,"L","Adelaide Oval","SA","Adelaide",49675
+199574147,2019,8,"2019-05-11","19:25","19:25","Regular Season","",130,"St Kilda",70,"L",150,"West Coast Eagles",88,"I","Marvel Stadium","VIC","Melbourne",20236
+199582816,2019,8,"2019-05-12","13:10","13:10","Regular Season","",100,"North Melbourne",80,"L",70,"Geelong Cats",104,"L","Marvel Stadium","VIC","Melbourne",21156
+199581776,2019,8,"2019-05-12","15:20","15:20","Regular Season","",80,"Hawthorn",71,"L",1010,"GWS Giants",38,"I","MCG","VIC","Melbourne",14636
+199584816,2019,8,"2019-05-12","15:20","17:20","Regular Season","",60,"Fremantle",86,"L",120,"Richmond",111,"I","Optus Stadium","WA","Perth",42641
+199591569,2019,9,"2019-05-17","18:10","20:10","Regular Season","",150,"West Coast Eagles",85,"L",90,"Melbourne",69,"I","Optus Stadium","WA","Perth",51162
+199591970,2019,9,"2019-05-18","13:45","13:45","Regular Season","",40,"Collingwood",112,"L",130,"St Kilda",71,"L","MCG","VIC","Melbourne",60702
+199590930,2019,9,"2019-05-18","14:10","14:10","Regular Season","",20,"Brisbane Lions",93,"L",10,"Adelaide Crows",92,"I","Gabba","QLD","Brisbane",20405
+199591490,2019,9,"2019-05-18","16:35","16:35","Regular Season","",70,"Geelong Cats",133,"L",140,"Western Bulldogs",89,"L","GMHBA Stadium","VIC","Geelong",31373
+199590450,2019,9,"2019-05-18","19:25","19:25","Regular Season","",50,"Essendon",60,"L",60,"Fremantle",53,"I","Marvel Stadium","VIC","Melbourne",29176
+199591010,2019,9,"2019-05-18","19:25","19:25","Regular Season","",100,"North Melbourne",72,"I",160,"Sydney Swans",77,"I","Blundstone Arena","TAS","Hobart",12799
+199593571,2019,9,"2019-05-19","12:40","13:10","Regular Season","",110,"Port Adelaide",89,"L",1000,"Gold Coast Suns",51,"I","Adelaide Oval","SA","Adelaide",26129
+199592051,2019,9,"2019-05-19","15:20","15:20","Regular Season","",120,"Richmond",95,"L",80,"Hawthorn",59,"L","MCG","VIC","Melbourne",64936
+199590643,2019,9,"2019-05-19","16:40","16:40","Regular Season","",1010,"GWS Giants",138,"L",30,"Carlton",45,"I","GIANTS Stadium","NSW","Sydney",9599
+199606432,2019,10,"2019-05-24","19:50","19:50","Regular Season","",160,"Sydney Swans",73,"L",40,"Collingwood",80,"I","SCG","NSW","Sydney",34649
+199606353,2019,10,"2019-05-25","13:45","13:45","Regular Season","",80,"Hawthorn",80,"I",110,"Port Adelaide",49,"I","University of Tasmania Stadium","TAS","Launceston",11637
+199609473,2019,10,"2019-05-25","14:10","14:10","Regular Season","",140,"Western Bulldogs",90,"L",100,"North Melbourne",115,"L","Marvel Stadium","VIC","Melbourne",26156
+199608833,2019,10,"2019-05-25","16:05","16:35","Regular Season","",10,"Adelaide Crows",73,"L",150,"West Coast Eagles",85,"I","Adelaide Oval","SA","Adelaide",41630
+199608433,2019,10,"2019-05-25","19:25","19:25","Regular Season","",120,"Richmond",73,"L",50,"Essendon",50,"L","MCG","VIC","Melbourne",80176
+199608545,2019,10,"2019-05-25","19:25","19:25","Regular Season","",1000,"Gold Coast Suns",64,"L",70,"Geelong Cats",91,"I","Metricon Stadium","QLD","Gold Coast",13144
+199608914,2019,10,"2019-05-26","13:10","13:10","Regular Season","",90,"Melbourne",68,"L",1010,"GWS Giants",94,"I","MCG","VIC","Melbourne",20023
+199606914,2019,10,"2019-05-26","15:20","15:20","Regular Season","",130,"St Kilda",68,"L",30,"Carlton",55,"L","Marvel Stadium","VIC","Melbourne",35058
+199609394,2019,10,"2019-05-26","15:20","17:20","Regular Season","",60,"Fremantle",73,"L",20,"Brisbane Lions",72,"I","Optus Stadium","WA","Perth",
+199615587,2019,11,"2019-05-31","19:50","19:50","Regular Season","",100,"North Melbourne",99,"L",120,"Richmond",62,"L","Marvel Stadium","VIC","Melbourne",29326
+199623409,2019,11,"2019-06-01","13:45","13:45","Regular Season","",1010,"GWS Giants",126,"L",1000,"Gold Coast Suns",43,"I","GIANTS Stadium","NSW","Sydney",7581
+199624737,2019,11,"2019-06-01","13:45","13:45","Regular Season","",40,"Collingwood",75,"L",60,"Fremantle",79,"I","MCG","VIC","Melbourne",41774
+199624257,2019,11,"2019-06-01","16:35","16:35","Regular Season","",70,"Geelong Cats",85,"L",160,"Sydney Swans",63,"I","GMHBA Stadium","VIC","Geelong",29021
+199625297,2019,11,"2019-06-01","19:10","19:40","Regular Season","",90,"Melbourne",88,"I",10,"Adelaide Crows",90,"I","TIO Stadium","NT","Darwin",10634
+199623697,2019,11,"2019-06-01","19:25","19:25","Regular Season","",20,"Brisbane Lions",85,"L",80,"Hawthorn",66,"I","Gabba","QLD","Brisbane",25051
+199623298,2019,11,"2019-06-02","12:20","14:20","Regular Season","",130,"St Kilda",69,"I",110,"Port Adelaide",139,"I","Adelaide Arena at Jiangwan Stadium","","Shanghai",
+199623218,2019,11,"2019-06-02","15:20","15:20","Regular Season","",50,"Essendon",74,"L",30,"Carlton",33,"L","MCG","VIC","Melbourne",50423
+199624338,2019,11,"2019-06-02","15:20","17:20","Regular Season","",150,"West Coast Eagles",133,"L",140,"Western Bulldogs",72,"I","Optus Stadium","WA","Perth",53195
+199633011,2019,12,"2019-06-07","19:50","19:50","Regular Season","",120,"Richmond",37,"L",70,"Geelong Cats",104,"L","MCG","VIC","Melbourne",65214
+199642640,2019,12,"2019-06-08","13:45","13:45","Regular Season","",30,"Carlton",78,"L",20,"Brisbane Lions",63,"I","Marvel Stadium","VIC","Melbourne",32211
+199641312,2019,12,"2019-06-08","16:35","16:35","Regular Season","",1000,"Gold Coast Suns",72,"L",100,"North Melbourne",99,"I","Metricon Stadium","QLD","Gold Coast",9305
+199641600,2019,12,"2019-06-08","19:10","19:40","Regular Season","",10,"Adelaide Crows",82,"L",1010,"GWS Giants",61,"I","Adelaide Oval","SA","Adelaide",41710
+199639201,2019,12,"2019-06-09","15:20","15:20","Regular Season","",160,"Sydney Swans",116,"L",150,"West Coast Eagles",71,"I","SCG","NSW","Sydney",36640
+199641122,2019,12,"2019-06-10","15:20","15:20","Regular Season","",40,"Collingwood",98,"L",90,"Melbourne",57,"L","MCG","VIC","Melbourne",74036
+199649793,2019,13,"2019-06-13","19:20","19:50","Regular Season","",10,"Adelaide Crows",101,"L",120,"Richmond",68,"I","Adelaide Oval","SA","Adelaide",40837
+199647794,2019,13,"2019-06-14","19:50","19:50","Regular Season","",50,"Essendon",96,"L",80,"Hawthorn",77,"L","Marvel Stadium","VIC","Melbourne",44846
+199649507,2019,13,"2019-06-15","13:45","13:45","Regular Season","",1000,"Gold Coast Suns",76,"L",130,"St Kilda",80,"I","Riverway Stadium","QLD","Townsville",7243
+199650355,2019,13,"2019-06-15","14:35","16:35","Regular Season","",60,"Fremantle",100,"L",110,"Port Adelaide",79,"I","Optus Stadium","WA","Perth",37451
+199650835,2019,13,"2019-06-15","19:25","19:25","Regular Season","",30,"Carlton",100,"L",140,"Western Bulldogs",103,"L","Marvel Stadium","VIC","Melbourne",35749
+199656544,2019,13,"2019-06-16","15:20","15:20","Regular Season","",100,"North Melbourne",68,"I",1010,"GWS Giants",91,"I","Blundstone Arena","TAS","Hobart",7832
+199665296,2019,14,"2019-06-20","18:10","20:10","Regular Season","",150,"West Coast Eagles",106,"L",50,"Essendon",71,"I","Optus Stadium","WA","Perth",52810
+199663777,2019,14,"2019-06-21","19:50","19:50","Regular Season","",160,"Sydney Swans",82,"L",80,"Hawthorn",63,"I","SCG","NSW","Sydney",29553
+199666258,2019,14,"2019-06-22","13:45","13:45","Regular Season","",90,"Melbourne",85,"L",60,"Fremantle",71,"I","MCG","VIC","Melbourne",20211
+199664258,2019,14,"2019-06-22","16:35","16:35","Regular Season","",130,"St Kilda",59,"L",20,"Brisbane Lions",115,"I","Marvel Stadium","VIC","Melbourne",22885
+199667298,2019,14,"2019-06-22","19:10","19:40","Regular Season","",110,"Port Adelaide",67,"L",70,"Geelong Cats",56,"I","Adelaide Oval","SA","Adelaide",37726
+199666819,2019,14,"2019-06-23","15:20","15:20","Regular Season","",140,"Western Bulldogs",73,"L",40,"Collingwood",82,"L","Marvel Stadium","VIC","Melbourne",39836
+199672371,2019,15,"2019-06-27","19:20","19:20","Regular Season","",50,"Essendon",77,"L",1010,"GWS Giants",71,"I","Marvel Stadium","VIC","Melbourne",25195
+199681600,2019,15,"2019-06-28","19:50","19:50","Regular Season","",70,"Geelong Cats",96,"L",10,"Adelaide Crows",69,"I","GMHBA Stadium","VIC","Geelong",28108
+199680081,2019,15,"2019-06-29","13:45","13:45","Regular Season","",80,"Hawthorn",71,"L",150,"West Coast Eagles",77,"I","MCG","VIC","Melbourne",31895
+199680161,2019,15,"2019-06-29","16:35","16:35","Regular Season","",160,"Sydney Swans",93,"L",1000,"Gold Coast Suns",51,"I","SCG","NSW","Sydney",26194
+199683681,2019,15,"2019-06-29","19:10","19:40","Regular Season","",110,"Port Adelaide",41,"L",140,"Western Bulldogs",66,"I","Adelaide Oval","SA","Adelaide",25623
+199682081,2019,15,"2019-06-29","19:25","19:25","Regular Season","",40,"Collingwood",37,"L",100,"North Melbourne",81,"L","Marvel Stadium","VIC","Melbourne",38801
+199680642,2019,15,"2019-06-30","13:10","13:10","Regular Season","",130,"St Kilda",70,"L",120,"Richmond",103,"L","Marvel Stadium","VIC","Melbourne",40962
+199681042,2019,15,"2019-06-30","15:20","15:20","Regular Season","",20,"Brisbane Lions",107,"L",90,"Melbourne",74,"I","Gabba","QLD","Brisbane",24809
+199683122,2019,15,"2019-06-30","15:20","17:20","Regular Season","",60,"Fremantle",75,"L",30,"Carlton",79,"I","Optus Stadium","WA","Perth",37293
+199696465,2019,16,"2019-07-05","19:50","19:50","Regular Season","",80,"Hawthorn",67,"L",40,"Collingwood",63,"L","MCG","VIC","Melbourne",66407
+199696946,2019,16,"2019-07-06","13:45","13:45","Regular Season","",50,"Essendon",76,"L",160,"Sydney Swans",66,"I","MCG","VIC","Melbourne",60199
+199698658,2019,16,"2019-07-06","14:10","14:10","Regular Season","",1000,"Gold Coast Suns",58,"L",120,"Richmond",150,"I","Metricon Stadium","QLD","Gold Coast",16031
+199698946,2019,16,"2019-07-06","16:05","16:35","Regular Season","",10,"Adelaide Crows",44,"L",110,"Port Adelaide",101,"L","Adelaide Oval","SA","Adelaide",50544
+199699506,2019,16,"2019-07-06","18:10","20:10","Regular Season","",60,"Fremantle",31,"L",150,"West Coast Eagles",122,"L","Optus Stadium","WA","Perth",56358
+199699586,2019,16,"2019-07-06","19:25","19:25","Regular Season","",140,"Western Bulldogs",71,"L",70,"Geelong Cats",55,"L","Marvel Stadium","VIC","Melbourne",35641
+199699987,2019,16,"2019-07-07","13:10","13:10","Regular Season","",30,"Carlton",100,"L",90,"Melbourne",105,"L","MCG","VIC","Melbourne",55593
+199697507,2019,16,"2019-07-07","15:20","15:20","Regular Season","",100,"North Melbourne",112,"I",130,"St Kilda",73,"I","Blundstone Arena","TAS","Hobart",10696
+199697139,2019,16,"2019-07-07","16:40","16:40","Regular Season","",1010,"GWS Giants",74,"L",20,"Brisbane Lions",94,"I","GIANTS Stadium","NSW","Sydney",12268
+199714448,2019,17,"2019-07-12","18:10","20:10","Regular Season","",150,"West Coast Eagles",77,"L",40,"Collingwood",78,"I","Optus Stadium","WA","Perth",56251
+199712929,2019,17,"2019-07-13","13:45","13:45","Regular Season","",160,"Sydney Swans",62,"L",30,"Carlton",69,"I","SCG","NSW","Sydney",32570
+199712849,2019,17,"2019-07-13","14:10","14:10","Regular Season","",80,"Hawthorn",84,"I",60,"Fremantle",53,"I","University of Tasmania Stadium","TAS","Launceston",13006
+199713329,2019,17,"2019-07-13","16:35","16:35","Regular Season","",50,"Essendon",86,"L",100,"North Melbourne",81,"L","Marvel Stadium","VIC","Melbourne",45682
+199714369,2019,17,"2019-07-13","19:25","19:25","Regular Season","",70,"Geelong Cats",84,"L",130,"St Kilda",57,"L","GMHBA Stadium","VIC","Geelong",24035
+199715041,2019,17,"2019-07-13","19:25","19:25","Regular Season","",1000,"Gold Coast Suns",56,"L",10,"Adelaide Crows",151,"I","Metricon Stadium","QLD","Gold Coast",8741
+199714930,2019,17,"2019-07-14","13:10","13:10","Regular Season","",120,"Richmond",94,"L",1010,"GWS Giants",67,"I","MCG","VIC","Melbourne",38986
+199715970,2019,17,"2019-07-14","15:20","15:20","Regular Season","",140,"Western Bulldogs",74,"L",90,"Melbourne",66,"L","Marvel Stadium","VIC","Melbourne",26871
+199716450,2019,17,"2019-07-14","16:10","16:40","Regular Season","",110,"Port Adelaide",49,"L",20,"Brisbane Lions",97,"I","Adelaide Oval","SA","Adelaide",33118
+199723523,2019,18,"2019-07-19","19:20","19:50","Regular Season","",10,"Adelaide Crows",75,"L",50,"Essendon",96,"I","Adelaide Oval","SA","Adelaide",47735
+199731312,2019,18,"2019-07-20","13:45","13:45","Regular Season","",120,"Richmond",101,"L",110,"Port Adelaide",63,"I","MCG","VIC","Melbourne",41642
+199732752,2019,18,"2019-07-20","14:10","14:10","Regular Season","",30,"Carlton",99,"L",1000,"Gold Coast Suns",75,"I","Marvel Stadium","VIC","Melbourne",31765
+199729904,2019,18,"2019-07-20","16:35","16:35","Regular Season","",1010,"GWS Giants",122,"L",40,"Collingwood",75,"I","GIANTS Stadium","NSW","Sydney",15467
+199732272,2019,18,"2019-07-20","18:10","20:10","Regular Season","",60,"Fremantle",52,"L",160,"Sydney Swans",51,"I","Optus Stadium","WA","Perth",33594
+199730192,2019,18,"2019-07-20","19:25","19:25","Regular Season","",20,"Brisbane Lions",87,"L",100,"North Melbourne",75,"I","Gabba","QLD","Brisbane",23833
+199730753,2019,18,"2019-07-21","13:10","13:10","Regular Season","",70,"Geelong Cats",61,"L",80,"Hawthorn",85,"L","MCG","VIC","Melbourne",53636
+199731793,2019,18,"2019-07-21","14:50","15:20","Regular Season","",90,"Melbourne",78,"I",150,"West Coast Eagles",91,"I","TIO Traeger Park","NT","Alice Springs",7164
+199729793,2019,18,"2019-07-21","16:40","16:40","Regular Season","",130,"St Kilda",116,"L",140,"Western Bulldogs",89,"L","Marvel Stadium","VIC","Melbourne",21705
+199739426,2019,19,"2019-07-26","19:50","19:50","Regular Season","",40,"Collingwood",66,"L",120,"Richmond",98,"L","MCG","VIC","Melbourne",78722
+199737427,2019,19,"2019-07-27","13:45","13:45","Regular Season","",80,"Hawthorn",60,"I",20,"Brisbane Lions",87,"I","University of Tasmania Stadium","TAS","Launceston",15157
+199740947,2019,19,"2019-07-27","14:10","14:10","Regular Season","",30,"Carlton",87,"L",10,"Adelaide Crows",60,"I","MCG","VIC","Melbourne",38639
+199739027,2019,19,"2019-07-27","14:35","16:35","Regular Season","",150,"West Coast Eagles",121,"L",100,"North Melbourne",72,"I","Optus Stadium","WA","Perth",54376
+199741027,2019,19,"2019-07-27","19:10","19:40","Regular Season","",110,"Port Adelaide",55,"L",1010,"GWS Giants",56,"I","Adelaide Oval","SA","Adelaide",27591
+199737987,2019,19,"2019-07-27","19:25","19:25","Regular Season","",130,"St Kilda",104,"L",90,"Melbourne",85,"L","Marvel Stadium","VIC","Melbourne",22854
+199748736,2019,19,"2019-07-28","13:10","13:10","Regular Season","",140,"Western Bulldogs",113,"L",60,"Fremantle",66,"I","Marvel Stadium","VIC","Melbourne",21181
+199745696,2019,19,"2019-07-28","15:20","15:20","Regular Season","",160,"Sydney Swans",80,"L",70,"Geelong Cats",107,"I","SCG","NSW","Sydney",32911
+199747808,2019,19,"2019-07-28","16:40","16:40","Regular Season","",1000,"Gold Coast Suns",96,"L",50,"Essendon",106,"I","Metricon Stadium","QLD","Gold Coast",15759
+199234658,2019,20,"2019-08-02","19:50","19:50","Regular Season","",100,"North Melbourne",86,"L",80,"Hawthorn",64,"L","Marvel Stadium","VIC","Melbourne",33226
+199234099,2019,20,"2019-08-03","13:45","13:45","Regular Season","",50,"Essendon",67,"L",110,"Port Adelaide",126,"I","Marvel Stadium","VIC","Melbourne",42940
+199234291,2019,20,"2019-08-03","14:10","14:10","Regular Season","",1010,"GWS Giants",83,"L",160,"Sydney Swans",81,"L","GIANTS Stadium","NSW","Sydney",16116
+199236659,2019,20,"2019-08-03","14:35","16:35","Regular Season","",60,"Fremantle",95,"L",70,"Geelong Cats",61,"I","Optus Stadium","WA","Perth",36310
+199236099,2019,20,"2019-08-03","19:10","19:40","Regular Season","",10,"Adelaide Crows",92,"L",130,"St Kilda",70,"I","Adelaide Oval","SA","Adelaide",39984
+199236179,2019,20,"2019-08-03","19:25","19:25","Regular Season","",90,"Melbourne",60,"L",120,"Richmond",93,"L","MCG","VIC","Melbourne",37254
+199243808,2019,20,"2019-08-04","13:10","13:10","Regular Season","",40,"Collingwood",120,"L",1000,"Gold Coast Suns",51,"I","MCG","VIC","Melbourne",33577
+199245328,2019,20,"2019-08-04","15:20","15:20","Regular Season","",30,"Carlton",75,"L",150,"West Coast Eagles",99,"I","Marvel Stadium","VIC","Melbourne",32802
+199242768,2019,20,"2019-08-04","16:40","16:40","Regular Season","",20,"Brisbane Lions",98,"L",140,"Western Bulldogs",80,"I","Gabba","QLD","Brisbane",25831
+199250673,2019,21,"2019-08-09","19:50","19:50","Regular Season","",1010,"GWS Giants",29,"I",80,"Hawthorn",85,"I","UNSW Canberra Oval","ACT","Canberra",11741
+199253602,2019,21,"2019-08-10","13:40","14:10","Regular Season","",110,"Port Adelaide",103,"L",160,"Sydney Swans",56,"I","Adelaide Oval","SA","Adelaide",29568
+199252562,2019,21,"2019-08-10","13:45","13:45","Regular Season","",90,"Melbourne",53,"L",40,"Collingwood",70,"L","MCG","VIC","Melbourne",31903
+199250962,2019,21,"2019-08-10","16:35","16:35","Regular Season","",20,"Brisbane Lions",144,"L",1000,"Gold Coast Suns",53,"L","Gabba","QLD","Brisbane",22530
+199251522,2019,21,"2019-08-10","19:25","19:25","Regular Season","",70,"Geelong Cats",69,"L",100,"North Melbourne",14,"L","GMHBA Stadium","VIC","Geelong",21664
+199250482,2019,21,"2019-08-10","19:25","19:25","Regular Season","",50,"Essendon",33,"L",140,"Western Bulldogs",137,"L","Marvel Stadium","VIC","Melbourne",41806
+199250563,2019,21,"2019-08-11","13:10","13:10","Regular Season","",130,"St Kilda",72,"L",60,"Fremantle",69,"I","Marvel Stadium","VIC","Melbourne",17715
+199251603,2019,21,"2019-08-11","15:20","17:20","Regular Season","",150,"West Coast Eagles",90,"L",10,"Adelaide Crows",80,"I","Optus Stadium","WA","Perth",54994
+199252083,2019,21,"2019-08-11","15:20","15:20","Regular Season","",120,"Richmond",73,"L",30,"Carlton",45,"L","MCG","VIC","Melbourne",51039
+199268944,2019,22,"2019-08-16","19:50","19:50","Regular Season","",90,"Melbourne",42,"L",160,"Sydney Swans",95,"I","MCG","VIC","Melbourne",23700
+199269905,2019,22,"2019-08-17","13:45","13:45","Regular Season","",30,"Carlton",78,"L",130,"St Kilda",68,"L","MCG","VIC","Melbourne",51786
+199267345,2019,22,"2019-08-17","14:10","14:10","Regular Season","",20,"Brisbane Lions",75,"L",70,"Geelong Cats",74,"I","Gabba","QLD","Brisbane",35608
+199268865,2019,22,"2019-08-17","16:05","16:35","Regular Season","",10,"Adelaide Crows",48,"L",40,"Collingwood",114,"I","Adelaide Oval","SA","Adelaide",48175
+199269425,2019,22,"2019-08-17","18:10","20:10","Regular Season","",60,"Fremantle",55,"L",50,"Essendon",87,"I","Optus Stadium","WA","Perth",47833
+199267425,2019,22,"2019-08-17","19:25","19:25","Regular Season","",100,"North Melbourne",144,"L",110,"Port Adelaide",58,"I","Marvel Stadium","VIC","Melbourne",17063
+199268466,2019,22,"2019-08-18","13:10","13:10","Regular Season","",120,"Richmond",88,"L",150,"West Coast Eagles",82,"I","MCG","VIC","Melbourne",57415
+199267058,2019,22,"2019-08-18","15:20","15:20","Regular Season","",1010,"GWS Giants",65,"L",140,"Western Bulldogs",126,"I","GIANTS Stadium","NSW","Sydney",10139
+199266386,2019,22,"2019-08-18","16:40","16:40","Regular Season","",80,"Hawthorn",118,"L",1000,"Gold Coast Suns",48,"I","Marvel Stadium","VIC","Melbourne",31331
+199284769,2019,23,"2019-08-23","19:50","19:50","Regular Season","",40,"Collingwood",76,"L",50,"Essendon",65,"L","MCG","VIC","Melbourne",85405
+199282849,2019,23,"2019-08-24","13:45","13:45","Regular Season","",160,"Sydney Swans",109,"L",130,"St Kilda",64,"I","SCG","NSW","Sydney",33722
+199283808,2019,23,"2019-08-24","14:10","14:10","Regular Season","",100,"North Melbourne",88,"I",90,"Melbourne",83,"I","Blundstone Arena","TAS","Hobart",8202
+199284289,2019,23,"2019-08-24","16:35","16:35","Regular Season","",70,"Geelong Cats",129,"L",30,"Carlton",61,"L","GMHBA Stadium","VIC","Geelong",31699
+199284368,2019,23,"2019-08-24","18:10","20:10","Regular Season","",150,"West Coast Eagles",67,"L",80,"Hawthorn",105,"I","Optus Stadium","WA","Perth",55859
+199284960,2019,23,"2019-08-24","19:25","19:25","Regular Season","",1000,"Gold Coast Suns",55,"L",1010,"GWS Giants",127,"I","Metricon Stadium","QLD","Gold Coast",7610
+199285889,2019,23,"2019-08-25","13:10","13:10","Regular Season","",140,"Western Bulldogs",121,"L",10,"Adelaide Crows",87,"I","Mars Stadium","VIC","Ballarat",9560
+199284848,2019,23,"2019-08-25","15:20","15:20","Regular Season","",120,"Richmond",82,"L",20,"Brisbane Lions",55,"I","MCG","VIC","Melbourne",76995
+199286368,2019,23,"2019-08-25","16:10","16:40","Regular Season","",110,"Port Adelaide",110,"L",60,"Fremantle",67,"I","Adelaide Oval","SA","Adelaide",27504
+106750101,2019,24,"2019-09-05","18:10","20:10","Final","Elimination Final",150,"West Coast Eagles",116,"L",50,"Essendon",61,"I","Optus Stadium","WA","Perth",59216
+106750103,2019,24,"2019-09-06","19:50","19:50","Final","Qualifying Final",70,"Geelong Cats",51,"L",40,"Collingwood",61,"L","MCG","VIC","Melbourne",93436
+106750102,2019,24,"2019-09-07","15:20","15:20","Final","Elimination Final",1010,"GWS Giants",113,"L",140,"Western Bulldogs",55,"I","GIANTS Stadium","NSW","Sydney",19218
+106750104,2019,24,"2019-09-07","19:25","19:25","Final","Qualifying Final",20,"Brisbane Lions",65,"L",120,"Richmond",112,"I","Gabba","QLD","Brisbane",37478
+106750201,2019,25,"2019-09-13","19:50","19:50","Final","Semi Final",70,"Geelong Cats",88,"L",150,"West Coast Eagles",68,"I","MCG","VIC","Melbourne",51813
+106750202,2019,25,"2019-09-14","19:25","19:25","Final","Semi Final",20,"Brisbane Lions",80,"L",1010,"GWS Giants",83,"I","Gabba","QLD","Brisbane",30034
+106750302,2019,26,"2019-09-20","19:50","19:50","Final","Preliminary Final",120,"Richmond",85,"L",70,"Geelong Cats",66,"L","MCG","VIC","Melbourne",94423
+106750301,2019,26,"2019-09-21","16:35","16:35","Final","Preliminary Final",40,"Collingwood",52,"L",1010,"GWS Giants",56,"I","MCG","VIC","Melbourne",77828
+106750401,2019,27,"2019-09-28","14:30","14:30","Final","Grand Final",120,"Richmond",114,"L",1010,"GWS Giants",25,"I","MCG","VIC","Melbourne",100014
+216238195,2020,1,"2020-03-19","19:40","19:40","Regular Season","",120,"Richmond",105,"L",30,"Carlton",81,"L","MCG","VIC","Melbourne",
+216247424,2020,1,"2020-03-20","19:50","19:50","Regular Season","",140,"Western Bulldogs",34,"L",40,"Collingwood",86,"L","Marvel Stadium","VIC","Melbourne",
+216244785,2020,1,"2020-03-21","14:10","14:10","Regular Season","",50,"Essendon",63,"L",60,"Fremantle",57,"I","Marvel Stadium","VIC","Melbourne",
+216246785,2020,1,"2020-03-21","16:35","17:05","Regular Season","",10,"Adelaide Crows",71,"L",160,"Sydney Swans",74,"I","Adelaide Oval","SA","Adelaide",
+216246497,2020,1,"2020-03-21","18:40","19:40","Regular Season","",1000,"Gold Coast Suns",29,"L",110,"Port Adelaide",76,"I","Metricon Stadium","QLD","Gold Coast",
+216244977,2020,1,"2020-03-21","19:40","19:40","Regular Season","",1010,"GWS Giants",105,"L",70,"Geelong Cats",73,"I","GIANTS Stadium","NSW","Sydney",
+216245346,2020,1,"2020-03-22","13:05","13:05","Regular Season","",100,"North Melbourne",56,"L",130,"St Kilda",54,"L","Marvel Stadium","VIC","Melbourne",
+216244306,2020,1,"2020-03-22","15:35","15:35","Regular Season","",80,"Hawthorn",90,"L",20,"Brisbane Lions",62,"I","MCG","VIC","Melbourne",
+216245906,2020,1,"2020-03-22","15:40","18:40","Regular Season","",150,"West Coast Eagles",78,"L",90,"Melbourne",51,"I","Optus Stadium","WA","Perth",
+216418339,2020,2,"2020-06-11","19:40","19:40","Regular Season","",40,"Collingwood",36,"L",120,"Richmond",36,"L","MCG","VIC","Melbourne",
+216426048,2020,2,"2020-06-12","19:50","19:50","Regular Season","",70,"Geelong Cats",108,"L",80,"Hawthorn",47,"L","GMHBA Stadium","VIC","Geelong",
+216425489,2020,2,"2020-06-13","13:45","13:45","Regular Season","",20,"Brisbane Lions",81,"L",60,"Fremantle",69,"I","Gabba","QLD","Brisbane",
+216428049,2020,2,"2020-06-13","16:35","16:35","Regular Season","",30,"Carlton",53,"L",90,"Melbourne",54,"L","Marvel Stadium","VIC","Melbourne",0
+216428129,2020,2,"2020-06-13","19:10","19:40","Regular Season","",110,"Port Adelaide",110,"L",10,"Adelaide Crows",35,"L","Adelaide Oval","SA","Adelaide",
+216426721,2020,2,"2020-06-13","19:40","19:40","Regular Season","",1000,"Gold Coast Suns",90,"L",150,"West Coast Eagles",46,"I","Metricon Stadium","QLD","Gold Coast",
+216425202,2020,2,"2020-06-14","13:05","13:05","Regular Season","",1010,"GWS Giants",60,"L",100,"North Melbourne",80,"I","GIANTS Stadium","NSW","Sydney",
+216424610,2020,2,"2020-06-14","15:35","15:35","Regular Season","",160,"Sydney Swans",73,"L",50,"Essendon",79,"I","SCG","NSW","Sydney",
+216425090,2020,2,"2020-06-14","18:05","18:05","Regular Season","",130,"St Kilda",88,"L",140,"Western Bulldogs",49,"L","Marvel Stadium","VIC","Melbourne",
+216434802,2020,3,"2020-06-18","19:40","19:40","Regular Season","",120,"Richmond",39,"L",80,"Hawthorn",71,"L","MCG","VIC","Melbourne",
+216435843,2020,3,"2020-06-19","19:50","19:50","Regular Season","",140,"Western Bulldogs",57,"L",1010,"GWS Giants",33,"I","Marvel Stadium","VIC","Melbourne",
+216441952,2020,3,"2020-06-20","13:45","13:45","Regular Season","",100,"North Melbourne",60,"L",160,"Sydney Swans",71,"I","Marvel Stadium","VIC","Melbourne",
+216442912,2020,3,"2020-06-20","16:35","16:35","Regular Season","",40,"Collingwood",81,"L",130,"St Kilda",37,"L","MCG","VIC","Melbourne",
+216441872,2020,3,"2020-06-20","19:40","19:40","Regular Season","",20,"Brisbane Lions",74,"L",150,"West Coast Eagles",44,"I","Gabba","QLD","Brisbane",1965
+216442432,2020,3,"2020-06-20","19:40","19:40","Regular Season","",70,"Geelong Cats",77,"L",30,"Carlton",79,"L","GMHBA Stadium","VIC","Geelong",
+216443105,2020,3,"2020-06-21","15:05","15:05","Regular Season","",1000,"Gold Coast Suns",82,"L",10,"Adelaide Crows",29,"I","Metricon Stadium","QLD","Gold Coast",1997
+216443953,2020,3,"2020-06-21","20:10","20:10","Regular Season","",60,"Fremantle",41,"I",110,"Port Adelaide",70,"I","Metricon Stadium","QLD","Gold Coast",180
+216449185,2020,4,"2020-06-25","19:40","19:40","Regular Season","",160,"Sydney Swans",39,"L",140,"Western Bulldogs",67,"I","SCG","NSW","Sydney",605
+216449778,2020,4,"2020-06-26","19:50","19:50","Regular Season","",1010,"GWS Giants",66,"L",40,"Collingwood",64,"I","GIANTS Stadium","NSW","Sydney",
+216452707,2020,4,"2020-06-27","13:45","13:45","Regular Season","",110,"Port Adelaide",89,"I",150,"West Coast Eagles",41,"I","Metricon Stadium","QLD","Gold Coast",450
+216449667,2020,4,"2020-06-27","16:35","16:35","Regular Season","",130,"St Kilda",93,"L",120,"Richmond",67,"L","Marvel Stadium","VIC","Melbourne",0
+216449587,2020,4,"2020-06-27","19:40","19:40","Regular Season","",50,"Essendon",51,"L",30,"Carlton",52,"L","MCG","VIC","Melbourne",
+216451299,2020,4,"2020-06-27","19:40","19:40","Regular Season","",1000,"Gold Coast Suns",64,"L",60,"Fremantle",51,"I","Metricon Stadium","QLD","Gold Coast",5106
+216458256,2020,4,"2020-06-28","13:05","13:05","Regular Season","",20,"Brisbane Lions",83,"L",10,"Adelaide Crows",46,"I","Gabba","QLD","Brisbane",7354
+216459856,2020,4,"2020-06-28","15:35","15:35","Regular Season","",90,"Melbourne",44,"L",70,"Geelong Cats",47,"L","MCG","VIC","Melbourne",
+216457296,2020,4,"2020-06-28","18:10","18:10","Regular Season","",80,"Hawthorn",58,"L",100,"North Melbourne",54,"L","Marvel Stadium","VIC","Melbourne",
+216477200,2020,5,"2020-07-02","19:40","19:40","Regular Season","",30,"Carlton",55,"L",130,"St Kilda",73,"L","Marvel Stadium","VIC","Melbourne",
+216467491,2020,5,"2020-07-03","19:50","19:50","Regular Season","",40,"Collingwood",48,"L",50,"Essendon",63,"L","MCG","VIC","Melbourne",
+216467090,2020,5,"2020-07-04","13:45","13:45","Regular Season","",150,"West Coast Eagles",77,"I",160,"Sydney Swans",43,"I","Metricon Stadium","QLD","Gold Coast",2238
+216475200,2020,5,"2020-07-04","16:35","16:35","Regular Season","",70,"Geelong Cats",89,"L",1000,"Gold Coast Suns",52,"I","GMHBA Stadium","VIC","Geelong",0
+216474640,2020,5,"2020-07-04","19:40","19:40","Regular Season","",20,"Brisbane Lions",85,"L",110,"Port Adelaide",48,"I","Gabba","QLD","Brisbane",10161
+216476800,2020,5,"2020-07-04","19:40","19:40","Regular Season","",140,"Western Bulldogs",87,"L",100,"North Melbourne",38,"L","Marvel Stadium","VIC","Melbourne",
+216476161,2020,5,"2020-07-05","13:05","13:05","Regular Season","",10,"Adelaide Crows",34,"I",60,"Fremantle",54,"I","Metricon Stadium","QLD","Gold Coast",418
+216473761,2020,5,"2020-07-05","15:35","15:35","Regular Season","",90,"Melbourne",52,"L",120,"Richmond",79,"L","MCG","VIC","Melbourne",
+216474353,2020,5,"2020-07-05","18:10","18:10","Regular Season","",1010,"GWS Giants",83,"L",80,"Hawthorn",49,"I","GIANTS Stadium","NSW","Sydney",3883
+216482433,2020,6,"2020-07-09","19:40","19:40","Regular Season","",70,"Geelong Cats",73,"I",20,"Brisbane Lions",46,"I","SCG","NSW","Sydney",1311
+216483874,2020,6,"2020-07-10","19:50","19:50","Regular Season","",40,"Collingwood",59,"I",80,"Hawthorn",27,"I","GIANTS Stadium","NSW","Sydney",1772
+216484915,2020,6,"2020-07-11","12:35","12:35","Regular Season","",60,"Fremantle",79,"I",130,"St Kilda",73,"I","Metricon Stadium","QLD","Gold Coast",638
+216483475,2020,6,"2020-07-11","15:05","15:05","Regular Season","",150,"West Coast Eagles",67,"I",10,"Adelaide Crows",34,"I","Gabba","QLD","Brisbane",210
+216481875,2020,6,"2020-07-11","18:05","18:05","Regular Season","",90,"Melbourne",80,"I",1000,"Gold Coast Suns",63,"I","GIANTS Stadium","NSW","Sydney",
+216482355,2020,6,"2020-07-11","19:40","19:40","Regular Season","",50,"Essendon",67,"I",100,"North Melbourne",53,"I","Metricon Stadium","QLD","Gold Coast",4271
+216493664,2020,6,"2020-07-12","13:05","13:05","Regular Season","",110,"Port Adelaide",63,"I",1010,"GWS Giants",46,"I","Metricon Stadium","QLD","Gold Coast",368
+216493584,2020,6,"2020-07-12","15:35","15:35","Regular Season","",120,"Richmond",34,"I",160,"Sydney Swans",26,"I","Gabba","QLD","Brisbane",3606
+216491104,2020,6,"2020-07-12","18:45","18:45","Regular Season","",30,"Carlton",103,"I",140,"Western Bulldogs",51,"I","Metricon Stadium","QLD","Gold Coast",2178
+216498736,2020,7,"2020-07-16","18:10","20:10","Regular Season","",70,"Geelong Cats",35,"I",40,"Collingwood",57,"I","Optus Stadium","WA","Perth",22077
+216499777,2020,7,"2020-07-17","19:50","19:50","Regular Season","",50,"Essendon",51,"I",140,"Western Bulldogs",93,"I","Metricon Stadium","QLD","Gold Coast",4949
+216498338,2020,7,"2020-07-18","13:45","13:45","Regular Season","",1010,"GWS Giants",68,"L",20,"Brisbane Lions",88,"I","GIANTS Stadium","NSW","Sydney",3168
+216500818,2020,7,"2020-07-18","16:35","16:35","Regular Season","",160,"Sydney Swans",60,"L",1000,"Gold Coast Suns",92,"I","SCG","NSW","Sydney",
+216500450,2020,7,"2020-07-18","19:40","19:40","Regular Season","",120,"Richmond",77,"I",100,"North Melbourne",23,"I","Metricon Stadium","QLD","Gold Coast",4337
+216499298,2020,7,"2020-07-19","13:05","13:05","Regular Season","",30,"Carlton",61,"I",110,"Port Adelaide",64,"I","Gabba","QLD","Brisbane",3510
+216498819,2020,7,"2020-07-19","15:35","15:35","Regular Season","",80,"Hawthorn",48,"I",90,"Melbourne",91,"I","GIANTS Stadium","NSW","Sydney",1136
+216500339,2020,7,"2020-07-19","16:35","18:35","Regular Season","",60,"Fremantle",32,"L",150,"West Coast Eagles",62,"L","Optus Stadium","WA","Perth",25306
+216501299,2020,7,"2020-07-20","19:10","19:40","Regular Season","",10,"Adelaide Crows",55,"L",130,"St Kilda",78,"I","Adelaide Oval","SA","Adelaide",13579
+216508643,2020,8,"2020-07-23","19:40","19:40","Regular Season","",1000,"Gold Coast Suns",46,"L",140,"Western Bulldogs",51,"I","Metricon Stadium","QLD","Gold Coast",4039
+216515312,2020,8,"2020-07-24","19:50","19:50","Regular Season","",1010,"GWS Giants",62,"L",120,"Richmond",50,"I","GIANTS Stadium","NSW","Sydney",3502
+216515681,2020,8,"2020-07-25","13:05","13:05","Regular Season","",100,"North Melbourne",57,"I",30,"Carlton",64,"I","Gabba","QLD","Brisbane",3655
+216514721,2020,8,"2020-07-25","15:35","15:35","Regular Season","",160,"Sydney Swans",60,"L",80,"Hawthorn",53,"I","SCG","NSW","Sydney",4264
+216518241,2020,8,"2020-07-25","19:10","19:40","Regular Season","",110,"Port Adelaide",44,"L",130,"St Kilda",73,"I","Adelaide Oval","SA","Adelaide",16727
+216517122,2020,8,"2020-07-26","12:35","13:05","Regular Season","",10,"Adelaide Crows",59,"L",50,"Essendon",62,"I","Adelaide Oval","SA","Adelaide",15155
+216516242,2020,8,"2020-07-26","13:35","15:35","Regular Season","",150,"West Coast Eagles",111,"L",40,"Collingwood",45,"I","Optus Stadium","WA","Perth",24824
+216517202,2020,8,"2020-07-26","18:10","18:10","Regular Season","",90,"Melbourne",49,"I",20,"Brisbane Lions",53,"L","Metricon Stadium","QLD","Gold Coast",3011
+216517683,2020,8,"2020-07-27","18:10","20:10","Regular Season","",60,"Fremantle",16,"L",70,"Geelong Cats",48,"I","Optus Stadium","WA","Perth",20251
+216525953,2020,9,"2020-07-29","19:10","19:10","Regular Season","",140,"Western Bulldogs",49,"I",120,"Richmond",90,"I","Metricon Stadium","QLD","Gold Coast",2824
+216525394,2020,9,"2020-07-30","19:50","19:50","Regular Season","",90,"Melbourne",32,"I",110,"Port Adelaide",83,"I","Gabba","QLD","Brisbane",323
+216526354,2020,9,"2020-07-31","15:40","17:40","Regular Season","",30,"Carlton",58,"I",80,"Hawthorn",89,"I","Optus Stadium","WA","Perth",12304
+216523315,2020,9,"2020-07-31","20:10","20:10","Regular Season","",50,"Essendon",28,"I",20,"Brisbane Lions",91,"L","Metricon Stadium","QLD","Gold Coast",4863
+216011873,2020,9,"2020-08-01","14:35","14:35","Regular Season","",100,"North Melbourne",119,"I",10,"Adelaide Crows",50,"I","Metricon Stadium","QLD","Gold Coast",522
+216011393,2020,9,"2020-08-01","17:10","17:10","Regular Season","",130,"St Kilda",101,"I",160,"Sydney Swans",48,"I","Gabba","QLD","Brisbane",2978
+216012433,2020,9,"2020-08-01","18:10","20:10","Regular Season","",150,"West Coast Eagles",73,"L",70,"Geelong Cats",64,"I","Optus Stadium","WA","Perth",26211
+216013026,2020,9,"2020-08-02","15:35","15:35","Regular Season","",1000,"Gold Coast Suns",35,"L",1010,"GWS Giants",61,"I","Metricon Stadium","QLD","Gold Coast",4363
+216013874,2020,9,"2020-08-02","16:10","18:10","Regular Season","",60,"Fremantle",61,"L",40,"Collingwood",49,"I","Optus Stadium","WA","Perth",20912
+216014435,2020,10,"2020-08-03","18:40","19:10","Regular Season","",110,"Port Adelaide",55,"L",140,"Western Bulldogs",42,"I","Adelaide Oval","SA","Adelaide",14159
+216021104,2020,10,"2020-08-04","19:10","19:10","Regular Season","",120,"Richmond",82,"I",20,"Brisbane Lions",41,"L","Metricon Stadium","QLD","Gold Coast",5651
+216020545,2020,10,"2020-08-05","17:40","17:40","Regular Season","",70,"Geelong Cats",90,"I",100,"North Melbourne",57,"I","Gabba","QLD","Brisbane",2282
+216021505,2020,10,"2020-08-05","19:40","20:10","Regular Season","",10,"Adelaide Crows",37,"L",90,"Melbourne",88,"I","Adelaide Oval","SA","Adelaide",12022
+216021026,2020,10,"2020-08-06","17:40","17:40","Regular Season","",40,"Collingwood",50,"I",160,"Sydney Swans",41,"I","Gabba","QLD","Brisbane",4146
+216021218,2020,10,"2020-08-06","20:10","20:10","Regular Season","",1000,"Gold Coast Suns",74,"L",130,"St Kilda",78,"I","Metricon Stadium","QLD","Gold Coast",3095
+216019507,2020,10,"2020-08-07","19:50","19:50","Regular Season","",50,"Essendon",55,"I",1010,"GWS Giants",59,"I","Metricon Stadium","QLD","Gold Coast",1178
+216030816,2020,11,"2020-08-08","16:05","16:35","Regular Season","",110,"Port Adelaide",93,"L",120,"Richmond",72,"I","Adelaide Oval","SA","Adelaide",10256
+216028176,2020,11,"2020-08-08","19:40","19:40","Regular Season","",20,"Brisbane Lions",96,"L",140,"Western Bulldogs",72,"I","Gabba","QLD","Brisbane",11061
+216028817,2020,11,"2020-08-09","13:35","15:35","Regular Season","",150,"West Coast Eagles",72,"L",30,"Carlton",50,"I","Optus Stadium","WA","Perth",19092
+216028257,2020,11,"2020-08-09","17:40","18:10","Regular Season","",90,"Melbourne",92,"I",100,"North Melbourne",35,"I","Adelaide Oval","SA","Adelaide",2172
+216028738,2020,11,"2020-08-10","18:10","18:10","Regular Season","",130,"St Kilda",34,"I",70,"Geelong Cats",93,"I","Gabba","QLD","Brisbane",3903
+216030258,2020,11,"2020-08-10","18:40","20:40","Regular Season","",60,"Fremantle",48,"L",80,"Hawthorn",32,"I","Optus Stadium","WA","Perth",18512
+216029699,2020,11,"2020-08-11","18:05","18:35","Regular Season","",10,"Adelaide Crows",38,"L",40,"Collingwood",62,"I","Adelaide Oval","SA","Adelaide",8577
+216037600,2020,11,"2020-08-12","19:10","19:10","Regular Season","",1000,"Gold Coast Suns",73,"L",50,"Essendon",73,"I","Metricon Stadium","QLD","Gold Coast",4303
+216035489,2020,12,"2020-08-13","18:10","20:10","Regular Season","",160,"Sydney Swans",66,"I",1010,"GWS Giants",25,"I","Optus Stadium","WA","Perth",6464
+216036930,2020,12,"2020-08-14","19:50","19:50","Regular Season","",70,"Geelong Cats",91,"I",110,"Port Adelaide",31,"I","Metricon Stadium","QLD","Gold Coast",3378
+216036451,2020,12,"2020-08-15","14:35","14:35","Regular Season","",100,"North Melbourne",52,"I",20,"Brisbane Lions",53,"L","Metricon Stadium","QLD","Gold Coast",2722
+216037971,2020,12,"2020-08-15","17:10","17:10","Regular Season","",90,"Melbourne",100,"I",40,"Collingwood",44,"I","Gabba","QLD","Brisbane",5338
+216038451,2020,12,"2020-08-15","18:10","20:10","Regular Season","",60,"Fremantle",36,"L",30,"Carlton",40,"I","Optus Stadium","WA","Perth",24114
+216046720,2020,12,"2020-08-16","13:05","13:05","Regular Season","",140,"Western Bulldogs",111,"I",10,"Adelaide Crows",54,"I","Metricon Stadium","QLD","Gold Coast",613
+216044160,2020,12,"2020-08-16","15:35","15:35","Regular Season","",130,"St Kilda",68,"I",50,"Essendon",33,"I","Gabba","QLD","Brisbane",4686
+216045200,2020,12,"2020-08-16","16:10","18:10","Regular Season","",150,"West Coast Eagles",81,"L",80,"Hawthorn",49,"I","Optus Stadium","WA","Perth",22870
+216045681,2020,12,"2020-08-17","19:10","19:10","Regular Season","",120,"Richmond",53,"I",1000,"Gold Coast Suns",32,"L","Gabba","QLD","Brisbane",4062
+216053985,2020,13,"2020-08-21","19:20","19:50","Regular Season","",1000,"Gold Coast Suns",27,"I",30,"Carlton",60,"I","TIO Stadium","NT","Darwin",5172
+216054914,2020,13,"2020-08-22","13:45","13:45","Regular Season","",140,"Western Bulldogs",80,"I",90,"Melbourne",52,"I","Metricon Stadium","QLD","Gold Coast",1765
+216055394,2020,13,"2020-08-22","16:05","16:35","Regular Season","",110,"Port Adelaide",68,"L",80,"Hawthorn",58,"I","Adelaide Oval","SA","Adelaide",11740
+216054834,2020,13,"2020-08-22","18:10","20:10","Regular Season","",60,"Fremantle",50,"L",160,"Sydney Swans",19,"I","Optus Stadium","WA","Perth",24714
+216052274,2020,13,"2020-08-22","19:15","19:45","Regular Season","",50,"Essendon",61,"I",120,"Richmond",73,"I","TIO Stadium","NT","Darwin",5401
+216054275,2020,13,"2020-08-23","12:35","13:05","Regular Season","",10,"Adelaide Crows",37,"L",70,"Geelong Cats",65,"I","Adelaide Oval","SA","Adelaide",10431
+216052755,2020,13,"2020-08-23","15:35","15:35","Regular Season","",20,"Brisbane Lions",50,"L",130,"St Kilda",48,"I","Gabba","QLD","Brisbane",13750
+216053395,2020,13,"2020-08-23","16:10","18:10","Regular Season","",150,"West Coast Eagles",61,"L",1010,"GWS Giants",49,"I","Optus Stadium","WA","Perth",27339
+216061984,2020,13,"2020-08-24","19:10","19:10","Regular Season","",40,"Collingwood",65,"I",100,"North Melbourne",35,"I","Gabba","QLD","Brisbane",2443
+216059987,2020,14,"2020-08-27","16:10","16:40","Regular Season","",80,"Hawthorn",71,"I",50,"Essendon",87,"I","Adelaide Oval","SA","Adelaide",4973
+216062067,2020,14,"2020-08-27","19:10","19:10","Regular Season","",120,"Richmond",88,"I",150,"West Coast Eagles",61,"I","Metricon Stadium","QLD","Gold Coast",3628
+216071296,2020,14,"2020-08-28","19:50","19:50","Regular Season","",140,"Western Bulldogs",61,"I",70,"Geelong Cats",72,"I","Metricon Stadium","QLD","Gold Coast",2156
+216071777,2020,14,"2020-08-29","13:15","13:45","Regular Season","",110,"Port Adelaide",73,"L",160,"Sydney Swans",47,"I","Adelaide Oval","SA","Adelaide",11801
+216071217,2020,14,"2020-08-29","14:35","16:35","Regular Season","",60,"Fremantle",53,"L",1010,"GWS Giants",91,"I","Optus Stadium","WA","Perth",24406
+216070737,2020,14,"2020-08-29","19:10","19:40","Regular Season","",90,"Melbourne",52,"I",130,"St Kilda",49,"I","TIO Traeger Park","NT","Alice Springs",1917
+216071698,2020,14,"2020-08-30","15:35","15:35","Regular Season","",30,"Carlton",48,"I",40,"Collingwood",72,"I","Gabba","QLD","Brisbane",9033
+216070370,2020,14,"2020-08-30","18:10","18:10","Regular Season","",1000,"Gold Coast Suns",91,"L",100,"North Melbourne",28,"I","Metricon Stadium","QLD","Gold Coast",3353
+216076369,2020,15,"2020-09-01","17:10","17:40","Regular Season","",80,"Hawthorn",48,"I",10,"Adelaide Crows",83,"L","Adelaide Oval","SA","Adelaide",6191
+216077969,2020,15,"2020-09-01","20:10","20:10","Regular Season","",150,"West Coast Eagles",60,"I",50,"Essendon",45,"I","Gabba","QLD","Brisbane",1932
+216078450,2020,15,"2020-09-02","19:10","19:10","Regular Season","",120,"Richmond",56,"I",60,"Fremantle",29,"I","Metricon Stadium","QLD","Gold Coast",1818
+216076451,2020,15,"2020-09-03","16:40","16:40","Regular Season","",160,"Sydney Swans",67,"I",90,"Melbourne",46,"I","Cazaly's Stadium","QLD","Cairns",3199
+216077043,2020,15,"2020-09-03","19:10","19:10","Regular Season","",1010,"GWS Giants",48,"I",30,"Carlton",39,"I","Metricon Stadium","QLD","Gold Coast",1469
+216085520,2020,15,"2020-09-04","19:50","19:50","Regular Season","",20,"Brisbane Lions",42,"L",40,"Collingwood",34,"I","Gabba","QLD","Brisbane",15036
+216085601,2020,16,"2020-09-05","19:40","19:40","Regular Season","",100,"North Melbourne",42,"I",110,"Port Adelaide",78,"I","Metricon Stadium","QLD","Gold Coast",592
+216085122,2020,16,"2020-09-06","13:05","13:05","Regular Season","",130,"St Kilda",80,"I",80,"Hawthorn",66,"I","Metricon Stadium","QLD","Gold Coast",2740
+216086082,2020,16,"2020-09-06","15:35","15:35","Regular Season","",70,"Geelong Cats",108,"I",50,"Essendon",42,"I","Gabba","QLD","Brisbane",5011
+216087682,2020,16,"2020-09-06","18:10","18:10","Regular Season","",140,"Western Bulldogs",49,"I",150,"West Coast Eagles",47,"I","Metricon Stadium","QLD","Gold Coast",532
+216087123,2020,16,"2020-09-07","19:10","19:10","Regular Season","",90,"Melbourne",33,"I",60,"Fremantle",47,"I","Cazaly's Stadium","QLD","Cairns",3279
+216095232,2020,16,"2020-09-08","17:10","17:40","Regular Season","",10,"Adelaide Crows",59,"L",1010,"GWS Giants",47,"I","Adelaide Oval","SA","Adelaide",12436
+216096272,2020,16,"2020-09-08","20:10","20:10","Regular Season","",30,"Carlton",57,"I",160,"Sydney Swans",52,"I","Metricon Stadium","QLD","Gold Coast",1580
+216093713,2020,16,"2020-09-09","19:10","19:10","Regular Season","",20,"Brisbane Lions",88,"L",1000,"Gold Coast Suns",43,"L","Gabba","QLD","Brisbane",11292
+216093314,2020,17,"2020-09-10","19:10","19:10","Regular Season","",130,"St Kilda",50,"I",150,"West Coast Eagles",65,"I","Gabba","QLD","Brisbane",1925
+216094275,2020,17,"2020-09-11","19:50","19:50","Regular Season","",70,"Geelong Cats",31,"I",120,"Richmond",57,"I","Metricon Stadium","QLD","Gold Coast",7061
+216101984,2020,17,"2020-09-12","14:10","14:10","Regular Season","",100,"North Melbourne",35,"I",60,"Fremantle",99,"I","Metricon Stadium","QLD","Gold Coast",308
+216104544,2020,17,"2020-09-12","16:35","17:05","Regular Season","",110,"Port Adelaide",79,"L",50,"Essendon",29,"I","Adelaide Oval","SA","Adelaide",17482
+216101616,2020,17,"2020-09-12","19:40","19:40","Regular Season","",1010,"GWS Giants",74,"I",90,"Melbourne",79,"I","Gabba","QLD","Brisbane",1204
+216104465,2020,17,"2020-09-13","13:05","13:05","Regular Season","",30,"Carlton",56,"I",10,"Adelaide Crows",72,"I","Metricon Stadium","QLD","Gold Coast",2735
+216100945,2020,17,"2020-09-13","15:05","15:35","Regular Season","",80,"Hawthorn",40,"I",140,"Western Bulldogs",76,"I","Adelaide Oval","SA","Adelaide",2625
+216101025,2020,17,"2020-09-13","18:10","18:10","Regular Season","",160,"Sydney Swans",41,"I",20,"Brisbane Lions",73,"L","Cazaly's Stadium","QLD","Cairns",3700
+216102946,2020,17,"2020-09-14","19:10","19:10","Regular Season","",40,"Collingwood",68,"I",1000,"Gold Coast Suns",46,"L","Gabba","QLD","Brisbane",2896
+216110179,2020,18,"2020-09-17","19:10","19:10","Regular Season","",100,"North Melbourne",34,"I",150,"West Coast Eagles",49,"I","Metricon Stadium","QLD","Gold Coast",724
+216109699,2020,18,"2020-09-18","19:50","19:50","Regular Season","",130,"St Kilda",82,"I",1010,"GWS Giants",30,"I","Gabba","QLD","Brisbane",1528
+216109619,2020,18,"2020-09-19","14:10","14:10","Regular Season","",50,"Essendon",49,"I",90,"Melbourne",68,"I","Metricon Stadium","QLD","Gold Coast",2175
+216111619,2020,18,"2020-09-19","16:40","17:10","Regular Season","",10,"Adelaide Crows",33,"L",120,"Richmond",77,"I","Adelaide Oval","SA","Adelaide",17710
+216110099,2020,18,"2020-09-19","19:40","19:40","Regular Season","",20,"Brisbane Lions",78,"L",30,"Carlton",61,"I","Gabba","QLD","Brisbane",14563
+216109139,2020,18,"2020-09-20","12:35","13:05","Regular Season","",80,"Hawthorn",108,"I",1000,"Gold Coast Suns",57,"I","Adelaide Oval","SA","Adelaide",2136
+216109219,2020,18,"2020-09-20","15:35","15:35","Regular Season","",160,"Sydney Swans",63,"I",70,"Geelong Cats",69,"I","Metricon Stadium","QLD","Gold Coast",2798
+216112179,2020,18,"2020-09-20","18:10","18:10","Regular Season","",60,"Fremantle",44,"I",140,"Western Bulldogs",74,"I","Cazaly's Stadium","QLD","Cairns",3114
+216111139,2020,18,"2020-09-21","19:15","19:15","Regular Season","",40,"Collingwood",45,"I",110,"Port Adelaide",61,"I","Gabba","QLD","Brisbane",5424
+110870101,2020,19,"2020-10-01","19:10","19:40","Final","Qualifying Final",110,"Port Adelaide",58,"L",70,"Geelong Cats",42,"I","Adelaide Oval","SA","Adelaide",22755
+110870102,2020,19,"2020-10-02","19:50","19:50","Final","Qualifying Final",20,"Brisbane Lions",69,"L",120,"Richmond",54,"I","Gabba","QLD","Brisbane",22104
+110870103,2020,19,"2020-10-03","16:40","16:40","Final","Elimination Final",130,"St Kilda",67,"I",140,"Western Bulldogs",64,"I","Gabba","QLD","Brisbane",10651
+110870104,2020,19,"2020-10-03","18:10","20:10","Final","Elimination Final",150,"West Coast Eagles",75,"L",40,"Collingwood",76,"I","Optus Stadium","WA","Perth",32865
+110870201,2020,20,"2020-10-09","18:50","19:50","Final","Semi Final",120,"Richmond",80,"I",130,"St Kilda",49,"I","Metricon Stadium","QLD","Gold Coast",13778
+110870202,2020,20,"2020-10-10","18:40","19:40","Final","Semi Final",70,"Geelong Cats",100,"I",40,"Collingwood",32,"I","Gabba","QLD","Brisbane",21396
+110870301,2020,21,"2020-10-16","19:20","19:50","Final","Preliminary Final",110,"Port Adelaide",40,"L",120,"Richmond",46,"I","Adelaide Oval","SA","Adelaide",24292
+110870302,2020,21,"2020-10-17","18:40","19:40","Final","Preliminary Final",20,"Brisbane Lions",42,"L",70,"Geelong Cats",82,"I","Gabba","QLD","Brisbane",29121
+110870401,2020,22,"2020-10-24","18:30","19:30","Final","Grand Final",120,"Richmond",81,"I",70,"Geelong Cats",50,"I","Gabba","QLD","Brisbane",29707
