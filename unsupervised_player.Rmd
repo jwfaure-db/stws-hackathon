@@ -16,7 +16,7 @@ library(corrplot)
 library(dbscan)
 
 # Load the data
-target_file = "team_summary"
+target_file = "player_summary"
 df <- readRDS(paste0("clean_data/", target_file, ".rds"))
 
 get_test_results <- function(
@@ -261,7 +261,7 @@ corrmat <- X %>%
   select(where(is.numeric)) %>% 
   cor()
 
-png(filename = "plots/team_corrplot.png", width = 3500, height = 3500)
+png(filename = "plots/player_corrplot.png", width = 3500, height = 3500)
 corrplot(corrmat, type = "upper", order = "hclust", tl.col = "black", tl.srt = 90, tl.cex = 0.8)
 dev.off()
 
@@ -277,7 +277,7 @@ corrmat <- X %>%
   select(where(is.numeric)) %>% 
   cor()
 
-png(filename = "plots/team_hclust.png", width = 3500, height = 500)
+png(filename = "plots/player_hclust.png", width = 3500, height = 500)
 plot(hclust(as.dist(1-corrmat)))
 dev.off()
 
