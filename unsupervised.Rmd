@@ -1,0 +1,487 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(lubridate)
+library(pins)
+library(tidymodels)
+library(patchwork)
+
+source("auth_io/authenticate.R")
+
+get_test_results <- function(
+  model,
+  test
+){
+  test_x = test %>% select(-Y)
+  test_y = test %>% pull(Y)
+  test_prediction = predict(model, new_data = test_x)
+  test_results = test %>% 
+    select(Y) %>% 
+    bind_cols(
+      test_prediction
+    ) %>% 
+    rename(
+      "Predicted" = ".pred",
+      "Observed" = "Y"
+    )
+  
+  return(test_results)
+}
+
+get_train_results <- function(
+  model,
+  train
+){
+  train_x = train %>% select(-Y)
+  train_y = train %>% pull(Y)
+  train_prediction = predict(model, new_data = train_x)
+  train_results = train %>% 
+    select(Y) %>% 
+    bind_cols(
+      train_prediction
+    ) %>% 
+    rename(
+      "Predicted" = ".pred",
+      "Observed" = "Y"
+    )
+  
+  return(train_results)
+}
+
+# Evaluate Model
+evaluate_model <- function(
+  model,
+  train,
+  test
+){
+  train_results = get_train_results(model, train)
+  test_results = get_test_results(model, test)
+  results <- train_results %>% 
+    mutate(Case = "Train") %>% 
+    bind_rows(
+      test_results %>% 
+        mutate(Case = "Test")
+    )
+  
+  limit = c(min(c(results$Predicted, results$Observed), na.rm = T), max(c(results$Predicted, results$Observed), na.rm = T))
+  
+  results %>% 
+    ggplot(
+      aes(
+        x = Predicted,
+        y = Observed,
+        colour = Case,
+        alpha = Case
+      )
+    ) + 
+    geom_point(na.rm = T) + 
+    theme_bw(12) + 
+    geom_abline(slope = 1, intercept = 0) + 
+    scale_colour_manual(values = c("Train" = "grey", "Test" = "blue")) + 
+    scale_alpha_manual(values = c("Train" = 0.2, "Test" = 0.5)) + 
+    ylim(limit) + 
+    xlim(limit)
+}
+
+board_register("rsconnect", server = "https://connect-prod.cslg1.cslg.net", key = api_key_default)
+
+### Load Data from Dashboard Pin
+# Retrieve Pins
+pin_location <- "TBD"
+src <- pin_get(pin_location, board = "rsconnect")
+
+# Initial filtering and manipulation
+## TODO
+
+## Force some variables to be factor
+df <- df %>% 
+  mutate_at(
+    vars(),
+    factor
+  )
+
+## Some preprocessing
+
+
+# Columns to be intentionally excluded entirely, in all cases
+dropped_columns = c(
+  
+)
+
+# Potential response columns (will generally only consider one at a time)
+response_columns = c(
+  
+)
+
+# Columns potentially removed in some cases (separated for simple commenting out)
+screened_columns = c(
+  
+)
+
+## not_considered_columns are any columns that will be removed
+not_considered_columns = c(dropped_columns, screened_columns, response_columns)
+
+## considered_columns will always include any remaining columns, and a special column "Y"
+considered_columns = names(df)[!(names(df) %in% not_considered_columns)]
+considered_columns = c(considered_columns, "Y")
+
+# General purpose preprocessing function
+preprocess <- function(
+  df, 
+  response = NULL, 
+  predictors = considered_columns, 
+  drop_at_na_level = 0.99, 
+  max_categorical_levels = 50,
+  na.rm = T
+){
+  X = df
+
+  if(!is.null(response)){
+    # Filter out any NA in the response
+    X = X[!is.na(X[[response]]), ]
+  }
+  
+  # Drop columns with too many NAs
+  ## This is specified by the "drop_at_na_level" parameter, where only columns with at least that fraction non-na will be retained
+  not_too_many_na = function(x, threshold = 1 - drop_at_na_level){
+    n_na = sum(is.na(x))
+    n = length(x)
+    return(
+      (n_na/n) <= threshold
+    )
+  }
+  X <- X %>% select(where(not_too_many_na))
+  
+  if(na.rm){
+    # Drop NA rows
+    X <- na.omit(X)
+  }
+  
+  # Drop columns with too many (or not enough) categorical variables
+  not_too_many_categorical = function(x, threshold = max_categorical_levels){
+    if(!is.character(x)){
+      return(TRUE)
+    }else{
+      n = length(unique(x))
+      if(!is.null(threshold)){
+        return(n <= threshold & n >= 2)
+      }else{
+        return(n >= 2)
+      }
+    }
+  }
+  X <- X %>% select(where(not_too_many_categorical))
+  
+  if(!is.null(response)){
+    # Rename the response
+    names(X)[names(X) == response] <- "Y"
+  }else{
+    # Do nothing
+  }
+  
+  # Factorise X
+  X <- X %>% 
+    mutate_if(
+      is.character,
+      as.factor
+    )
+  
+  if(!is.null(predictors)){
+    # Drop irrelevant variables
+    # cat(paste0('"', paste0(names(X), collapse = '",\n"'), '"'))
+    X_ <- X[, -which(names(X) %in% predictors)]
+    X <- X[, which(names(X) %in% predictors)]
+  }else{
+    X_ <- X[,NULL]
+  }
+  
+  return(
+    list(
+      "main" = X,
+      "secondary" = X_,
+      "response" = response
+    )
+  )
+}
+
+# Set the default for random forest
+rf_defaults <- rand_forest(mode = "regression")
+
+# Set the default response column
+RESPONSE = NULL
+```
+
+# Initial Screening of Variables
+```{r}
+X_total <- df %>% preprocess(response = RESPONSE, predictors = considered_columns)
+X <- X_total$main
+
+summary(X)
+```
+
+## Numerical Variable Correlations
+```{r fig.width=10, fig.height=10}
+library(corrplot)
+
+X_total <- df %>% preprocess(response = RESPONSE, predictors = c(considered_columns, response_columns, screened_columns))
+X <- X_total$main
+
+corrmat <- X %>% 
+  select(where(is.numeric)) %>% 
+  cor()
+
+corrplot(corrmat, type = "upper", order = "hclust", tl.col = "black", tl.srt = 45)
+```
+
+# UMAP Investigation (Unsupervised)
+```{r}
+library(recipes)
+library(embed)
+
+# Get the dataset
+X_total <- df %>% preprocess(response = RESPONSE, predictors = c(considered_columns))
+X <- X_total$main
+
+# Determine which columns are factors (needing to be one-hot-encoded)
+factors = X %>% 
+  select(where(is.factor)) %>% 
+  names()
+
+# Leave the response variable as-is
+factors <- factors[factors != "Y"]
+
+train = X
+
+unsupervised <- recipe(~ ., data = train) %>% 
+  step_dummy(all_of(factors), one_hot = T)
+  # step_center(all_predictors()) %>% 
+  # step_scale(all_predictors())
+
+unsupervised %>% prep(training = train) %>% summary()
+```
+
+```{r}
+umap_2 = unsupervised %>% 
+  step_umap(all_predictors(), num_comp = 2, retain = F) %>%
+  prep(training = train)
+
+umap_2_train <- bake(
+  umap_2,
+  new_data = train
+) 
+
+summary(umap_2)
+```
+
+
+```{r fig.width=10, fig.height=6}
+umap_2_train_plot <- umap_2_train %>% 
+  bind_cols(X) %>% 
+  ggplot(
+    aes(
+      x = umap_1,
+      y = umap_2,
+      col = Y
+    )
+  ) + 
+  geom_point(alpha = 0.5) + 
+  theme_bw(12)
+
+umap_2_train_plot %>% plotly::ggplotly()
+```
+
+## Extract Clusters with HDBSCAN
+```{r}
+# Get 5-dimensional representation of dataset
+umap_5_train = unsupervised %>% 
+  step_umap(all_predictors(), num_comp = 5, retain = F) %>%
+  prep(training = train) %>% 
+  bake(new_data = train)
+```
+
+
+```{r, fig.width=10, fig.height=6}
+# Execute the hdbscan algorithm
+library(dbscan)
+cluster = umap_5_train %>% as.matrix() %>% hdbscan(minPts = 40, gen_hdbscan_tree = T, gen_simplified_tree = T)
+
+message(paste0("Number of Clusters: ", length(unique(cluster$cluster) - 1)))
+message(paste0("Outlier Proportion: ", signif(sum(cluster$cluster == 0) / length(cluster$cluster), 3)))
+
+tibble(
+  Cluster = cluster$cluster
+) %>% 
+  group_by(Cluster) %>% 
+  count() %>% 
+  ungroup() %>% 
+  arrange(desc(n)) %>% 
+  print()
+
+plot(cluster, show_flat = T)
+```
+
+## Overlay on 2D UMAP output
+```{r}
+umap_2_cluster <- umap_2_train %>% 
+  mutate(Cluster = cluster$cluster)
+
+umap_2_cluster_plot <- umap_2_cluster %>% 
+  mutate(
+    Cluster = factor(Cluster)
+  ) %>% 
+  ggplot(
+    aes(
+      x = umap_1,
+      y = umap_2,
+      col = Cluster
+    )
+  ) + 
+  geom_point(alpha = 0.5) + 
+  theme_bw(12)
+
+umap_2_cluster_plot %>% plotly::ggplotly()
+```
+
+## Probing Separability of Other Variables
+```{r fig.width=10, fig.height=6}
+umap_2_all <- umap_2_train %>% 
+  mutate(Cluster = cluster$cluster) %>% 
+  bind_cols(train)
+
+for(n in names(umap_2_all)[!(names(umap_2_all) %in% c("umap_1", "umap_2"))]){
+  gg <- umap_2_all %>% 
+    mutate(
+      Cluster = factor(Cluster)
+    ) %>% 
+    ggplot(
+      aes(
+        x = umap_1,
+        y = umap_2
+      )
+    ) + 
+    geom_point(aes_string(colour = n), alpha = 0.5) + 
+    theme_bw(12) + 
+    ggtitle(n)
+  
+  plot(gg)
+}
+```
+
+# Random Forest
+```{r}
+X_total <- df %>% preprocess(response = RESPONSE, predictors = considered_columns)
+X <- X_total$main
+
+data_split <- initial_split(X, strata = "Y", p = 0.8)
+train = training(data_split)
+test = testing(data_split)
+
+train_x = train %>% select(-Y)
+train_y = train %>% pull(Y)
+
+rf <- rf_defaults %>% 
+  set_engine("ranger", importance = "impurity") %>% 
+  fit_xy(
+    x = train_x,
+    y = train_y
+  )
+  
+# Summarise performance
+get_test_results(rf, test) %>% metrics(truth = Observed, estimate = Predicted)
+```
+
+```{r}
+# Predicted vs Observed
+evaluate_model(rf, train, test)
+```
+
+```{r fig.width=10, fig.height=6}
+imp <- rf$fit$variable.importance
+imp <- tibble(
+  Variable = names(imp),
+  Importance = imp
+) %>% 
+  arrange(
+    desc(Importance)
+  ) %>% 
+  mutate(
+    Variable = factor(Variable, levels = Variable, ordered = T)
+  )
+
+imp_rev <- imp %>% 
+  arrange(
+    Importance
+  ) %>% 
+  mutate(
+    Variable = factor(Variable, levels = Variable, ordered = T)
+  )
+
+imp_rev %>% 
+  # head(50) %>% 
+  ggplot(
+    aes(
+      x = Variable,
+      y = Importance
+    )
+  ) + 
+  geom_bar(stat = 'identity', na.rm = T) + 
+  coord_flip() + 
+  theme_bw(12)
+```
+
+Plot the top 10 influences:
+```{r fig.width=10, fig.height=10}
+library(patchwork)
+i = 1
+i_max = 10
+# for(var in imp$Variable){
+for(i in 1:10){
+  if(i <= i_max){
+    var = imp$Variable[i]
+    
+    dt = tibble(
+      X = X[[var]],
+      Y = !!X$Y,
+      Date = X_total$secondary$MfgDateBULK
+    )
+    
+    corr_plot = dt %>% 
+      ggplot(
+        aes(
+          x = X,
+          y = Y
+        )
+      ) + 
+      theme_bw(12) + 
+      xlab(var) + 
+      ylab(X_total$response) + 
+      geom_smooth(method = "lm", linetype = "dashed", formula = y ~ x)
+    
+    if(is.factor(dt$X)){
+      corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 0.5, alpha = 0.5)
+    }else{
+      corr_plot <- corr_plot + geom_point(na.rm = T, size = 0.5, alpha = 0.5)
+    }
+    
+    time_plot = dt %>% 
+      ggplot(
+        aes(
+          x = Date,
+          y = Y,
+          colour = X
+        )
+      ) + 
+      geom_point(na.rm=T, size = 0.5, alpha = 0.4) + 
+      theme_bw(12) + 
+      xlab("Date") + 
+      ylab(X_total$response)
+    
+    plot(corr_plot / time_plot)
+  }
+}
+```
