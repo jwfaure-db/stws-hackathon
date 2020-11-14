@@ -14,10 +14,9 @@ library(recipes)
 library(embed)
 library(corrplot)
 library(dbscan)
-library(wesanderson)
 
 # Load the data
-target_file = "team_summary"
+target_file = "player_summary"
 df <- readRDS(paste0("clean_data/", target_file, ".rds"))
 
 get_test_results <- function(
@@ -43,12 +42,6 @@ get_test_results <- function(
     test_results <- test_results %>% 
       rename(
         "Predicted" = ".pred_res",
-        "Observed" = "Y"
-      )
-  }else if(".pred_class" %in% names(test_results)){
-    test_results <- test_results %>% 
-      rename(
-        "Predicted" = ".pred_class",
         "Observed" = "Y"
       )
   }
@@ -79,12 +72,6 @@ get_train_results <- function(
     train_results <- train_results %>% 
       rename(
         "Predicted" = ".pred_res",
-        "Observed" = "Y"
-      )
-  }else if(".pred_class" %in% names(test_results)){
-    test_results <- test_results %>% 
-      rename(
-        "Predicted" = ".pred_class",
         "Observed" = "Y"
       )
   }
@@ -251,7 +238,7 @@ preprocess <- function(
 }
 
 # Set the default for random forest
-rf_defaults <- rand_forest(mode = "classification")
+rf_defaults <- rand_forest(mode = "regression")
 
 # Set the default response column
 RESPONSE = NULL
@@ -274,7 +261,7 @@ corrmat <- X %>%
   select(where(is.numeric)) %>% 
   cor()
 
-png(filename = "plots/team_corrplot.png", width = 3500, height = 3500)
+png(filename = "plots/player_corrplot.png", width = 3500, height = 3500)
 corrplot(corrmat, type = "upper", order = "hclust", tl.col = "black", tl.srt = 90, tl.cex = 0.8)
 dev.off()
 
@@ -290,7 +277,7 @@ corrmat <- X %>%
   select(where(is.numeric)) %>% 
   cor()
 
-png(filename = "plots/team_hclust.png", width = 3500, height = 500)
+png(filename = "plots/player_hclust.png", width = 3500, height = 500)
 plot(hclust(as.dist(1-corrmat)))
 dev.off()
 
@@ -331,7 +318,7 @@ umap_2_train <- bake(
   new_data = train
 ) 
 
-summary(umap_2_train)
+summary(umap_2)
 ```
 
 

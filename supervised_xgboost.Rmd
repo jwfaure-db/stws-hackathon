@@ -14,11 +14,16 @@ library(recipes)
 library(embed)
 library(corrplot)
 library(dbscan)
-library(wesanderson)
 
 # Load the data
 target_file = "team_summary"
 df <- readRDS(paste0("clean_data/", target_file, ".rds"))
+
+# The 'X' ZONE type is largely distinct to others, so this will be dropped
+df <- df %>% filter(ZONE_LOGICAL_AFL != "X")
+
+# Set the default response column
+RESPONSE = "MARGIN"
 
 get_test_results <- function(
   model,
@@ -43,12 +48,6 @@ get_test_results <- function(
     test_results <- test_results %>% 
       rename(
         "Predicted" = ".pred_res",
-        "Observed" = "Y"
-      )
-  }else if(".pred_class" %in% names(test_results)){
-    test_results <- test_results %>% 
-      rename(
-        "Predicted" = ".pred_class",
         "Observed" = "Y"
       )
   }
@@ -79,12 +78,6 @@ get_train_results <- function(
     train_results <- train_results %>% 
       rename(
         "Predicted" = ".pred_res",
-        "Observed" = "Y"
-      )
-  }else if(".pred_class" %in% names(test_results)){
-    test_results <- test_results %>% 
-      rename(
-        "Predicted" = ".pred_class",
         "Observed" = "Y"
       )
   }
@@ -156,7 +149,16 @@ dropped_columns = c(
 
 # Potential response columns (will generally only consider one at a time)
 response_columns = c(
-  
+  "MARGIN",
+  "SQUAD_MARGIN",
+  "SCORE",
+  "GOAL",
+  "EXPECTED_SCORE",
+  "HOME_SCORE",
+  "AWAY_SCORE",
+  "SCORING_SHOTS",
+  # "SHOT_AT_GOAL",
+  "GOAL_ASSIST"
 )
 
 # Columns potentially removed in some cases (separated for simple commenting out)
@@ -251,10 +253,7 @@ preprocess <- function(
 }
 
 # Set the default for random forest
-rf_defaults <- rand_forest(mode = "classification")
-
-# Set the default response column
-RESPONSE = NULL
+rf_defaults <- rand_forest(mode = "regression")
 ```
 
 # Initial Screening of Variables
@@ -265,39 +264,7 @@ X <- X_total$main
 summary(X)
 ```
 
-## Numerical Variable Correlations
-```{r fig.width=10, fig.height=10}
-X_total <- df %>% preprocess(response = RESPONSE, predictors = c(considered_columns, response_columns, screened_columns))
-X <- X_total$main
-
-corrmat <- X %>% 
-  select(where(is.numeric)) %>% 
-  cor()
-
-png(filename = "plots/team_corrplot.png", width = 3500, height = 3500)
-corrplot(corrmat, type = "upper", order = "hclust", tl.col = "black", tl.srt = 90, tl.cex = 0.8)
-dev.off()
-
-corrplot(corrmat, type = "upper", order = "hclust", tl.col = "black", tl.srt = 90, tl.cex = 0.8)
-```
-
-# HClust
-```{r fig.width=10, fig.height=10}
-X_total <- df %>% preprocess(response = RESPONSE, predictors = c(considered_columns, response_columns, screened_columns))
-X <- X_total$main
-
-corrmat <- X %>% 
-  select(where(is.numeric)) %>% 
-  cor()
-
-png(filename = "plots/team_hclust.png", width = 3500, height = 500)
-plot(hclust(as.dist(1-corrmat)))
-dev.off()
-
-plot(hclust(as.dist(1-corrmat)))
-```
-
-# UMAP Investigation (Unsupervised)
+# UMAP Investigation (Supervised)
 ```{r}
 # Get the dataset
 X_total <- df %>% preprocess(response = RESPONSE, predictors = c(considered_columns))
@@ -313,52 +280,87 @@ factors <- factors[factors != "Y"]
 
 train = X
 
-unsupervised <- recipe(~ ., data = train) %>% 
+# Make a training set
+data_split <- initial_split(X, strata = "Y", p = 0.8)
+train = training(data_split)
+test = testing(data_split)
+
+supervised <- recipe(Y ~ ., data = train) %>% 
   step_dummy(all_of(factors), one_hot = T)
   # step_center(all_predictors()) %>% 
   # step_scale(all_predictors())
 
-unsupervised %>% prep(training = train) %>% summary()
+supervised %>% prep(training = train) %>% summary()
 ```
 
+## 2D Mapping
 ```{r}
-umap_2 = unsupervised %>% 
-  step_umap(all_predictors(), num_comp = 2, retain = F) %>%
+umap_2 = supervised %>% 
+  step_umap(all_predictors(), outcome = vars(Y), num_comp = 2, retain = F) %>%
   prep(training = train)
 
-umap_2_train <- bake(
+umap_2_test <- bake(
   umap_2,
-  new_data = train
+  new_data = test
 ) 
 
-summary(umap_2_train)
+umap_2_all <- umap_2_test %>% bind_cols(test)
+
+summary(umap_2)
 ```
 
 
 ```{r fig.width=10, fig.height=6}
-umap_2_train_plot <- umap_2_train %>% 
-  bind_cols(X) %>% 
+umap_2_test_plot <- umap_2_test %>% 
   ggplot(
     aes(
       x = umap_1,
       y = umap_2,
-      colour = ZONE_LOGICAL_AFL
+      col = Y
     )
   ) + 
-  geom_point(alpha = 0.3, size = 0.1) + 
-  theme_bw(12)
+  geom_point(alpha = 0.3, size = 0.5) + 
+  theme_bw(12) + 
+  scale_colour_gradientn(colours = wes_palette("Zissou1", type = "continuous"))
 
-# umap_2_train_plot %>% plotly::ggplotly()
-umap_2_train_plot
+umap_2_test_plot
+```
+
+## 3D Mapping
+```{r}
+umap_3 = supervised %>% 
+  step_umap(all_predictors(), outcome = vars(Y), num_comp = 3, retain = F) %>%
+  prep(training = train)
+
+umap_3_test <- bake(
+  umap_3,
+  new_data = test
+) 
+
+umap_3_all <- umap_3_test %>% bind_cols(test)
+
+summary(umap_3)
+```
+
+
+```{r fig.width=15, fig.height=15}
+umap_3_test %>% 
+  plotly::plot_ly(
+    x = ~umap_1,
+    y = ~umap_2,
+    z = ~umap_3,
+    color = ~Y,
+    size = 1
+  )
 ```
 
 ## Extract Clusters with HDBSCAN
 ```{r}
 # Get 5-dimensional representation of dataset
-umap_5_train = unsupervised %>% 
-  step_umap(all_predictors(), num_comp = 5, retain = F) %>%
+umap_5_test = supervised %>% 
+  step_umap(all_predictors(), outcome = vars(Y), num_comp = 5, retain = F) %>%
   prep(training = train) %>% 
-  bake(new_data = train)
+  bake(new_data = test)
 
 summary(umap_5_train)
 ```
@@ -366,7 +368,7 @@ summary(umap_5_train)
 
 ```{r, fig.width=10, fig.height=6}
 # Execute the hdbscan algorithm
-cluster = umap_5_train %>% as.matrix() %>% hdbscan(minPts = 40, gen_hdbscan_tree = T, gen_simplified_tree = T)
+cluster = umap_5_test %>% as.matrix() %>% hdbscan(minPts = 10, gen_hdbscan_tree = T, gen_simplified_tree = T)
 
 message(paste0("Number of Clusters: ", length(unique(cluster$cluster) - 1)))
 message(paste0("Outlier Proportion: ", signif(sum(cluster$cluster == 0) / length(cluster$cluster), 3)))
@@ -384,8 +386,8 @@ plot(cluster, show_flat = T)
 ```
 
 ## Overlay on 2D UMAP output
-```{r}
-umap_2_cluster <- umap_2_train %>% 
+```{r, fig.width=10, fig.height=6}
+umap_2_cluster <- umap_2_test %>% 
   mutate(Cluster = cluster$cluster)
 
 umap_2_cluster_plot <- umap_2_cluster %>% 
@@ -399,24 +401,16 @@ umap_2_cluster_plot <- umap_2_cluster %>%
       col = Cluster
     )
   ) + 
-  geom_point(alpha = 0.3, size = 0.1) + 
+  geom_point(alpha = 0.3, size = 0.5) + 
   theme_bw(12)
 
 # umap_2_cluster_plot %>% plotly::ggplotly()
 umap_2_cluster_plot
 ```
 
-## Random Forest (predicting cluster)
+## XGBoost
 ```{r}
-umap_2_all <- umap_2_train %>% 
-  mutate(Cluster = cluster$cluster) %>% 
-  bind_cols(train)
-
-X_total <- umap_2_all %>% 
-  mutate(
-    Cluster = factor(Cluster)
-  ) %>% 
-  preprocess(response = "Cluster", predictors = considered_columns)
+X_total <- df %>% preprocess(response = RESPONSE, predictors = considered_columns)
 X <- X_total$main
 
 data_split <- initial_split(X, strata = "Y", p = 0.8)
@@ -426,13 +420,97 @@ test = testing(data_split)
 train_x = train %>% select(-Y)
 train_y = train %>% pull(Y)
 
+# XGBoost model specification
+xgboost_model <-
+  parsnip::boost_tree(
+    mode = "regression",
+    trees = 1000,
+    min_n = tune(),
+    tree_depth = tune(),
+    learn_rate = tune(),
+    loss_reduction = tune()
+  ) %>%
+    set_engine("xgboost", objective = "reg:squarederror")
+
+# grid specification
+xgboost_params <-
+  dials::parameters(
+    min_n(),
+    tree_depth(),
+    learn_rate(),
+    loss_reduction()
+  )
+
+xgboost_grid <-
+  dials::grid_max_entropy(
+    xgboost_params,
+    size = 60
+  )
+
+xgboost_wf <-
+  workflows::workflow() %>%
+  add_model(xgboost_model) %>%
+  add_formula(sale_price ~ .)
+
+# hyperparameter tuning
+xgboost_tuned <- tune::tune_grid(
+  object = xgboost_wf,
+  resamples = ames_cv_folds,
+  grid = xgboost_grid,
+  metrics = yardstick::metric_set(rmse, rsq, mae),
+  control = tune::control_grid(verbose = TRUE)
+)
+
+xgboost_tuned %>%
+  tune::show_best(metric = "rmse") %>%
+  knitr::kable()
+
+xgboost_best_params <- xgboost_tuned %>%
+  tune::select_best("rmse")
+knitr::kable(xgboost_best_params)
+
+xgboost_model_final <- xgboost_model %>%
+  finalize_model(xgboost_best_params)
+
+train_processed <- bake(preprocessing_recipe,  new_data = training(ames_split))
+train_prediction <- xgboost_model_final %>%
+  # fit the model on all the training data
+  fit(
+    formula = sale_price ~ .,
+    data    = train_processed
+  ) %>%
+  # predict the sale prices for the training data
+  predict(new_data = train_processed) %>%
+  bind_cols(training(ames_split))
+xgboost_score_train <-
+  train_prediction %>%
+  yardstick::metrics(sale_price, .pred) %>%
+  mutate(.estimate = format(round(.estimate, 2), big.mark = ","))
+
+test_processed  <- bake(preprocessing_recipe, new_data = testing(ames_split))
+test_prediction <- xgboost_model_final %>%
+  # fit the model on all the training data
+  fit(
+    formula = sale_price ~ .,
+    data    = train_processed
+  ) %>%
+  # use the training model fit to predict the test data
+  predict(new_data = test_processed) %>%
+  bind_cols(testing(ames_split))
+# measure the accuracy of our model using `yardstick`
+xgboost_score <-
+  test_prediction %>%
+  yardstick::metrics(sale_price, .pred) %>%
+  mutate(.estimate = format(round(.estimate, 2), big.mark = ","))
+knitr::kable(xgboost_score)
+
 rf <- rf_defaults %>% 
   set_engine("ranger", importance = "impurity") %>% 
   fit_xy(
     x = train_x,
     y = train_y
   )
-  
+
 # Summarise performance
 get_test_results(rf, test) %>% metrics(truth = Observed, estimate = Predicted)
 ```
@@ -476,106 +554,85 @@ imp_rev %>%
   theme_bw(12)
 ```
 
-## What is "EXPECTED_SCORE"?
-```{r fig.width=10, fig.height=6, include=F}
-plot(
-X %>% 
-  ggplot(
-    aes(
-      x = SCORING_SHOTS,
-      y = EXPECTED_SCORE
-    )
-  ) + 
-  geom_point() + 
-  theme_bw()
-)
-
-m <- lm(EXPECTED_SCORE ~ SCORING_SHOTS, data = X)
-print(summary(m))
-```
-
-
 Plot the top 100 influences:
 ```{r fig.width=15, fig.height=8}
 i = 1
-i_max = 100
+i_max = 50
 # for(var in imp$Variable){
 for(i in 1:100){
   if(i <= i_max){
     var = imp$Variable[i]
     
-    dt = tibble(
-      X = X[[var]],
-      Y = !!X$Y,
-      Game = !!X_total$main$MATCH_ID
-    )
-    
-    corr_plot = dt %>% 
-      ggplot(
-        aes(
-          x = X,
-          y = Y
-        )
-      ) + 
-      theme_bw(12) + 
-      xlab(var) + 
-      ylab(X_total$response)
-    # + 
-    #   geom_smooth(method = "lm", linetype = "dashed", formula = y ~ x)
-    
-    if(is.factor(dt$X)){
-      corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 0.1, alpha = 0.3, height = 0.25)
-    }else{
-      corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 0.1, alpha = 0.3, height = 0.25, width = 0)
-    }
-    
-    game_plot = dt %>% 
-      ggplot(
-        aes(
-          x = Game,
-          colour = Y,
-          y = X
-        )
-      ) + 
-      geom_point(na.rm=T, size = 0.5, alpha = 0.4) + 
-      theme_bw(12) + 
-      xlab("Game") + 
-      ylab(var) + 
-      theme(
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank()
+    if(var != "MATCH_DATE"){
+      dt = tibble(
+        X = X[[var]],
+        Y = !!X$Y,
+        Date = !!X_total$main$MATCH_DATE
       )
-    
-    umap_overlay_plot <- umap_2_all %>% 
-      mutate(
-        Cluster = factor(Cluster)
-      ) %>% 
-      ggplot(
-        aes_string(
-          x = "umap_1",
-          y = "umap_2",
-          colour = as.character(var)
+      
+      corr_plot = dt %>% 
+        ggplot(
+          aes(
+            x = X,
+            y = Y
+          )
+        ) + 
+        theme_bw(12) + 
+        xlab(var) + 
+        ylab(X_total$response) +
+        geom_smooth(method = "lm", linetype = "dashed", formula = y ~ x)
+      
+      if(is.factor(dt$X)){
+        corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 0.1, alpha = 0.3, height = 0.25)
+      }else{
+        corr_plot <- corr_plot + geom_point(na.rm = T, size = 0.1, alpha = 0.3)
+      }
+      
+      game_plot = dt %>% 
+        ggplot(
+          aes(
+            x = Date,
+            colour = Y,
+            y = X
+          )
+        ) + 
+        geom_point(na.rm=T, size = 0.1, alpha = 0.4) + 
+        theme_bw(12) + 
+        xlab("Date") + 
+        ylab(var)
+      
+      umap_overlay_plot <- umap_2_all %>% 
+        ggplot(
+          aes_string(
+            x = "umap_1",
+            y = "umap_2",
+            colour = as.character(var)
+          )
+        ) + 
+        geom_point(alpha = 0.3, size = 0.1) + 
+        theme_bw(12) + 
+        ggtitle(var) + 
+        theme(
+          axis.title.x=element_blank(),
+          axis.text.x=element_blank(),
+          axis.ticks.x=element_blank(),
+          axis.title.y=element_blank(),
+          axis.text.y=element_blank(),
+          axis.ticks.y=element_blank(),
+          legend.title=element_blank()
         )
-      ) + 
-      geom_point(alpha = 0.3, size = 0.1) + 
-      theme_bw(12) + 
-      ggtitle(var) + 
-      theme(
-        axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.title.y=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        legend.title=element_blank()
-      )
-    
-    if(!("factor" %in% class(umap_2_all[[var]]))){
-      umap_overlay_plot <- umap_overlay_plot + 
+      
+      if(!("factor" %in% class(umap_2_all[[var]]))){
+        umap_overlay_plot <- umap_overlay_plot + 
+          scale_colour_gradientn(colours = wes_palette("Zissou1", type = "continuous"))
+        
+        game_plot <- game_plot + 
         scale_colour_gradientn(colours = wes_palette("Zissou1", type = "continuous"))
+      }
+      
+      plot(umap_overlay_plot + (corr_plot / game_plot))
     }
     
-    plot(umap_overlay_plot + (corr_plot / game_plot))
   }
 }
 ```
