@@ -14,6 +14,7 @@ library(recipes)
 library(embed)
 library(corrplot)
 library(dbscan)
+library(wesanderson)
 
 # Load the data
 target_file = "team_summary"
@@ -44,6 +45,12 @@ get_test_results <- function(
         "Predicted" = ".pred_res",
         "Observed" = "Y"
       )
+  }else if(".pred_class" %in% names(test_results)){
+    test_results <- test_results %>% 
+      rename(
+        "Predicted" = ".pred_class",
+        "Observed" = "Y"
+      )
   }
   
   return(test_results)
@@ -72,6 +79,12 @@ get_train_results <- function(
     train_results <- train_results %>% 
       rename(
         "Predicted" = ".pred_res",
+        "Observed" = "Y"
+      )
+  }else if(".pred_class" %in% names(test_results)){
+    test_results <- test_results %>% 
+      rename(
+        "Predicted" = ".pred_class",
         "Observed" = "Y"
       )
   }
@@ -238,7 +251,7 @@ preprocess <- function(
 }
 
 # Set the default for random forest
-rf_defaults <- rand_forest(mode = "regression")
+rf_defaults <- rand_forest(mode = "classification")
 
 # Set the default response column
 RESPONSE = NULL
@@ -318,7 +331,7 @@ umap_2_train <- bake(
   new_data = train
 ) 
 
-summary(umap_2)
+summary(umap_2_train)
 ```
 
 
