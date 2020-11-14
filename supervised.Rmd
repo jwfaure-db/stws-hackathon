@@ -150,7 +150,15 @@ dropped_columns = c(
 # Potential response columns (will generally only consider one at a time)
 response_columns = c(
   "MARGIN",
-  "SQUAD_MARGIN"
+  "SQUAD_MARGIN",
+  "SCORE",
+  "GOAL",
+  "EXPECTED_SCORE",
+  "HOME_SCORE",
+  "AWAY_SCORE",
+  "SCORING_SHOTS",
+  # "SHOT_AT_GOAL",
+  "GOAL_ASSIST"
 )
 
 # Columns potentially removed in some cases (separated for simple commenting out)
@@ -296,6 +304,8 @@ umap_2_test <- bake(
   new_data = test
 ) 
 
+umap_2_all <- umap_2_test %>% bind_cols(test)
+
 summary(umap_2)
 ```
 
@@ -319,32 +329,29 @@ umap_2_test_plot
 ## 3D Mapping
 ```{r}
 umap_3 = supervised %>% 
-  step_umap(all_predictors(), outcome = vars(Y), num_comp = 2, retain = F) %>%
+  step_umap(all_predictors(), outcome = vars(Y), num_comp = 3, retain = F) %>%
   prep(training = train)
 
-umap_2_test <- bake(
-  umap_2,
+umap_3_test <- bake(
+  umap_3,
   new_data = test
 ) 
 
-summary(umap_2)
+umap_3_all <- umap_3_test %>% bind_cols(test)
+
+summary(umap_3)
 ```
 
 
-```{r fig.width=10, fig.height=6}
-umap_2_test_plot <- umap_2_test %>% 
-  ggplot(
-    aes(
-      x = umap_1,
-      y = umap_2,
-      col = Y
-    )
-  ) + 
-  geom_point(alpha = 0.3, size = 0.5) + 
-  theme_bw(12) + 
-  scale_colour_gradientn(colours = wes_palette("Zissou1", type = "continuous"))
-
-umap_2_test_plot
+```{r fig.width=15, fig.height=15}
+umap_3_test %>% 
+  plotly::plot_ly(
+    x = ~umap_1,
+    y = ~umap_2,
+    z = ~umap_3,
+    color = ~Y,
+    size = 1
+  )
 ```
 
 ## Extract Clusters with HDBSCAN
@@ -403,8 +410,6 @@ umap_2_cluster_plot
 
 ## Random Forest
 ```{r}
-umap_2_all <- umap_2_test %>% bind_cols(test)
-
 X_total <- df %>% preprocess(response = RESPONSE, predictors = considered_columns)
 X <- X_total$main
 
@@ -468,80 +473,82 @@ imp_rev %>%
 Plot the top 100 influences:
 ```{r fig.width=15, fig.height=8}
 i = 1
-i_max = 10
+i_max = 50
 # for(var in imp$Variable){
 for(i in 1:100){
   if(i <= i_max){
     var = imp$Variable[i]
     
-    dt = tibble(
-      X = X[[var]],
-      Y = !!X$Y,
-      Game = !!X_total$main$MATCH_ID
-    )
-    
-    corr_plot = dt %>% 
-      ggplot(
-        aes(
-          x = X,
-          y = Y
-        )
-      ) + 
-      theme_bw(12) + 
-      xlab(var) + 
-      ylab(X_total$response) +
-      geom_smooth(method = "lm", linetype = "dashed", formula = y ~ x)
-    
-    if(is.factor(dt$X)){
-      corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 0.1, alpha = 0.3, height = 0.25)
-    }else{
-      corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 0.1, alpha = 0.3, height = 0.25, width = 0)
-    }
-    
-    game_plot = dt %>% 
-      ggplot(
-        aes(
-          x = Game,
-          colour = Y,
-          y = X
-        )
-      ) + 
-      geom_point(na.rm=T, size = 0.5, alpha = 0.4) + 
-      theme_bw(12) + 
-      xlab("Game") + 
-      ylab(var) + 
-      theme(
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank()
+    if(var != "MATCH_DATE"){
+      dt = tibble(
+        X = X[[var]],
+        Y = !!X$Y,
+        Date = !!X_total$main$MATCH_DATE
       )
-    
-    umap_overlay_plot <- umap_2_all %>% 
-      ggplot(
-        aes_string(
-          x = "umap_1",
-          y = "umap_2",
-          colour = as.character(var)
+      
+      corr_plot = dt %>% 
+        ggplot(
+          aes(
+            x = X,
+            y = Y
+          )
+        ) + 
+        theme_bw(12) + 
+        xlab(var) + 
+        ylab(X_total$response) +
+        geom_smooth(method = "lm", linetype = "dashed", formula = y ~ x)
+      
+      if(is.factor(dt$X)){
+        corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 0.1, alpha = 0.3, height = 0.25)
+      }else{
+        corr_plot <- corr_plot + geom_point(na.rm = T, size = 0.1, alpha = 0.3)
+      }
+      
+      game_plot = dt %>% 
+        ggplot(
+          aes(
+            x = Date,
+            colour = Y,
+            y = X
+          )
+        ) + 
+        geom_point(na.rm=T, size = 0.1, alpha = 0.4) + 
+        theme_bw(12) + 
+        xlab("Date") + 
+        ylab(var)
+      
+      umap_overlay_plot <- umap_2_all %>% 
+        ggplot(
+          aes_string(
+            x = "umap_1",
+            y = "umap_2",
+            colour = as.character(var)
+          )
+        ) + 
+        geom_point(alpha = 0.3, size = 0.1) + 
+        theme_bw(12) + 
+        ggtitle(var) + 
+        theme(
+          axis.title.x=element_blank(),
+          axis.text.x=element_blank(),
+          axis.ticks.x=element_blank(),
+          axis.title.y=element_blank(),
+          axis.text.y=element_blank(),
+          axis.ticks.y=element_blank(),
+          legend.title=element_blank()
         )
-      ) + 
-      geom_point(alpha = 0.3, size = 0.1) + 
-      theme_bw(12) + 
-      ggtitle(var) + 
-      theme(
-        axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.title.y=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        legend.title=element_blank()
-      )
-    
-    if(!("factor" %in% class(umap_2_all[[var]]))){
-      umap_overlay_plot <- umap_overlay_plot + 
+      
+      if(!("factor" %in% class(umap_2_all[[var]]))){
+        umap_overlay_plot <- umap_overlay_plot + 
+          scale_colour_gradientn(colours = wes_palette("Zissou1", type = "continuous"))
+        
+        game_plot <- game_plot + 
         scale_colour_gradientn(colours = wes_palette("Zissou1", type = "continuous"))
+      }
+      
+      plot(umap_overlay_plot + (corr_plot / game_plot))
     }
     
-    plot(umap_overlay_plot + (corr_plot / game_plot))
   }
 }
 ```
