@@ -18,62 +18,26 @@ editor_options:
 
 ```{r global-options, include=FALSE}
 knitr::opts_chunk$set(
-  # fig.path = "plots/", 
-                      echo = TRUE, warning = FALSE, message = FALSE, scipen = 999)
+  # fig.path = "plots/",
+  echo = TRUE, warning = FALSE, message = FALSE, scipen = 999)
 ```
 
 # Load libraries
 ```{r, echo = FALSE}
 library(tidyverse)
-library(ggplot2)
-library(janitor)
-library(purrr)
-library(RColorBrewer)
-library(broom)
-library(knitr)
-library(summarytools)
 library(gplots)
 `%notin%` <- Negate(`%in%`)
 set.seed(73)
 ```
 
 # Load data
-
-## Player summary data
-
-Note that all three files has 240 columns each with matching column names.
-
 ```{r}
-(player_summary_names = list.files(path = "./raw_data", pattern = "Player Summary", full.names = TRUE))
-player_summary_list = purrr::map(player_summary_names, readr::read_csv)
-names(player_summary_list) = player_summary_names
-
-# player_summary_list
-
-player_summary_list %>% map_int(ncol)
-gplots::venn(player_summary_list %>% map(colnames))
-
-player_summary = player_summary_list %>% bind_rows(.id = "file_name")
+team_summary = readRDS(file = "./clean_data/team_summary.rds")
+player_summary = readRDS(file = "./clean_data/player_summary.rds")
 ```
 
-## Team summary data
 
-Note that all three files has 314 columns each with matching column names
-
-```{r}
-(team_summary_names = list.files(path = "./raw_data", pattern = "Team Summary", full.names = TRUE))
-team_summary_list = purrr::map(team_summary_names, readr::read_csv)
-names(team_summary_list) = team_summary_names
-
-# team_summary_list
-
-team_summary_list %>% map_int(ncol)
-gplots::venn(team_summary_list %>% map(colnames))
-
-team_summary = team_summary_list %>% bind_rows(.id = "file_name")
-```
-
-# Explore variable class in the players and teams summary data 
+# Explore variable class 
 
 ## Player summary
 ```{r}
@@ -121,4 +85,4 @@ wordcloud::wordcloud(words = team_summary_colnames_freq$colnames_split, freq = t
                      colors = brewer.pal(8, "Dark2"))
 ```
 
-
+# Explore common columns
