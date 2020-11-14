@@ -1,0 +1,362 @@
+---
+title: "Untitled"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Loading packages and scripts
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(lubridate)
+library(pins)
+library(tidymodels)
+library(patchwork)
+library(recipes)
+library(embed)
+library(corrplot)
+library(dbscan)
+
+source("preprocess_evaluate.R")
+
+# Load the data
+target_file = "team_summary"
+df <- readRDS(paste0("clean_data/", target_file, ".rds"))
+
+# Columns to be intentionally excluded entirely, in all cases
+dropped_columns = c(
+  
+)
+
+# Potential response columns (will generally only consider one at a time)
+response_columns = c(
+  
+)
+
+# Columns potentially removed in some cases (separated for simple commenting out)
+screened_columns = c(
+  
+)
+
+## not_considered_columns are any columns that will be removed
+not_considered_columns = c(dropped_columns, screened_columns, response_columns)
+
+## considered_columns will always include any remaining columns, and a special column "Y"
+considered_columns = names(df)[!(names(df) %in% not_considered_columns)]
+considered_columns = c(considered_columns, "Y")
+
+# Set the default for random forest
+rf_defaults <- rand_forest(mode = "regression")
+
+# Set the default response column
+RESPONSE = NULL
+```
+
+# Initial Screening of Variables
+```{r}
+X_total <- df %>% preprocess(response = RESPONSE, predictors = considered_columns)
+X <- X_total$main
+
+# summary(X)
+```
+
+# UMAP Investigation (Unsupervised)
+```{r}
+# Get the dataset
+X_total <- df %>% select(-ZONE_LOGICAL_AFL) %>% preprocess(response = RESPONSE, predictors = c(considered_columns))
+X <- X_total$main
+
+# Determine which columns are factors (needing to be one-hot-encoded)
+factors = X %>% 
+  select(where(is.factor)) %>% 
+  names()
+
+# Leave the response variable as-is
+factors <- factors[factors != "Y"]
+
+train = X
+
+unsupervised <- recipe(~ ., data = train) %>% 
+  step_dummy(all_of(factors), one_hot = T)
+# step_center(all_predictors()) %>% 
+# step_scale(all_predictors())
+
+unsupervised %>% prep(training = train) %>% summary()
+```
+
+```{r}
+set.seed(1243)
+umap_2 = unsupervised %>% 
+  step_umap(all_predictors(), num_comp = 2, retain = F) %>%
+  prep(training = train)
+
+umap_2_train <- bake(
+  umap_2,
+  new_data = train
+) 
+
+summary(umap_2)
+```
+
+
+```{r fig.width=10, fig.height=6}
+umap_2_train_plot <- umap_2_train %>% 
+  bind_cols(X) %>%
+  ggplot(
+    aes(
+      x = umap_1,
+      y = umap_2,
+      colour = file_name
+    )
+  ) + 
+  geom_point(alpha = 0.3, size = 0.1) + 
+  theme_bw(12) +
+  guides(colour = guide_legend(override.aes = list(size = 3, alpha = 1))) +
+  ggsci::scale_colour_d3() +
+  theme(
+    axis.title.x=element_blank(),
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    axis.title.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.ticks.y=element_blank())
+
+# umap_2_train_plot %>% plotly::ggplotly()
+umap_2_train_plot
+```
+
+## Extract Clusters with HDBSCAN
+```{r}
+# Get 5-dimensional representation of dataset
+umap_5_train = unsupervised %>% 
+  step_umap(all_predictors(), num_comp = 5, retain = F) %>%
+  prep(training = train) %>% 
+  bake(new_data = train)
+
+summary(umap_5_train)
+```
+
+
+```{r, fig.width=10, fig.height=6}
+# Execute the hdbscan algorithm
+cluster = umap_5_train %>% as.matrix() %>% hdbscan(minPts = 100, gen_hdbscan_tree = T, gen_simplified_tree = T)
+
+message(paste0("Number of Clusters: ", length(unique(cluster$cluster) - 1)))
+message(paste0("Outlier Proportion: ", signif(sum(cluster$cluster == 0) / length(cluster$cluster), 3)))
+
+tibble(
+  Cluster = cluster$cluster
+) %>% 
+  group_by(Cluster) %>% 
+  count() %>% 
+  ungroup() %>% 
+  arrange(desc(n)) %>% 
+  print()
+
+plot(cluster, show_flat = T)
+```
+
+
+
+## Overlay on 2D UMAP output
+```{r}
+umap_2_cluster <- umap_2_train %>% 
+  mutate(Cluster = cluster$cluster)
+
+umap_2_cluster_plot <- umap_2_cluster %>% 
+  mutate(
+    Cluster = factor(Cluster)
+  ) %>% 
+  ggplot(
+    aes(
+      x = umap_1,
+      y = umap_2,
+      col = Cluster
+    )
+  ) + 
+  geom_point(alpha = 0.3, size = 0.1) + 
+  theme_bw(12) +
+  guides(colour = guide_legend(override.aes = list(size = 3, alpha = 1))) +
+  ggsci::scale_colour_d3() +
+  theme(
+    axis.title.x=element_blank(),
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    axis.title.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.ticks.y=element_blank())
+
+# umap_2_cluster_plot %>% plotly::ggplotly()
+umap_2_cluster_plot
+```
+
+
+# Saving
+
+```{r}
+umap_5_tbl = bind_cols(X, umap_5_train) %>% 
+  dplyr::mutate(umap_5_cluster = cluster$cluster)
+
+saveRDS(object = umap_5_tbl, file = "./clean_data/team_summary_UMAP5_clusters.rds")
+```
+
+
+## Random Forest (predicting cluster)
+```{r}
+umap_2_all <- umap_2_train %>% 
+  mutate(Cluster = cluster$cluster) %>% 
+  bind_cols(train)
+
+X_total <- umap_2_all %>% 
+  mutate(
+    Cluster = factor(Cluster)
+  ) %>% 
+  preprocess(response = "Cluster", predictors = considered_columns)
+X <- X_total$main
+
+data_split <- initial_split(X, strata = "Y", p = 0.8)
+train = training(data_split)
+test = testing(data_split)
+
+train_x = train %>% select(-Y)
+train_y = train %>% pull(Y)
+
+rf <- rand_forest(mode = "classification") %>% 
+  set_engine("ranger", importance = "impurity") %>% 
+  fit_xy(
+    x = train_x,
+    y = train_y
+  )
+  
+# Summarise performance
+get_test_results(rf, test) %>% metrics(truth = Y, estimate = .pred_class)
+```
+
+```{r}
+# Predicted vs Observed
+# evaluate_model(rf, train, test)
+```
+
+## xgboost
+```{r}
+X_total <- df %>% preprocess(response = RESPONSE, predictors = considered_columns)
+X <- X_total$main
+
+ 
+
+data_split <- initial_split(X, strata = "Y", p = 0.8)
+train = training(data_split)
+test = testing(data_split)
+
+ 
+
+train_x = train %>% select(-Y)
+train_y = train %>% pull(Y)
+
+ 
+
+# XGBoost model specification
+xgboost_model <-
+  parsnip::boost_tree(
+    mode = "regression",
+    trees = 1000,
+    min_n = tune(),
+    tree_depth = tune(),
+    learn_rate = tune(),
+    loss_reduction = tune()
+  ) %>%
+    set_engine("xgboost", objective = "reg:squarederror")
+
+ 
+
+# grid specification
+xgboost_params <-
+  dials::parameters(
+    min_n(),
+    tree_depth(),
+    learn_rate(),
+    loss_reduction()
+  )
+
+ 
+
+xgboost_grid <-
+  dials::grid_max_entropy(
+    xgboost_params,
+    size = 60
+  )
+
+ 
+
+xgboost_wf <-
+  workflows::workflow() %>%
+  add_model(xgboost_model) %>%
+  add_formula(sale_price ~ .)
+
+ 
+
+# hyperparameter tuning
+xgboost_tuned <- tune::tune_grid(
+  object = xgboost_wf,
+  resamples = ames_cv_folds,
+  grid = xgboost_grid,
+  metrics = yardstick::metric_set(rmse, rsq, mae),
+  control = tune::control_grid(verbose = TRUE)
+)
+
+ 
+
+xgboost_tuned %>%
+  tune::show_best(metric = "rmse") %>%
+  knitr::kable()
+
+ 
+
+xgboost_best_params <- xgboost_tuned %>%
+  tune::select_best("rmse")
+knitr::kable(xgboost_best_params)
+
+ 
+
+xgboost_model_final <- xgboost_model %>%
+  finalize_model(xgboost_best_params)
+
+ 
+
+train_processed <- bake(preprocessing_recipe,  new_data = training(ames_split))
+train_prediction <- xgboost_model_final %>%
+  # fit the model on all the training data
+  fit(
+    formula = sale_price ~ .,
+    data    = train_processed
+  ) %>%
+  # predict the sale prices for the training data
+  predict(new_data = train_processed) %>%
+  bind_cols(training(ames_split))
+xgboost_score_train <-
+  train_prediction %>%
+  yardstick::metrics(sale_price, .pred) %>%
+  mutate(.estimate = format(round(.estimate, 2), big.mark = ","))
+
+ 
+
+test_processed  <- bake(preprocessing_recipe, new_data = testing(ames_split))
+test_prediction <- xgboost_model_final %>%
+  # fit the model on all the training data
+  fit(
+    formula = sale_price ~ .,
+    data    = train_processed
+  ) %>%
+  # use the training model fit to predict the test data
+  predict(new_data = test_processed) %>%
+  bind_cols(testing(ames_split))
+# measure the accuracy of our model using `yardstick`
+xgboost_score <-
+  test_prediction %>%
+  yardstick::metrics(sale_price, .pred) %>%
+  mutate(.estimate = format(round(.estimate, 2), big.mark = ","))
+knitr::kable(xgboost_score)
+```
+
