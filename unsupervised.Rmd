@@ -463,30 +463,27 @@ imp_rev %>%
   theme_bw(12)
 ```
 
-## Probing Separability of Other Variables
-```{r fig.width=10, fig.height=6}
-for(n in names(umap_2_all)[!(names(umap_2_all) %in% c("umap_1", "umap_2"))]){
-  gg <- umap_2_all %>% 
-    mutate(
-      Cluster = factor(Cluster)
-    ) %>% 
-    ggplot(
-      aes(
-        x = umap_1,
-        y = umap_2
-      )
-    ) + 
-    geom_point(aes_string(colour = n), alpha = 0.3, size = 0.1) + 
-    theme_bw(12) + 
-    ggtitle(n)
-  
-  plot(gg)
-}
+## What is "EXPECTED_SCORE"?
+```{r fig.width=10, fig.height=6, include=F}
+plot(
+X %>% 
+  ggplot(
+    aes(
+      x = SCORING_SHOTS,
+      y = EXPECTED_SCORE
+    )
+  ) + 
+  geom_point() + 
+  theme_bw()
+)
+
+m <- lm(EXPECTED_SCORE ~ SCORING_SHOTS, data = X)
+print(summary(m))
 ```
 
 
-Plot the top 10 influences:
-```{r fig.width=10, fig.height=10}
+Plot the top 100 influences:
+```{r fig.width=15, fig.height=8}
 i = 1
 i_max = 100
 # for(var in imp$Variable){
@@ -530,9 +527,8 @@ for(i in 1:100){
       geom_point(na.rm=T, size = 0.5, alpha = 0.4) + 
       theme_bw(12) + 
       xlab("Game") + 
-      ylab(X_total$response) + 
+      ylab(var) + 
       theme(
-        # axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank()
       )
@@ -545,12 +541,26 @@ for(i in 1:100){
         aes_string(
           x = "umap_1",
           y = "umap_2",
-          colour = var
+          colour = as.character(var)
         )
       ) + 
       geom_point(alpha = 0.3, size = 0.1) + 
       theme_bw(12) + 
-      ggtitle(var)
+      ggtitle(var) + 
+      theme(
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        legend.title=element_blank()
+      )
+    
+    if(!("factor" %in% class(umap_2_all[[var]]))){
+      umap_overlay_plot <- umap_overlay_plot + 
+        scale_colour_gradientn(colours = wes_palette("Zissou1", type = "continuous"))
+    }
     
     plot(umap_overlay_plot + (corr_plot / game_plot))
   }
