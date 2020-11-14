@@ -15,7 +15,9 @@ library(embed)
 library(corrplot)
 library(dbscan)
 
-source("auth_io/authenticate.R")
+# Load the data
+target_file = "team_summary"
+df <- readRDS(paste0("clean_data/", target_file, ".rds"))
 
 get_test_results <- function(
   model,
@@ -28,11 +30,21 @@ get_test_results <- function(
     select(Y) %>% 
     bind_cols(
       test_prediction
-    ) %>% 
-    rename(
-      "Predicted" = ".pred",
-      "Observed" = "Y"
     )
+  
+  if(".pred" %in% names(test_results)){
+    test_results <- test_results %>% 
+      rename(
+        "Predicted" = ".pred",
+        "Observed" = "Y"
+      )
+  }else if(".pred_res" %in% names(test_results)){
+    test_results <- test_results %>% 
+      rename(
+        "Predicted" = ".pred_res",
+        "Observed" = "Y"
+      )
+  }
   
   return(test_results)
 }
@@ -48,11 +60,21 @@ get_train_results <- function(
     select(Y) %>% 
     bind_cols(
       train_prediction
-    ) %>% 
-    rename(
-      "Predicted" = ".pred",
-      "Observed" = "Y"
     )
+  
+  if(".pred" %in% names(train_results)){
+    train_results <- train_results %>% 
+      rename(
+        "Predicted" = ".pred",
+        "Observed" = "Y"
+      )
+  }else if(".pred_res" %in% names(train_results)){
+    train_results <- train_results %>% 
+      rename(
+        "Predicted" = ".pred_res",
+        "Observed" = "Y"
+      )
+  }
   
   return(train_results)
 }
@@ -72,42 +94,44 @@ evaluate_model <- function(
         mutate(Case = "Test")
     )
   
-  limit = c(min(c(results$Predicted, results$Observed), na.rm = T), max(c(results$Predicted, results$Observed), na.rm = T))
+  if("factor" %in% class(results$Predicted)){
+    # train_matrix <- train_results %>% 
+    #   mutat
+    # TODO: Plot this instead as two matrices of correspondence between predicted and observed
+    return()
+  }else{
+    limit = c(min(c(results$Predicted, results$Observed), na.rm = T), max(c(results$Predicted, results$Observed), na.rm = T))
   
-  results %>% 
-    ggplot(
-      aes(
-        x = Predicted,
-        y = Observed,
-        colour = Case,
-        alpha = Case
-      )
-    ) + 
-    geom_point(na.rm = T) + 
-    theme_bw(12) + 
-    geom_abline(slope = 1, intercept = 0) + 
-    scale_colour_manual(values = c("Train" = "grey", "Test" = "blue")) + 
-    scale_alpha_manual(values = c("Train" = 0.2, "Test" = 0.5)) + 
-    ylim(limit) + 
-    xlim(limit)
+    gg <- results %>% 
+      ggplot(
+        aes(
+          x = Predicted,
+          y = Observed,
+          colour = Case,
+          alpha = Case
+        )
+      ) + 
+      geom_point(na.rm = T) + 
+      theme_bw(12) + 
+      geom_abline(slope = 1, intercept = 0) + 
+      scale_colour_manual(values = c("Train" = "grey", "Test" = "blue")) + 
+      scale_alpha_manual(values = c("Train" = 0.2, "Test" = 0.5)) + 
+      ylim(limit) + 
+      xlim(limit)
+  }
+  
+  return(gg)
 }
-
-board_register("rsconnect", server = "https://connect-prod.cslg1.cslg.net", key = api_key_default)
-
-### Load Data from Dashboard Pin
-# Retrieve Pins
-pin_location <- "TBD"
-src <- pin_get(pin_location, board = "rsconnect")
 
 # Initial filtering and manipulation
 ## TODO
 
 ## Force some variables to be factor
-df <- df %>% 
-  mutate_at(
-    vars(),
-    factor
-  )
+# df <- df %>% 
+#   mutate_at(
+#     vars(),
+#     factor
+#   )
 
 ## Some preprocessing
 
@@ -237,7 +261,27 @@ corrmat <- X %>%
   select(where(is.numeric)) %>% 
   cor()
 
-corrplot(corrmat, type = "upper", order = "hclust", tl.col = "black", tl.srt = 45)
+png(filename = "plots/team_corrplot.png", width = 3500, height = 3500)
+corrplot(corrmat, type = "upper", order = "hclust", tl.col = "black", tl.srt = 90, tl.cex = 0.8)
+dev.off()
+
+corrplot(corrmat, type = "upper", order = "hclust", tl.col = "black", tl.srt = 90, tl.cex = 0.8)
+```
+
+# HClust
+```{r fig.width=10, fig.height=10}
+X_total <- df %>% preprocess(response = RESPONSE, predictors = c(considered_columns, response_columns, screened_columns))
+X <- X_total$main
+
+corrmat <- X %>% 
+  select(where(is.numeric)) %>% 
+  cor()
+
+png(filename = "plots/team_hclust.png", width = 3500, height = 500)
+plot(hclust(as.dist(1-corrmat)))
+dev.off()
+
+plot(hclust(as.dist(1-corrmat)))
 ```
 
 # UMAP Investigation (Unsupervised)
@@ -285,13 +329,14 @@ umap_2_train_plot <- umap_2_train %>%
     aes(
       x = umap_1,
       y = umap_2,
-      col = Y
+      colour = ZONE_LOGICAL_AFL
     )
   ) + 
-  geom_point(alpha = 0.5) + 
+  geom_point(alpha = 0.3, size = 0.1) + 
   theme_bw(12)
 
-umap_2_train_plot %>% plotly::ggplotly()
+# umap_2_train_plot %>% plotly::ggplotly()
+umap_2_train_plot
 ```
 
 ## Extract Clusters with HDBSCAN
@@ -301,6 +346,8 @@ umap_5_train = unsupervised %>%
   step_umap(all_predictors(), num_comp = 5, retain = F) %>%
   prep(training = train) %>% 
   bake(new_data = train)
+
+summary(umap_5_train)
 ```
 
 
@@ -339,40 +386,24 @@ umap_2_cluster_plot <- umap_2_cluster %>%
       col = Cluster
     )
   ) + 
-  geom_point(alpha = 0.5) + 
+  geom_point(alpha = 0.3, size = 0.1) + 
   theme_bw(12)
 
-umap_2_cluster_plot %>% plotly::ggplotly()
+# umap_2_cluster_plot %>% plotly::ggplotly()
+umap_2_cluster_plot
 ```
 
-## Probing Separability of Other Variables
-```{r fig.width=10, fig.height=6}
+## Random Forest (predicting cluster)
+```{r}
 umap_2_all <- umap_2_train %>% 
   mutate(Cluster = cluster$cluster) %>% 
   bind_cols(train)
 
-for(n in names(umap_2_all)[!(names(umap_2_all) %in% c("umap_1", "umap_2"))]){
-  gg <- umap_2_all %>% 
-    mutate(
-      Cluster = factor(Cluster)
-    ) %>% 
-    ggplot(
-      aes(
-        x = umap_1,
-        y = umap_2
-      )
-    ) + 
-    geom_point(aes_string(colour = n), alpha = 0.5) + 
-    theme_bw(12) + 
-    ggtitle(n)
-  
-  plot(gg)
-}
-```
-
-# Random Forest
-```{r}
-X_total <- df %>% preprocess(response = RESPONSE, predictors = considered_columns)
+X_total <- umap_2_all %>% 
+  mutate(
+    Cluster = factor(Cluster)
+  ) %>% 
+  preprocess(response = "Cluster", predictors = considered_columns)
 X <- X_total$main
 
 data_split <- initial_split(X, strata = "Y", p = 0.8)
@@ -398,7 +429,7 @@ get_test_results(rf, test) %>% metrics(truth = Observed, estimate = Predicted)
 evaluate_model(rf, train, test)
 ```
 
-```{r fig.width=10, fig.height=6}
+```{r fig.width=10, fig.height=20}
 imp <- rf$fit$variable.importance
 imp <- tibble(
   Variable = names(imp),
@@ -420,7 +451,7 @@ imp_rev <- imp %>%
   )
 
 imp_rev %>% 
-  # head(50) %>% 
+  head(100) %>%
   ggplot(
     aes(
       x = Variable,
@@ -432,19 +463,41 @@ imp_rev %>%
   theme_bw(12)
 ```
 
+## Probing Separability of Other Variables
+```{r fig.width=10, fig.height=6}
+for(n in names(umap_2_all)[!(names(umap_2_all) %in% c("umap_1", "umap_2"))]){
+  gg <- umap_2_all %>% 
+    mutate(
+      Cluster = factor(Cluster)
+    ) %>% 
+    ggplot(
+      aes(
+        x = umap_1,
+        y = umap_2
+      )
+    ) + 
+    geom_point(aes_string(colour = n), alpha = 0.3, size = 0.1) + 
+    theme_bw(12) + 
+    ggtitle(n)
+  
+  plot(gg)
+}
+```
+
+
 Plot the top 10 influences:
 ```{r fig.width=10, fig.height=10}
 i = 1
-i_max = 10
+i_max = 100
 # for(var in imp$Variable){
-for(i in 1:10){
+for(i in 1:100){
   if(i <= i_max){
     var = imp$Variable[i]
     
     dt = tibble(
       X = X[[var]],
       Y = !!X$Y,
-      Date = X_total$secondary$MfgDateBULK
+      Game = !!X_total$main$MATCH_ID
     )
     
     corr_plot = dt %>% 
@@ -456,29 +509,50 @@ for(i in 1:10){
       ) + 
       theme_bw(12) + 
       xlab(var) + 
-      ylab(X_total$response) + 
-      geom_smooth(method = "lm", linetype = "dashed", formula = y ~ x)
+      ylab(X_total$response)
+    # + 
+    #   geom_smooth(method = "lm", linetype = "dashed", formula = y ~ x)
     
     if(is.factor(dt$X)){
-      corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 0.5, alpha = 0.5)
+      corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 0.1, alpha = 0.3, height = 0.25)
     }else{
-      corr_plot <- corr_plot + geom_point(na.rm = T, size = 0.5, alpha = 0.5)
+      corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 0.1, alpha = 0.3, height = 0.25, width = 0)
     }
     
-    time_plot = dt %>% 
+    game_plot = dt %>% 
       ggplot(
         aes(
-          x = Date,
-          y = Y,
-          colour = X
+          x = Game,
+          colour = Y,
+          y = X
         )
       ) + 
       geom_point(na.rm=T, size = 0.5, alpha = 0.4) + 
       theme_bw(12) + 
-      xlab("Date") + 
-      ylab(X_total$response)
+      xlab("Game") + 
+      ylab(X_total$response) + 
+      theme(
+        # axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()
+      )
     
-    plot(corr_plot / time_plot)
+    umap_overlay_plot <- umap_2_all %>% 
+      mutate(
+        Cluster = factor(Cluster)
+      ) %>% 
+      ggplot(
+        aes_string(
+          x = "umap_1",
+          y = "umap_2",
+          colour = var
+        )
+      ) + 
+      geom_point(alpha = 0.3, size = 0.1) + 
+      theme_bw(12) + 
+      ggtitle(var)
+    
+    plot(umap_overlay_plot + (corr_plot / game_plot))
   }
 }
 ```
