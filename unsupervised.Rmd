@@ -10,6 +10,10 @@ library(lubridate)
 library(pins)
 library(tidymodels)
 library(patchwork)
+library(recipes)
+library(embed)
+library(corrplot)
+library(dbscan)
 
 source("auth_io/authenticate.R")
 
@@ -226,8 +230,6 @@ summary(X)
 
 ## Numerical Variable Correlations
 ```{r fig.width=10, fig.height=10}
-library(corrplot)
-
 X_total <- df %>% preprocess(response = RESPONSE, predictors = c(considered_columns, response_columns, screened_columns))
 X <- X_total$main
 
@@ -240,9 +242,6 @@ corrplot(corrmat, type = "upper", order = "hclust", tl.col = "black", tl.srt = 4
 
 # UMAP Investigation (Unsupervised)
 ```{r}
-library(recipes)
-library(embed)
-
 # Get the dataset
 X_total <- df %>% preprocess(response = RESPONSE, predictors = c(considered_columns))
 X <- X_total$main
@@ -307,7 +306,6 @@ umap_5_train = unsupervised %>%
 
 ```{r, fig.width=10, fig.height=6}
 # Execute the hdbscan algorithm
-library(dbscan)
 cluster = umap_5_train %>% as.matrix() %>% hdbscan(minPts = 40, gen_hdbscan_tree = T, gen_simplified_tree = T)
 
 message(paste0("Number of Clusters: ", length(unique(cluster$cluster) - 1)))
@@ -436,7 +434,6 @@ imp_rev %>%
 
 Plot the top 10 influences:
 ```{r fig.width=10, fig.height=10}
-library(patchwork)
 i = 1
 i_max = 10
 # for(var in imp$Variable){
