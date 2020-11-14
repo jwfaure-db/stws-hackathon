@@ -148,7 +148,7 @@ response_columns = c(
 
 # Columns potentially removed in some cases (separated for simple commenting out)
 screened_columns = c(
-  
+  "ZONE_LOGICAL_AFL"
 )
 
 ## not_considered_columns are any columns that will be removed
@@ -325,15 +325,40 @@ summary(umap_2)
 ```{r fig.width=10, fig.height=6}
 umap_2_train_plot <- umap_2_train %>% 
   bind_cols(X) %>% 
+  bind_cols(X_total$secondary) %>% 
+  mutate(
+    `COVID-19 Impact` = (SEASON_ID == 2020),
+    Zone = case_when(
+      ZONE_LOGICAL_AFL == 'AM' ~ "Attacking Midfield",
+      ZONE_LOGICAL_AFL == 'DM' ~ "Defending Midfield",
+      ZONE_LOGICAL_AFL == 'F50' ~ "Forward 50m",
+      ZONE_LOGICAL_AFL == 'D50' ~ "Defending 50m",
+      ZONE_LOGICAL_AFL == 'X' ~ "Zone-Independent"
+    )
+  ) %>% 
+  mutate(
+    Zone = factor(Zone, levels = c("Attacking Midfield", "Defending Midfield", "Forward 50m", "Defending 50m", "Zone-Independent"), ordered = T)
+  ) %>% 
   ggplot(
     aes(
       x = umap_1,
       y = umap_2,
-      colour = ZONE_LOGICAL_AFL
+      colour = Zone,
+      alpha = `COVID-19 Impact`
     )
   ) + 
-  geom_point(alpha = 0.3, size = 0.1) + 
-  theme_bw(12)
+  geom_point(size = 0.1) + 
+  scale_alpha_manual(values = c("TRUE" = 0.5, "FALSE" = 0.1)) +
+  scale_colour_manual(values = wes_palette("Darjeeling1")) + 
+  theme_bw(12) + 
+  theme(
+    axis.title.x=element_blank(),
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    axis.title.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.ticks.y=element_blank()
+  )
 
 # umap_2_train_plot %>% plotly::ggplotly()
 umap_2_train_plot
