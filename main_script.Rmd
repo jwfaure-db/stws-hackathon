@@ -2,22 +2,24 @@
 title: "Sports Tech World Series (STWS) Challenge Australia"
 author: "The Sterile Injectables"
 date: "14/11/2020"
-output: html_document
-  bookdown::html_document2:
+output: 
+  html_document:
     code_folding: hide
     toc: yes
     number_sections: true
     toc_depth: 3
     toc_float: yes
     theme: paper
-  # bookdown::word_document2:
-  #   toc: no
 editor options:
+  chunk_output_type: console
+editor_options: 
   chunk_output_type: console
 ---
 
 ```{r global-options, include=FALSE}
-knitr::opts_chunk$set(fig.path = "plots/", echo = TRUE, warning = FALSE, message = FALSE, scipen = 999)
+knitr::opts_chunk$set(
+  # fig.path = "plots/", 
+                      echo = TRUE, warning = FALSE, message = FALSE, scipen = 999)
 ```
 
 # Load libraries
@@ -30,19 +32,93 @@ library(RColorBrewer)
 library(broom)
 library(knitr)
 library(summarytools)
+library(gplots)
 `%notin%` <- Negate(`%in%`)
 set.seed(73)
 ```
 
 # Load data
-```{r}
-#create a list of the files from your target directory
-file_list <- list.files(path = "./raw_data")
 
-files = list()
-for (i in 1:length(file_list)){
-  path_to_file = paste0("./raw_data/", file_list[i])
-  files[[i]] <- readr::read_csv(path_to_file) #each file will be read in
-}
-files %>% unlist()
+## Player summary data
+
+Note that all three files has 240 columns each with matching column names.
+
+```{r}
+(player_summary_names = list.files(path = "./raw_data", pattern = "Player Summary", full.names = TRUE))
+player_summary_list = purrr::map(player_summary_names, readr::read_csv)
+names(player_summary_list) = player_summary_names
+
+# player_summary_list
+
+player_summary_list %>% map_int(ncol)
+gplots::venn(player_summary_list %>% map(colnames))
+
+player_summary = player_summary_list %>% bind_rows(.id = "file_name")
 ```
+
+## Team summary data
+
+Note that all three files has 314 columns each with matching column names
+
+```{r}
+(team_summary_names = list.files(path = "./raw_data", pattern = "Team Summary", full.names = TRUE))
+team_summary_list = purrr::map(team_summary_names, readr::read_csv)
+names(team_summary_list) = team_summary_names
+
+# team_summary_list
+
+team_summary_list %>% map_int(ncol)
+gplots::venn(team_summary_list %>% map(colnames))
+
+team_summary = team_summary_list %>% bind_rows(.id = "file_name")
+```
+
+# Explore variable class in the players and teams summary data 
+
+## Player summary
+```{r}
+cat("Variable class")
+player_summary %>% map_chr(class) %>% table
+
+cat("Sparsity (average of zeroes in each numeric column)")
+psm = player_summary %>% select_if(is.numeric)
+hist(colMeans(psm == 0))
+
+player_summary_colnames_freq = tibble(
+  colnames_split = player_summary %>% 
+  colnames %>% 
+  stringr::str_split(pattern = "_") %>% 
+  unlist()) %>% 
+  group_by(colnames_split) %>% 
+  tally()
+
+wordcloud::wordcloud(words = player_summary_colnames_freq$colnames_split, freq = player_summary_colnames_freq$n,
+                     min.freq = 1, max.words = 200,
+                     random.order = FALSE, rot.per = 0.35,
+                     colors = brewer.pal(8, "Dark2"))
+```
+
+## Team summary
+```{r}
+cat("Variable class")
+team_summary %>% map_chr(class) %>% table
+
+cat("Sparsity (average of zeroes in each numeric column)")
+tsm = team_summary %>% select_if(is.numeric)
+hist(colMeans(tsm == 0))
+
+team_summary_colnames_freq = tibble(
+  colnames_split = team_summary %>% 
+  colnames %>% 
+  stringr::str_split(pattern = "_") %>% 
+  unlist()) %>% 
+  group_by(colnames_split) %>% 
+  tally()
+
+wordcloud::wordcloud(words = team_summary_colnames_freq$colnames_split, freq = team_summary_colnames_freq$n,
+                     min.freq = 1, max.words = 200,
+                     random.order = FALSE, rot.per = 0.35,
+                     colors = brewer.pal(8, "Dark2"))
+```
+
+
