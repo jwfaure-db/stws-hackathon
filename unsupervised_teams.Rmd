@@ -152,8 +152,11 @@ evaluate_model <- function(
 
 # Columns to be intentionally excluded entirely, in all cases
 dropped_columns = c(
+  "file_name",
   "HOME_SQUAD_ID",
-  "AWAY_SQUAD_ID"
+  "AWAY_SQUAD_ID",
+  "MATCH_ID",
+  "PERSON_ID"
 )
 
 # Potential response columns (will generally only consider one at a time)
@@ -257,46 +260,6 @@ rf_defaults <- rand_forest(mode = "classification")
 
 # Set the default response column
 RESPONSE = NULL
-```
-
-# Initial Screening of Variables
-```{r}
-X_total <- df %>% preprocess(response = RESPONSE, predictors = considered_columns)
-X <- X_total$main
-
-summary(X)
-```
-
-## Numerical Variable Correlations
-```{r fig.width=10, fig.height=10}
-X_total <- df %>% preprocess(response = RESPONSE, predictors = c(considered_columns, response_columns, screened_columns))
-X <- X_total$main
-
-corrmat <- X %>% 
-  select(where(is.numeric)) %>% 
-  cor()
-
-png(filename = "plots/team_corrplot.png", width = 3500, height = 3500)
-corrplot(corrmat, type = "upper", order = "hclust", tl.col = "black", tl.srt = 90, tl.cex = 0.8)
-dev.off()
-
-corrplot(corrmat, type = "upper", order = "hclust", tl.col = "black", tl.srt = 90, tl.cex = 0.8)
-```
-
-# HClust
-```{r fig.width=10, fig.height=10}
-X_total <- df %>% preprocess(response = RESPONSE, predictors = c(considered_columns, response_columns, screened_columns))
-X <- X_total$main
-
-corrmat <- X %>% 
-  select(where(is.numeric)) %>% 
-  cor()
-
-png(filename = "plots/team_hclust.png", width = 3500, height = 500)
-plot(hclust(as.dist(1-corrmat)))
-dev.off()
-
-plot(hclust(as.dist(1-corrmat)))
 ```
 
 # UMAP Investigation (Unsupervised)
@@ -552,25 +515,6 @@ imp_rev %>%
   coord_flip() + 
   theme_bw(12)
 ```
-
-## What is "EXPECTED_SCORE"?
-```{r fig.width=10, fig.height=6, include=F}
-plot(
-X %>% 
-  ggplot(
-    aes(
-      x = SCORING_SHOTS,
-      y = EXPECTED_SCORE
-    )
-  ) + 
-  geom_point() + 
-  theme_bw()
-)
-
-m <- lm(EXPECTED_SCORE ~ SCORING_SHOTS, data = X)
-print(summary(m))
-```
-
 
 Plot the top 100 influences:
 ```{r fig.width=15, fig.height=8}
