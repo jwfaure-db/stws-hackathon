@@ -14,6 +14,7 @@ library(recipes)
 library(xgboost)
 library(vip)
 library(furrr)
+library(ComplexHeatmap)
 
 plan(multisession(workers = 5))
 # system.time(furrr::future_map(.x = c(1,1,1), .f = ~ Sys.sleep(.x)))
@@ -24,19 +25,19 @@ source("preprocess_evaluate.R")
 
 # Load the data
 target_file = "team_summary"
-df <- readRDS(paste0("clean_data/", target_file, ".rds")) %>% 
+df_unnorm <- readRDS(paste0("clean_data/", target_file, ".rds")) %>% 
   dplyr::mutate(is_2020 = ifelse(SEASON_ID == "2020",  "is_2020", "not_2020"),
                 PERIOD = PERIOD %>% as.factor()
                 # MATCH_TIME = MATCH_TIME %>% as.numeric
   )
   # sample_n(1000)
 
-df_is_2020 = df %>% filter(is_2020 == "is_2020") %>% 
+df_norm_is_2020 = df_unnorm %>% filter(is_2020 == "is_2020") %>% 
   dplyr::mutate(dplyr::across(.cols = where(is.numeric), .fns = ~ .x/0.8))
 
-df_not_2020 = df %>% filter(is_2020 == "not_2020")
+df_norm_not_2020 = df_unnorm %>% filter(is_2020 == "not_2020")
 
-df = bind_rows(df_is_2020, df_not_2020)
+df_norm = bind_rows(df_norm_is_2020, df_norm_not_2020)
 
 
 # Set the default response column
@@ -82,20 +83,22 @@ screened_columns = c(
 not_considered_columns = c(dropped_columns, screened_columns, response_columns)
 
 ## considered_columns will always include any remaining columns, and a special column "Y"
-considered_columns = c(names(df)[!(names(df) %in% not_considered_columns)], "Y")
+considered_columns = c(names(df_unnorm)[!(names(df_unnorm) %in% not_considered_columns)], "Y")
 ```
 
 # Pre-processing (Isaac's code)
 ```{r}
-df_proc <- (df %>% preprocess(response = RESPONSE, predictors = considered_columns))$main
+df_norm_proc <- (df_norm %>% preprocess(response = RESPONSE, predictors = considered_columns))$main
+# glimpse(df_norm_proc)
 
-glimpse(df_proc)
+df_unnorm_proc <- (df_unnorm %>% preprocess(response = RESPONSE, predictors = considered_columns))$main
+# glimpse(df_unnorm_proc)
 ```
 
 # XGBoost (single run for testing, not evaluated)
 
 ```{r}
-data_split <- initial_split(df_proc, strata = "Y", p = 0.8)
+data_split <- initial_split(df_norm_proc, strata = "Y", p = 0.8)
 train = training(data_split)
 test = testing(data_split)
 
@@ -159,7 +162,7 @@ vip(xgb_model2$fit)
 # Constructing xgboost by spliting on zones
 
 ```{r, eval = FALSE}
-df_proc_nest = df_proc %>% 
+df_unnorm_proc_nest = df_unnorm_proc %>% 
   group_by(ZONE_LOGICAL_AFL) %>% 
   nest() %>% 
   dplyr::mutate(
@@ -174,11 +177,33 @@ df_proc_nest = df_proc %>%
                                 .options = furrroptions)
   )
 
-saveRDS(df_proc_nest, "clean_data/xgboost_2020_results.rds")
+
+df_norm_proc_nest = df_norm_proc %>% 
+  group_by(ZONE_LOGICAL_AFL) %>% 
+  nest() %>% 
+  dplyr::mutate(
+    split = purrr::map(.x = data, .f = ~ initial_split(.x, strata = "Y", p = 0.8)),
+    # xgb_fit = purrr::map(.x = split, .f = ~ xgb_wf %>% fit(data = training(.x))),
+    xgb_fit = furrr::future_map(.x = split, .f = ~ xgb_wf %>% fit(data = training(.x)), 
+                                .options = furrroptions),
+    xgb_final_fit = furrr::future_map2(.x = split, .y = xgb_fit,
+                                .f = ~ last_fit(object = .y,
+                                                split = .x,
+                                                metrics = metrics),
+                                .options = furrroptions)
+  )
+
+saveRDS(df_unnorm_proc_nest, "clean_data/xgboost_2020_unnorm_results.rds")
+saveRDS(df_norm_proc_nest, "clean_data/xgboost_2020_norm_results.rds")
 ```
 
 ```{r}
-df_proc_nest = readRDS("clean_data/xgboost_2020_results.rds")
+df_unnorm_proc_nest = readRDS("clean_data/xgboost_2020_unnorm_results.rds")
+df_norm_proc_nest = readRDS("clean_data/xgboost_2020_norm_results.rds")
+
+
+df_bind_proc_nest = bind_rows(df_unnorm_proc_nest %>% dplyr::mutate(norm_type = "unnorm"), 
+                              df_norm_proc_nest %>% dplyr::mutate(norm_type = "norm"))
 
 # df_proc_nest %>% 
 #   dplyr::mutate(
@@ -191,28 +216,56 @@ df_proc_nest = readRDS("clean_data/xgboost_2020_results.rds")
 # df_proc_nest
 
 
-vi_plotdf = df_proc_nest %>% 
+vi_plotdf = df_bind_proc_nest %>% 
   dplyr::mutate(
     vi = purrr::map(xgb_fit, .f = ~ vi((.x %>% pull_workflow_fit())$fit))
   ) %>% 
-  dplyr::select(ZONE_LOGICAL_AFL, vi) %>% 
+  dplyr::select(ZONE_LOGICAL_AFL, norm_type, vi) %>% 
   unnest(cols = c(vi))
 
-vi_plotdf
+library(ggrepel)
 
 vi_plotdf %>% 
-  ggplot(aes(x = ZONE_LOGICAL_AFL, 
-             y = Variable,
-             fill = Importance)) +
-  geom_tile() +
-  scale_fill_distiller(palette = "Spectral") +
-  theme(axis.text.y = element_blank())
-
-vi_mat = vi_plotdf %>% 
-  pivot_wider(names_from = ZONE_LOGICAL_AFL, 
+  pivot_wider(names_from = norm_type, 
               values_from = Importance) %>% 
-  dplyr::mutate(across(where))
+  dplyr::mutate_if(is.numeric, coalesce, 0) %>%
+  mutate(label = ifelse(unnorm >= quantile(unnorm, 0.99) | norm >= quantile(norm, 0.99),
+                        Variable, NA)) %>% 
+  ggplot(aes(x = unnorm, y = norm)) +
+  geom_point(size = 2) +
+  geom_label_repel(aes(label = label)) +
+  facet_wrap(~ZONE_LOGICAL_AFL, scales = "free") +
+  scale_x_continuous(trans = "sqrt") +
+  scale_y_continuous(trans = "sqrt") 
 
+# vi_plotdf %>% 
+#   ggplot(aes(x = ZONE_LOGICAL_AFL, 
+#              y = Variable,
+#              fill = Importance)) +
+#   geom_tile() +
+#   scale_fill_distiller(palette = "Spectral") +
+#   theme(axis.text.y = element_blank())
+
+list_vi_mat = vi_plotdf %>%
+  pivot_wider(names_from = ZONE_LOGICAL_AFL,
+              values_from = Importance) %>%
+  dplyr::mutate_if(is.numeric, coalesce, 0) %>%
+  split.data.frame(f = .$norm_type) %>% 
+  map(as.data.frame) %>%
+  map(.x = ., .f = ~ .x %>% select(-norm_type)) %>% 
+  map(tibble::column_to_rownames, "Variable")
+
+vi_mat_reduced_names = purrr::map(.x = list_vi_mat, .f = ~ .x[apply(.x, 2, function(x){x >= quantile(x, 0.99)}) %>% apply(1, any),]) %>% 
+  map(rownames) %>% unlist %>% unique
+
+h1 = Heatmap(list_vi_mat$norm[vi_mat_reduced_names,], name = "VI",
+        col = c("white", RColorBrewer::brewer.pal(9, "Spectral") %>% rev), cluster_columns = FALSE,
+        column_title = "Top variables separating before/after COVID (Normalised)")
+
+h2 = Heatmap(list_vi_mat$unnorm[vi_mat_reduced_names,], name = "VI",
+        col = c("white", RColorBrewer::brewer.pal(9, "Spectral") %>% rev), cluster_columns = FALSE,
+        column_title = "Top variables separating before/after COVID (Unnormalised)")
+
+h1 + h2
 ```
-
 
