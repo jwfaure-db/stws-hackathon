@@ -18,8 +18,48 @@ library(wesanderson)
 library(ggsci)
 
 # Load the data
-target_file = "team_summary"
+target_file = "player_summary"
 df <- readRDS(paste0("clean_data/", target_file, ".rds"))
+
+# Sample players (the dataset is too big)
+unique_players <- df %>% 
+  select(FULLNAME) %>% 
+  distinct() %>% 
+  arrange(FULLNAME) %>% 
+  pull(FULLNAME)
+
+## Always keep the 'star players'
+brownlow_2020 <- c(
+  "Lachie Neale",
+  "Travis Boak",
+  "Christian Petracca",
+  "Jack Steele",
+  "Patrick Dangerfield",
+  "Dustin Martin",
+  "Jack Macrae",
+  "Luke Parker",
+  "Cameron Guthrie",
+  "Clayton Oliver"
+)
+
+## Sample to 20% of total
+chosen_players <- tibble(
+  Player = unique_players[!(unique_players %in% brownlow_2020)]
+) %>% 
+  slice_sample(prop = 0.2) %>% 
+  pull()
+
+chosen_players <- c(chosen_players, brownlow_2020)
+
+## Filter dataframe
+df <- df %>% 
+  filter(
+    FULLNAME %in% chosen_players
+  ) %>% 
+  mutate(
+    BROWNLOW_WINNER = FULLNAME %in% !!brownlow_2020
+  )
+
 
 get_test_results <- function(
   model,
@@ -152,8 +192,11 @@ evaluate_model <- function(
 
 # Columns to be intentionally excluded entirely, in all cases
 dropped_columns = c(
+  "file_name",
   "HOME_SQUAD_ID",
-  "AWAY_SQUAD_ID"
+  "AWAY_SQUAD_ID",
+  "MATCH_ID",
+  "PERSON_ID"
 )
 
 # Potential response columns (will generally only consider one at a time)
@@ -163,7 +206,8 @@ response_columns = c(
 
 # Columns potentially removed in some cases (separated for simple commenting out)
 screened_columns = c(
-  "ZONE_LOGICAL_AFL"
+  "ZONE_LOGICAL_AFL",
+  "JUMPER_NO"
 )
 
 ## not_considered_columns are any columns that will be removed
@@ -259,50 +303,10 @@ rf_defaults <- rand_forest(mode = "classification")
 RESPONSE = NULL
 ```
 
-# Initial Screening of Variables
-```{r}
-X_total <- df %>% preprocess(response = RESPONSE, predictors = considered_columns)
-X <- X_total$main
-
-summary(X)
-```
-
-## Numerical Variable Correlations
-```{r fig.width=10, fig.height=10}
-X_total <- df %>% preprocess(response = RESPONSE, predictors = c(considered_columns, response_columns, screened_columns))
-X <- X_total$main
-
-corrmat <- X %>% 
-  select(where(is.numeric)) %>% 
-  cor()
-
-png(filename = "plots/team_corrplot.png", width = 3500, height = 3500)
-corrplot(corrmat, type = "upper", order = "hclust", tl.col = "black", tl.srt = 90, tl.cex = 0.8)
-dev.off()
-
-corrplot(corrmat, type = "upper", order = "hclust", tl.col = "black", tl.srt = 90, tl.cex = 0.8)
-```
-
-# HClust
-```{r fig.width=10, fig.height=10}
-X_total <- df %>% preprocess(response = RESPONSE, predictors = c(considered_columns, response_columns, screened_columns))
-X <- X_total$main
-
-corrmat <- X %>% 
-  select(where(is.numeric)) %>% 
-  cor()
-
-png(filename = "plots/team_hclust.png", width = 3500, height = 500)
-plot(hclust(as.dist(1-corrmat)))
-dev.off()
-
-plot(hclust(as.dist(1-corrmat)))
-```
-
 # UMAP Investigation (Unsupervised)
 ```{r}
 # Get the dataset
-X_total <- df %>% preprocess(response = RESPONSE, predictors = c(considered_columns))
+X_total <- df %>% preprocess(response = RESPONSE, predictors = c(considered_columns), max_categorical_levels = 500)
 X <- X_total$main
 
 # Determine which columns are factors (needing to be one-hot-encoded)
@@ -382,55 +386,34 @@ umap_2_train_plot <- umap_2_train %>%
 umap_2_train_plot
 ```
 
-## Extract Clusters with HDBSCAN
-```{r}
-# Get 5-dimensional representation of dataset
-umap_5_train = unsupervised %>% 
-  step_umap(all_predictors(), num_comp = 5, retain = F) %>%
-  prep(training = train) %>% 
-  bake(new_data = train)
-
-summary(umap_5_train)
-```
-
-
-```{r, fig.width=10, fig.height=6}
-# Execute the hdbscan algorithm
-cluster = umap_5_train %>% as.matrix() %>% hdbscan(minPts = 40, gen_hdbscan_tree = T, gen_simplified_tree = T)
-
-message(paste0("Number of Clusters: ", length(unique(cluster$cluster) - 1)))
-message(paste0("Outlier Proportion: ", signif(sum(cluster$cluster == 0) / length(cluster$cluster), 3)))
-
-tibble(
-  Cluster = cluster$cluster
-) %>% 
-  group_by(Cluster) %>% 
-  count() %>% 
-  ungroup() %>% 
-  arrange(desc(n)) %>% 
-  print()
-
-plot(cluster, show_flat = T)
-```
-
-## Overlay on 2D UMAP output
 ```{r fig.width=10, fig.height=6}
-umap_2_cluster <- umap_2_train %>% 
-  mutate(Cluster = cluster$cluster)
-
-umap_2_cluster_plot <- umap_2_cluster %>% 
+umap_2_train_plot <- umap_2_train %>% 
+  bind_cols(X) %>% 
+  bind_cols(X_total$secondary) %>% 
   mutate(
-    Cluster = factor(Cluster)
+    `COVID-19` = ifelse((SEASON_ID == 2020), "After", "Before"),
+    Zone = case_when(
+      ZONE_LOGICAL_AFL == 'AM' ~ "Attacking Midfield",
+      ZONE_LOGICAL_AFL == 'DM' ~ "Defending Midfield",
+      ZONE_LOGICAL_AFL == 'F50' ~ "Forward 50m",
+      ZONE_LOGICAL_AFL == 'D50' ~ "Defending 50m",
+      ZONE_LOGICAL_AFL == 'X' ~ "Zone-Independent"
+    )
+  ) %>% 
+  mutate(
+    `COVID-19` = factor(`COVID-19`, levels = c("Before", "After"), ordered = T),
+    Zone = factor(Zone, levels = c("Attacking Midfield", "Defending Midfield", "Forward 50m", "Defending 50m", "Zone-Independent"), ordered = T)
   ) %>% 
   ggplot(
     aes(
       x = umap_1,
       y = umap_2,
-      col = Cluster
+      colour = BROWNLOW_WINNER,
+      alpha = `COVID-19`
     )
   ) + 
-  geom_point(alpha = 0.3, size = 0.1) + 
-  theme_bw(12) +
+  geom_point(size = 0.1) + 
+  scale_alpha_manual(values = c("After" = 0.5, "Before" = 0.1), guide = guide_legend(override.aes = list(size = 3))) +
   ggsci::scale_colour_d3() +
   guides(colour = guide_legend(override.aes = list(size = 3, alpha = 1))) +
   theme_linedraw(12) + 
@@ -444,56 +427,17 @@ umap_2_cluster_plot <- umap_2_cluster %>%
     line = element_blank()
   )
 
-# umap_2_cluster_plot %>% plotly::ggplotly()
-umap_2_cluster_plot
+# umap_2_train_plot %>% plotly::ggplotly()
+umap_2_train_plot
 ```
 
-## Overlay on 2D UMAP output - With Assigned Cluster Names
-```{r fig.width=10, fig.height=6}
-umap_2_cluster <- umap_2_train %>% 
-  mutate(Cluster = cluster$cluster)
 
-umap_2_cluster_plot <- umap_2_cluster %>% 
-  mutate(
-    Cluster = factor(Cluster)
-  ) %>% 
-  ggplot(
-    aes(
-      x = umap_1,
-      y = umap_2,
-      col = Cluster
-    )
-  ) + 
-  geom_point(alpha = 0.3, size = 0.1) + 
-  theme_bw(12) +
-  ggsci::scale_colour_d3() +
-  guides(colour = guide_legend(override.aes = list(size = 3, alpha = 1))) +
-  theme_linedraw(12) + 
-  theme(
-    axis.title.x=element_blank(),
-    axis.text.x=element_blank(),
-    axis.ticks.x=element_blank(),
-    axis.title.y=element_blank(),
-    axis.text.y=element_blank(),
-    axis.ticks.y=element_blank(), 
-    line = element_blank()
-  )
-
-# umap_2_cluster_plot %>% plotly::ggplotly()
-umap_2_cluster_plot
-```
-
-## Random Forest (predicting cluster)
+## Random Forest (predicting brownlow)
 ```{r}
 umap_2_all <- umap_2_train %>% 
-  mutate(Cluster = cluster$cluster) %>% 
   bind_cols(train)
 
-X_total <- umap_2_all %>% 
-  mutate(
-    Cluster = factor(Cluster)
-  ) %>% 
-  preprocess(response = "Cluster", predictors = considered_columns)
+X_total <- df %>% mutate(BROWNLOW_WINNER = factor(BROWNLOW_WINNER)) %>% preprocess(response = "BROWNLOW_WINNER", predictors = considered_columns)
 X <- X_total$main
 
 data_split_rf <- initial_split(X, strata = "Y", p = 0.8)
@@ -553,106 +497,87 @@ imp_rev %>%
   theme_bw(12)
 ```
 
-## What is "EXPECTED_SCORE"?
-```{r fig.width=10, fig.height=6, include=F}
-plot(
-X %>% 
-  ggplot(
-    aes(
-      x = SCORING_SHOTS,
-      y = EXPECTED_SCORE
-    )
-  ) + 
-  geom_point() + 
-  theme_bw()
-)
-
-m <- lm(EXPECTED_SCORE ~ SCORING_SHOTS, data = X)
-print(summary(m))
-```
-
-
 Plot the top 100 influences:
 ```{r fig.width=15, fig.height=8}
 i = 1
-i_max = 10
+i_max = 50
 # for(var in imp$Variable){
-for(i in 1:100){
+for(i in 1:50){
   if(i <= i_max){
     var = imp$Variable[i]
     
-    dt = tibble(
-      X = X[[var]],
-      Y = !!X$Y,
-      Game = !!X_total$main$MATCH_ID
-    )
-    
-    corr_plot = dt %>% 
-      ggplot(
-        aes(
-          x = X,
-          y = Y
-        )
-      ) + 
-      theme_bw(12) + 
-      xlab(var) + 
-      ylab(X_total$response)
-    # + 
-    #   geom_smooth(method = "lm", linetype = "dashed", formula = y ~ x)
-    
-    if(is.factor(dt$X)){
-      corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 0.1, alpha = 0.3, height = 0.25)
-    }else{
-      corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 0.1, alpha = 0.3, height = 0.25, width = 0)
+    dt_ <- umap_2_all
+    if("difftime" %in% class(dt_[[var]])){
+      dt_[[var]] <- as.numeric(dt_[[var]])
     }
     
-    game_plot = dt %>% 
-      ggplot(
-        aes(
-          x = Game,
-          colour = Y,
-          y = X
-        )
-      ) + 
-      geom_point(na.rm=T, size = 0.5, alpha = 0.4) + 
-      theme_bw(12) + 
-      xlab("Game") + 
-      ylab(var) + 
-      theme(
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank()
+    if(var != "MATCH_DATE"){
+      dt = tibble(
+        X = X[[var]],
+        Y = !!X$Y,
+        Date = !!X_total$main$MATCH_DATE
       )
-    
-    umap_overlay_plot <- umap_2_all %>% 
-      mutate(
-        Cluster = factor(Cluster)
-      ) %>% 
-      ggplot(
-        aes_string(
-          x = "umap_1",
-          y = "umap_2",
-          colour = as.character(var)
+      
+      corr_plot = dt %>% 
+        ggplot(
+          aes(
+            x = X,
+            y = Y
+          )
+        ) + 
+        theme_bw(12) + 
+        xlab(var) + 
+        ylab(X_total$response) +
+        geom_smooth(method = "lm", linetype = "dashed", formula = y ~ x)
+      
+      if(is.factor(dt$X)){
+        corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 0.1, alpha = 0.3, height = 0.25)
+      }else{
+        corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 0.1, alpha = 0.3, height = 0.25, width = 0)
+      }
+      
+      game_plot = dt %>% 
+        ggplot(
+          aes(
+            x = Date,
+            colour = Y,
+            y = X
+          )
+        ) + 
+        geom_point(na.rm=T, size = 0.1, alpha = 0.4) + 
+        theme_bw(12) + 
+        xlab("Date") + 
+        ylab(var)
+      
+      umap_overlay_plot <- dt_ %>% 
+        ggplot(
+          aes_string(
+            x = "umap_1",
+            y = "umap_2",
+            colour = as.character(var)
+          )
+        ) + 
+        geom_point(alpha = 0.3, size = 0.1) + 
+        theme_bw(12) + 
+        ggtitle(var) + 
+        theme(
+          axis.title.x=element_blank(),
+          axis.text.x=element_blank(),
+          axis.ticks.x=element_blank(),
+          axis.title.y=element_blank(),
+          axis.text.y=element_blank(),
+          axis.ticks.y=element_blank(),
+          legend.title=element_blank()
         )
-      ) + 
-      geom_point(alpha = 0.3, size = 0.1) + 
-      theme_bw(12) + 
-      ggtitle(var) + 
-      theme(
-        axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.title.y=element_blank(),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        legend.title=element_blank()
-      )
-    
-    if(!("factor" %in% class(umap_2_all[[var]]))){
-      umap_overlay_plot <- umap_overlay_plot + 
-        scale_colour_gradientn(colours = wes_palette("Zissou1", type = "continuous"))
+      
+      if(!("factor" %in% class(umap_2_all[[var]]))){
+        if(!("Date" %in% class(umap_2_all[[var]]))){
+          umap_overlay_plot <- umap_overlay_plot + scale_colour_gradientn(colours = wes_palette("Zissou1", type = "continuous"))
+        }
+      }
+      
+      plot(umap_overlay_plot + (corr_plot / game_plot))
     }
-    
-    plot(umap_overlay_plot + (corr_plot / game_plot))
   }
 }
 ```
