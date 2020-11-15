@@ -8,7 +8,7 @@ process_all_players = function(){
     
   all_players <<- all_players %>% dplyr::mutate(
     BROWNLOW_WINNER = ifelse(FULLNAME %in% brownlow_winners$Player, 1, 0),
-    AGE_EOS = SEASON_ID - year(DOB)
+    AGE_EOS = SEASON_ID - lubridate::year(DOB)
   )
   
   team_player_summary <<- all_players %>% group_by(SQUAD_NAME, SEASON_ID) %>% 
