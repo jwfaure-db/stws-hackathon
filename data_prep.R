@@ -140,6 +140,7 @@ process_match_summary()
 
 process_team_rates = function(){
   team_rates = team_summary %>% dplyr::transmute(
+    SEASON_ID = SEASON_ID,
     HOME_AWAY = ifelse(SQUAD_NAME == HOME_SQUAD, "home", "away"), # whether squad of interest is home team
     RESULT = ifelse(SQUAD_MARGIN == 0, "draw", ifelse(SQUAD_MARGIN > 0, "won", "lost")), # our outcome variable
     PERIOD = PERIOD %>% as.factor(),

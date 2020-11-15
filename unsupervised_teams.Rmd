@@ -19,7 +19,19 @@ library(ggsci)
 
 # Load the data
 target_file = "team_summary"
+# target_file = "team_rates"
 df <- readRDS(paste0("clean_data/", target_file, ".rds"))
+for(n in names(df)){
+  df[[n]][is.infinite(df[[n]])] <- NA
+}
+
+# target_file = "team_summary"
+target_file = "team_rates"
+df_rates <- readRDS(paste0("clean_data/", target_file, ".rds"))
+for(n in names(df_rates)){
+  df_rates[[n]][is.infinite(df_rates[[n]])] <- NA
+}
+
 
 get_test_results <- function(
   model,
@@ -296,6 +308,8 @@ umap_2_train <- bake(
   new_data = train
 ) 
 
+umap_2_train_base <- umap_2_train
+
 summary(umap_2_train)
 ```
 
@@ -326,11 +340,11 @@ umap_2_train_plot <- umap_2_train %>%
       alpha = `COVID-19`
     )
   ) + 
-  geom_point(size = 0.1) + 
+  geom_point(size = 1) + 
   scale_alpha_manual(values = c("After" = 0.5, "Before" = 0.1), guide = guide_legend(override.aes = list(size = 3))) +
   ggsci::scale_colour_d3() +
   guides(colour = guide_legend(override.aes = list(size = 3, alpha = 1))) +
-  theme_linedraw(12) + 
+  theme_linedraw(30) + 
   theme(
     axis.title.x=element_blank(),
     axis.text.x=element_blank(),
@@ -342,6 +356,11 @@ umap_2_train_plot <- umap_2_train %>%
   )
 
 # umap_2_train_plot %>% plotly::ggplotly()
+
+png("output/umap_teams.png", width = 1600, height = 1000)
+plot(umap_2_train_plot)
+dev.off()
+
 umap_2_train_plot
 ```
 
@@ -359,7 +378,8 @@ summary(umap_5_train)
 
 ```{r, fig.width=10, fig.height=6}
 # Execute the hdbscan algorithm
-cluster = umap_5_train %>% as.matrix() %>% hdbscan(minPts = 40, gen_hdbscan_tree = T, gen_simplified_tree = T)
+# cluster = umap_5_train %>% as.matrix() %>% hdbscan(minPts = 40, gen_hdbscan_tree = T, gen_simplified_tree = T)
+cluster = umap_2_train %>% as.matrix() %>% hdbscan(minPts = 40, gen_hdbscan_tree = T, gen_simplified_tree = T)
 
 message(paste0("Number of Clusters: ", length(unique(cluster$cluster) - 1)))
 message(paste0("Outlier Proportion: ", signif(sum(cluster$cluster == 0) / length(cluster$cluster), 3)))
@@ -516,6 +536,69 @@ imp_rev %>%
   theme_bw(12)
 ```
 
+# Overall Influence
+```{r fig.width=10, fig.height=6}
+influencing_variables <- imp$Variable[1:10]
+
+umap_2_train <- umap_2_train_base
+
+dt <- umap_2_train %>% 
+  select(-umap_1, -umap_2) %>% 
+  bind_cols(X) %>% 
+  bind_cols(X_total$secondary) %>% 
+  mutate(
+    `COVID-19` = ifelse((SEASON_ID == 2020), "After", "Before")
+  ) %>% 
+  mutate(
+    `COVID-19` = factor(`COVID-19`, levels = c("Before", "After"), ordered = T),
+    Colour = NA
+  )
+
+threshold = 0.1
+# For each influencing_variable, assign the colour column if the values are in the top of the range
+for(var in influencing_variables){
+  # Can't consider factor variables
+  if(!("factor" %in% class(dt[[var]]))){
+    # Find the appropriate quantile
+    range_high = dt[[var]] %>% quantile(1-threshold)
+    range_low = dt[[var]] %>% quantile(threshold)
+    
+    # Any unassigned colour whose variable is above this threshold is assigned the variable name
+    dt$Colour[is.na(dt$Colour) & dt[[var]] > range_high] <- paste0(var, " (High)")
+    # dt$Colour[is.na(dt$Colour) & dt[[var]] < range_low] <- paste0(var, " (Low)")
+  }
+}
+
+dt$Colour[is.na(dt$Colour)] <- "None"
+
+umap_2_train_plot <- dt %>% 
+  ggplot(
+    aes(
+      x = umap_1,
+      y = umap_2,
+      colour = Colour,
+      alpha = `COVID-19`
+    )
+  ) + 
+  geom_point(size = 0.1) + 
+  scale_alpha_manual(values = c("After" = 0.5, "Before" = 0.1), guide = guide_legend(override.aes = list(size = 3))) +
+  ggsci::scale_colour_d3() +
+  guides(colour = guide_legend(override.aes = list(size = 3, alpha = 1))) +
+  theme_linedraw(12) + 
+  theme(
+    axis.title.x=element_blank(),
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    axis.title.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.ticks.y=element_blank(), 
+    line = element_blank()
+  )
+
+umap_2_train_plot
+```
+
+
 Plot the top 100 influences:
 ```{r fig.width=15, fig.height=8}
 i = 1
@@ -600,3 +683,409 @@ for(i in 1:100){
   }
 }
 ```
+
+# Influence Definitions
+```{r fig.width=10, fig.height=6}
+
+```
+
+# Midfield
+```{r fig.width=10, fig.height=6}
+this_zone <- df_rates %>% 
+  filter(
+    ZONE_LOGICAL_AFL %in% c("AM", "DM")
+  )
+
+# influencing_variables <- c(
+#   "CONTESTED_MARK_FROM_TEAM",
+#   "RUCK_HARD_BALL_GET",
+#   "IN50_TARGET_PLAY_SCORE",
+#   "AWAY_SQUAD_TRAVEL",
+#   "D50_REB_IN50",
+#   "FREE_FOR_ON_BALL",
+#   "BROKEN_TACKLE",
+#   "BALL_UP_HITOUT",
+#   "SPOIL_INEFFECTIVE"
+# )
+
+# Get the dataset
+X_total <- this_zone %>% preprocess(response = RESPONSE, predictors = c(considered_columns), drop_at_na_level = 0.99)
+X <- X_total$main
+
+# Determine which columns are factors (needing to be one-hot-encoded)
+factors = X %>% 
+  select(where(is.factor)) %>% 
+  names()
+
+# Leave the response variable as-is
+factors <- factors[factors != "Y"]
+
+train = X
+
+unsupervised <- recipe(~ ., data = train) %>% 
+  step_dummy(all_of(factors), one_hot = T)
+
+umap_2 = unsupervised %>% 
+  step_umap(all_predictors(), num_comp = 2, retain = F) %>%
+  prep(training = train)
+
+umap_2_train <- bake(
+  umap_2,
+  new_data = train
+) 
+
+dt <- umap_2_train %>% 
+  bind_cols(X) %>% 
+  bind_cols(X_total$secondary) %>% 
+  mutate(
+    `COVID-19` = ifelse((SEASON_ID == 2020), "After", "Before")
+  ) %>% 
+  mutate(
+    `COVID-19` = factor(`COVID-19`, levels = c("Before", "After"), ordered = T),
+    Colour = NA
+  )
+
+threshold = 0.1
+# For each influencing_variable, assign the colour column if the values are in the top of the range
+for(var in influencing_variables){
+  # Can't consider factor variables
+  if(!("factor" %in% class(dt[[var]]))){
+    # Find the appropriate quantile
+    range_high = dt[[var]] %>% quantile(1-threshold)
+    range_low = dt[[var]] %>% quantile(threshold)
+    
+    # Any unassigned colour whose variable is above this threshold is assigned the variable name
+    dt$Colour[is.na(dt$Colour) & dt[[var]] > range_high] <- paste0(var, " (High)")
+    dt$Colour[is.na(dt$Colour) & dt[[var]] < range_low] <- paste0(var, " (Low)")
+  }
+}
+
+dt$Colour[is.na(dt$Colour)] <- "None"
+
+umap_2_train_plot <- dt %>% 
+  ggplot(
+    aes(
+      x = umap_1,
+      y = umap_2,
+      colour = Colour,
+      alpha = `COVID-19`
+    )
+  ) + 
+  geom_point(size = 1) + 
+  scale_alpha_manual(values = c("After" = 0.5, "Before" = 0.1), guide = guide_legend(override.aes = list(size = 3))) +
+  ggsci::scale_colour_d3() +
+  guides(colour = guide_legend(override.aes = list(size = 3, alpha = 1))) +
+  theme_linedraw(12) + 
+  theme(
+    axis.title.x=element_blank(),
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    axis.title.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.ticks.y=element_blank(), 
+    line = element_blank()
+  )
+
+umap_2_train_plot
+```
+
+# Forward 50m
+```{r fig.width=10, fig.height=6}
+this_zone <- df %>% 
+  filter(
+    ZONE_LOGICAL_AFL %in% c("F50")
+  )
+
+# influencing_variables <- c(
+#   "CONTESTED_MARK_FROM_TEAM",
+#   "RUCK_HARD_BALL_GET",
+#   "IN50_TARGET_PLAY_SCORE",
+#   "AWAY_SQUAD_TRAVEL",
+#   "D50_REB_IN50",
+#   "FREE_FOR_ON_BALL",
+#   "BROKEN_TACKLE",
+#   "BALL_UP_HITOUT",
+#   "SPOIL_INEFFECTIVE"
+# )
+
+# Get the dataset
+X_total <- this_zone %>% preprocess(response = RESPONSE, predictors = c(considered_columns))
+X <- X_total$main
+
+# Determine which columns are factors (needing to be one-hot-encoded)
+factors = X %>% 
+  select(where(is.factor)) %>% 
+  names()
+
+# Leave the response variable as-is
+factors <- factors[factors != "Y"]
+
+train = X
+
+unsupervised <- recipe(~ ., data = train) %>% 
+  step_dummy(all_of(factors), one_hot = T)
+
+umap_2 = unsupervised %>% 
+  step_umap(all_predictors(), num_comp = 2, retain = F) %>%
+  prep(training = train)
+
+umap_2_train <- bake(
+  umap_2,
+  new_data = train
+) 
+
+dt <- umap_2_train %>% 
+  bind_cols(X) %>% 
+  bind_cols(X_total$secondary) %>% 
+  mutate(
+    `COVID-19` = ifelse((SEASON_ID == 2020), "After", "Before")
+  ) %>% 
+  mutate(
+    `COVID-19` = factor(`COVID-19`, levels = c("Before", "After"), ordered = T),
+    Colour = NA
+  )
+
+threshold = 0.1
+# For each influencing_variable, assign the colour column if the values are in the top of the range
+for(var in influencing_variables){
+  # Can't consider factor variables
+  if(!("factor" %in% class(dt[[var]]))){
+    # Find the appropriate quantile
+    range_high = dt[[var]] %>% quantile(1-threshold)
+    range_low = dt[[var]] %>% quantile(threshold)
+    
+    # Any unassigned colour whose variable is above this threshold is assigned the variable name
+    dt$Colour[is.na(dt$Colour) & dt[[var]] > range_high] <- paste0(var, " (High)")
+    dt$Colour[is.na(dt$Colour) & dt[[var]] < range_low] <- paste0(var, " (Low)")
+  }
+}
+
+dt$Colour[is.na(dt$Colour)] <- "None"
+
+umap_2_train_plot <- dt %>% 
+  ggplot(
+    aes(
+      x = umap_1,
+      y = umap_2,
+      colour = Colour,
+      alpha = `COVID-19`
+    )
+  ) + 
+  geom_point(size = 1) + 
+  scale_alpha_manual(values = c("After" = 0.5, "Before" = 0.1), guide = guide_legend(override.aes = list(size = 3))) +
+  ggsci::scale_colour_d3() +
+  guides(colour = guide_legend(override.aes = list(size = 3, alpha = 1))) +
+  theme_linedraw(12) + 
+  theme(
+    axis.title.x=element_blank(),
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    axis.title.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.ticks.y=element_blank(), 
+    line = element_blank()
+  )
+
+umap_2_train_plot
+```
+
+# Defending 50m
+```{r fig.width=10, fig.height=6}
+this_zone <- df %>% 
+  filter(
+    ZONE_LOGICAL_AFL %in% c("D50")
+  )
+
+# influencing_variables <- c(
+#   "CONTESTED_MARK_FROM_TEAM",
+#   "RUCK_HARD_BALL_GET",
+#   "IN50_TARGET_PLAY_SCORE",
+#   "AWAY_SQUAD_TRAVEL",
+#   "D50_REB_IN50",
+#   "FREE_FOR_ON_BALL",
+#   "BROKEN_TACKLE",
+#   "BALL_UP_HITOUT",
+#   "SPOIL_INEFFECTIVE"
+# )
+
+# Get the dataset
+X_total <- this_zone %>% preprocess(response = RESPONSE, predictors = c(considered_columns))
+X <- X_total$main
+
+# Determine which columns are factors (needing to be one-hot-encoded)
+factors = X %>% 
+  select(where(is.factor)) %>% 
+  names()
+
+# Leave the response variable as-is
+factors <- factors[factors != "Y"]
+
+train = X
+
+unsupervised <- recipe(~ ., data = train) %>% 
+  step_dummy(all_of(factors), one_hot = T)
+
+umap_2 = unsupervised %>% 
+  step_umap(all_predictors(), num_comp = 2, retain = F) %>%
+  prep(training = train)
+
+umap_2_train <- bake(
+  umap_2,
+  new_data = train
+) 
+
+dt <- umap_2_train %>% 
+  bind_cols(X) %>% 
+  bind_cols(X_total$secondary) %>% 
+  mutate(
+    `COVID-19` = ifelse((SEASON_ID == 2020), "After", "Before")
+  ) %>% 
+  mutate(
+    `COVID-19` = factor(`COVID-19`, levels = c("Before", "After"), ordered = T),
+    Colour = NA
+  )
+
+threshold = 0.1
+# For each influencing_variable, assign the colour column if the values are in the top of the range
+for(var in influencing_variables){
+  # Can't consider factor variables
+  if(!("factor" %in% class(dt[[var]]))){
+    # Find the appropriate quantile
+    range_high = dt[[var]] %>% quantile(1-threshold)
+    range_low = dt[[var]] %>% quantile(threshold)
+    
+    # Any unassigned colour whose variable is above this threshold is assigned the variable name
+    dt$Colour[is.na(dt$Colour) & dt[[var]] > range_high] <- paste0(var, " (High)")
+    dt$Colour[is.na(dt$Colour) & dt[[var]] < range_low] <- paste0(var, " (Low)")
+  }
+}
+
+dt$Colour[is.na(dt$Colour)] <- "None"
+
+umap_2_train_plot <- dt %>% 
+  ggplot(
+    aes(
+      x = umap_1,
+      y = umap_2,
+      colour = Colour,
+      alpha = `COVID-19`
+    )
+  ) + 
+  geom_point(size = 1) + 
+  scale_alpha_manual(values = c("After" = 0.5, "Before" = 0.1), guide = guide_legend(override.aes = list(size = 3))) +
+  ggsci::scale_colour_d3() +
+  guides(colour = guide_legend(override.aes = list(size = 3, alpha = 1))) +
+  theme_linedraw(12) + 
+  theme(
+    axis.title.x=element_blank(),
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    axis.title.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.ticks.y=element_blank(), 
+    line = element_blank()
+  )
+
+umap_2_train_plot
+```
+
+# Zone-Independent
+```{r fig.width=10, fig.height=6}
+this_zone <- df %>% 
+  filter(
+    ZONE_LOGICAL_AFL %in% c("X")
+  )
+
+# influencing_variables <- c(
+#   "CONTESTED_MARK_FROM_TEAM",
+#   "RUCK_HARD_BALL_GET",
+#   "IN50_TARGET_PLAY_SCORE",
+#   "AWAY_SQUAD_TRAVEL",
+#   "D50_REB_IN50",
+#   "FREE_FOR_ON_BALL",
+#   "BROKEN_TACKLE",
+#   "BALL_UP_HITOUT",
+#   "SPOIL_INEFFECTIVE"
+# )
+
+# Get the dataset
+X_total <- this_zone %>% preprocess(response = RESPONSE, predictors = c(considered_columns))
+X <- X_total$main
+
+# Determine which columns are factors (needing to be one-hot-encoded)
+factors = X %>% 
+  select(where(is.factor)) %>% 
+  names()
+
+# Leave the response variable as-is
+factors <- factors[factors != "Y"]
+
+train = X
+
+unsupervised <- recipe(~ ., data = train) %>% 
+  step_dummy(all_of(factors), one_hot = T)
+
+umap_2 = unsupervised %>% 
+  step_umap(all_predictors(), num_comp = 2, retain = F) %>%
+  prep(training = train)
+
+umap_2_train <- bake(
+  umap_2,
+  new_data = train
+) 
+
+dt <- umap_2_train %>% 
+  bind_cols(X) %>% 
+  bind_cols(X_total$secondary) %>% 
+  mutate(
+    `COVID-19` = ifelse((SEASON_ID == 2020), "After", "Before")
+  ) %>% 
+  mutate(
+    `COVID-19` = factor(`COVID-19`, levels = c("Before", "After"), ordered = T),
+    Colour = NA
+  )
+
+threshold = 0.1
+# For each influencing_variable, assign the colour column if the values are in the top of the range
+for(var in influencing_variables){
+  # Can't consider factor variables
+  if(!("factor" %in% class(dt[[var]]))){
+    # Find the appropriate quantile
+    range_high = dt[[var]] %>% quantile(1-threshold)
+    range_low = dt[[var]] %>% quantile(threshold)
+    
+    # Any unassigned colour whose variable is above this threshold is assigned the variable name
+    dt$Colour[is.na(dt$Colour) & dt[[var]] > range_high] <- paste0(var, " (High)")
+    dt$Colour[is.na(dt$Colour) & dt[[var]] < range_low] <- paste0(var, " (Low)")
+  }
+}
+
+dt$Colour[is.na(dt$Colour)] <- "None"
+
+umap_2_train_plot <- dt %>% 
+  ggplot(
+    aes(
+      x = umap_1,
+      y = umap_2,
+      colour = Colour,
+      alpha = `COVID-19`
+    )
+  ) + 
+  geom_point(size = 1) + 
+  scale_alpha_manual(values = c("After" = 0.5, "Before" = 0.1), guide = guide_legend(override.aes = list(size = 3))) +
+  ggsci::scale_colour_d3() +
+  guides(colour = guide_legend(override.aes = list(size = 3, alpha = 1))) +
+  theme_linedraw(12) + 
+  theme(
+    axis.title.x=element_blank(),
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    axis.title.y=element_blank(),
+    axis.text.y=element_blank(),
+    axis.ticks.y=element_blank(), 
+    line = element_blank()
+  )
+
+umap_2_train_plot
+```
+
