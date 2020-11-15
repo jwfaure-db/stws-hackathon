@@ -386,55 +386,6 @@ train_x = train %>% select(-Y)
 train_y = train %>% pull(Y)
 ```
 
-## XGBoost
-```{r}
-rec <- recipe(Y ~ ., data = train) %>%
-  step_knnimpute(all_predictors()) %>% 
-  step_dummy(all_of(factors), one_hot = T) %>% 
-  prep()
-
-# Just some sensible values, not optimised by any means!
-mod <- boost_tree(trees = 500, 
-                  mtry = 6, 
-                  min_n = 10,
-                  tree_depth = 5) %>%
-  set_engine("xgboost") %>%
-  set_mode("classification")
-
-xgboost_wflow <- workflow() %>%
-  add_recipe(rec) %>%
-  add_model(mod) %>% 
-  fit(train)
-
-xg_res <- last_fit(xgboost_wflow,
-                   data_split,
-                   metrics = metric_set(roc_auc, pr_auc, accuracy))
-
-preds <- xg_res %>% 
-  collect_predictions()
-
-xg_res %>% 
-  collect_metrics()
-
-
-xgb <- xgb_defaults %>%  
-  fit_xy(
-    x = train_x,
-    y = train_y
-  )
-
-# Summarise performance
-get_test_results(xgb, test) %>% metrics(truth = Observed, estimate = Predicted)
-
-# Summarise performance
-get_test_results(xgb, test) %>% metrics(truth = Observed, estimate = Predicted)
-```
-
-```{r}
-# Predicted vs Observed
-evaluate_model(rf, train, test)
-```
-
 ## Random Forest
 ```{r}
 rf <- rf_defaults %>% 
