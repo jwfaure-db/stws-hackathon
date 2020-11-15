@@ -426,7 +426,7 @@ for(z in unique(df$AFL_ZONE)){
       Variable = factor(Variable, levels = Variable, ordered = T)
     )
   
-  imp_rev <- imp %>% 
+  imp_rev <- imp %>% head(20) %>% 
     arrange(
       Importance
     ) %>% 
@@ -434,8 +434,7 @@ for(z in unique(df$AFL_ZONE)){
       Variable = factor(Variable, levels = Variable, ordered = T)
     )
   
-  plotter <- imp_rev %>% 
-    head(20) %>%
+  plotter <- imp_rev %>%
     ggplot(
       aes(
         x = Variable,
@@ -447,7 +446,7 @@ for(z in unique(df$AFL_ZONE)){
     theme_linedraw() +
     theme(line = element_blank())
   
-  png(filename = paste0("plots/", z, "_var_imp.png"))
+  png(filename = paste0("winning_plots/", z, "_var_imp.png"))
   print(plotter)
   dev.off()
   
@@ -487,7 +486,7 @@ for(z in unique(df$AFL_ZONE)){
         }
         pr[[i]] <- corr_plot
       }
-      png(filename = paste0("plots/", z, "_", str_replace_all(var, "[[:punct:]]", " "), ".png"))
+      png(filename = paste0("winning_plots/", z, "_", str_replace_all(var, "[[:punct:]]", " "), ".png"))
     print(pr[[i]])
     dev.off()
     }
