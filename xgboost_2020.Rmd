@@ -9,42 +9,68 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(lubridate)
-library(pins)
 library(tidymodels)
-library(patchwork)
 library(recipes)
-library(embed)
-library(corrplot)
-library(dbscan)
+library(xgboost)
+library(vip)
+library(furrr)
+
+plan(multisession(workers = 5))
+# system.time(furrr::future_map(.x = c(1,1,1), .f = ~ Sys.sleep(.x)))
+# system.time(purrr::map(.x = c(1,1,1), .f = ~ Sys.sleep(.x)))
+furrroptions = furrr_options(packages = c("tidymodels"), globals = TRUE)
+
 source("preprocess_evaluate.R")
 
 # Load the data
 target_file = "team_summary"
 df <- readRDS(paste0("clean_data/", target_file, ".rds")) %>% 
-  dplyr::mutate(is_2020 = ifelse(SEASON_ID == "2020",  "is_2020", "not_2020")) %>% 
-  dplyr::select(-file_name, -SEASON_ID) %>% 
-  sample_n(1000)
+  dplyr::mutate(is_2020 = ifelse(SEASON_ID == "2020",  "is_2020", "not_2020"),
+                PERIOD = PERIOD %>% as.factor()
+                # MATCH_TIME = MATCH_TIME %>% as.numeric
+  )
+  # sample_n(1000)
+
+df_is_2020 = df %>% filter(is_2020 == "is_2020") %>% 
+  dplyr::mutate(dplyr::across(.cols = where(is.numeric), .fns = ~ .x/0.8))
+
+df_not_2020 = df %>% filter(is_2020 == "not_2020")
+
+df = bind_rows(df_is_2020, df_not_2020)
+
 
 # Set the default response column
 RESPONSE = "is_2020"
 
 # Columns to be intentionally excluded entirely, in all cases
 dropped_columns = c(
-  
+  "MATCH_ID",
+  "HOME_SQUAD_ID", 
+  "AWAY_SQUAD_ID",
+  "SEASON_ID",
+  "file_name",
+  "MATCH_DATE",
+  "MATCH_TIME",
+  "MATCH_TIME_MELB",
+  "HOME_SQUAD_TRAVEL",
+  "VENUE_STATE",
+  "VENUE_NAME",
+  "VENUE_LOCATION", 
+  "INT_CAP_TOTAL"
 )
 
 # Potential response columns (will generally only consider one at a time)
 response_columns = c(
-  # "MARGIN",
-  # "SQUAD_MARGIN",
-  # "SCORE",
-  # "GOAL",
-  # "EXPECTED_SCORE",
-  # "HOME_SCORE",
-  # "AWAY_SCORE",
-  # "SCORING_SHOTS",
-  # # "SHOT_AT_GOAL",
-  # "GOAL_ASSIST"
+  "MARGIN",
+  "SQUAD_MARGIN",
+  "SCORE",
+  "GOAL",
+  "EXPECTED_SCORE",
+  "HOME_SCORE",
+  "AWAY_SCORE",
+  "SCORING_SHOTS",
+  # "SHOT_AT_GOAL",
+  "GOAL_ASSIST"
 )
 
 # Columns potentially removed in some cases (separated for simple commenting out)
@@ -61,74 +87,132 @@ considered_columns = c(names(df)[!(names(df) %in% not_considered_columns)], "Y")
 
 # Pre-processing (Isaac's code)
 ```{r}
-X_total <- df %>% preprocess(response = RESPONSE, predictors = considered_columns)
-X <- X_total$main
+df_proc <- (df %>% preprocess(response = RESPONSE, predictors = considered_columns))$main
 
-glimpse(X)
+glimpse(df_proc)
 ```
 
-# XGBoost
+# XGBoost (single run for testing, not evaluated)
+
 ```{r}
-data_split <- initial_split(X, strata = "Y", p = 0.8)
+data_split <- initial_split(df_proc, strata = "Y", p = 0.8)
 train = training(data_split)
 test = testing(data_split)
 
-
-# xgb_spec <- boost_tree(
-#   trees = 1000, 
-#   tree_depth = tune(), min_n = tune(), 
-#   loss_reduction = tune(),                     ## first three: model complexity
-#   sample_size = tune(), mtry = tune(),         ## randomness
-#   learn_rate = tune(),                         ## step size
-# ) %>% 
-#   set_engine("xgboost") %>% 
-#   set_mode("classification")
-# 
-# 
-# xgb_grid <- grid_latin_hypercube(
-#   tree_depth(),
-#   min_n(),
-#   loss_reduction(),
-#   sample_size = sample_prop(),
-#   finalize(mtry(), data_split),
-#   learn_rate(),
-#   size = 30
-# )
-# 
-# xgb_grid
-# 
-# xgb_wf <- workflow() %>%
-#   add_formula(is_2020 ~ .) %>%
-#   add_model(xgb_spec)
-# 
-# xgb_wf
-```
-
-
-```{r}
-# train_x = train %>% select(-Y)
-# train_y = train %>% pull(Y)
-# 
-xgb_model =  parsnip::boost_tree(
+xgb_model = parsnip::boost_tree(
   mode = "classification",
   trees = 1000) %>%
   set_engine("xgboost", objective = "reg:squarederror")
 
 xgb_recipe = recipes::recipe(Y ~ ., data = train) %>%
   step_knnimpute(all_predictors()) %>%
+  step_dummy(all_nominal(), -Y, one_hot = TRUE) %>%
+  # step_scale(all_numeric, sds = 0.8)
   prep()
+
+xgb_recipe %>% bake(train) %>% map(class) %>% unlist %>% table
 
 xgb_wf = workflows::workflow() %>%
   add_model(xgb_model) %>%
   # add_recipe(xgb_recipe)
   add_formula(Y ~ .)
 
-# xgb_model %>% fit_xy(x = train_x, y = train_y)
-xgb_final = xgb_wf %>% fit(data = train)
-
-last_fit(xgb_final, data_split)
+metrics = metric_set(roc_auc, pr_auc, accuracy)
 ```
 
+
+```{r, eval = FALSE}
+xgb_fit = xgb_wf %>% fit(data = train)
+
+xgb_final_fit = last_fit(xgb_wf, 
+                         split = data_split, 
+                         metrics = metrics)
+
+xgb_final_fit
+
+xgb_final_fit %>% collect_metrics()
+
+xgb_final_fit %>% collect_predictions()
+
+# Get our model object
+xgb_model2 <- pull_workflow_fit(xgb_wf)
+
+vip(xgb_model2$fit)
+# 
+# 
+# library(fastshap)
+# 
+# # Apply the preprocessing steps with prep and juice to the training data
+# X2 <- xgb_recipe %>% 
+#   bake(train) %>%
+#   as.data.frame() %>% 
+#   as.matrix()
+# 
+# dim(X2)
+# 
+# # Compute shapley values 
+# shap <- explain(xgb_model2$fit, X = X2, exact = TRUE)
+# 
+# autoplot(shap)
+```
+
+# Constructing xgboost by spliting on zones
+
+```{r, eval = FALSE}
+df_proc_nest = df_proc %>% 
+  group_by(ZONE_LOGICAL_AFL) %>% 
+  nest() %>% 
+  dplyr::mutate(
+    split = purrr::map(.x = data, .f = ~ initial_split(.x, strata = "Y", p = 0.8)),
+    # xgb_fit = purrr::map(.x = split, .f = ~ xgb_wf %>% fit(data = training(.x))),
+    xgb_fit = furrr::future_map(.x = split, .f = ~ xgb_wf %>% fit(data = training(.x)), 
+                                .options = furrroptions),
+    xgb_final_fit = furrr::future_map2(.x = split, .y = xgb_fit,
+                                .f = ~ last_fit(object = .y,
+                                                split = .x,
+                                                metrics = metrics),
+                                .options = furrroptions)
+  )
+
+saveRDS(df_proc_nest, "clean_data/xgboost_2020_results.rds")
+```
 
 ```{r}
+df_proc_nest = readRDS("clean_data/xgboost_2020_results.rds")
+
+# df_proc_nest %>% 
+#   dplyr::mutate(
+#     metrics = purrr::map(xgb_final_fit, collect_metrics), 
+#     pred = purrr::map(xgb_final_fit, collect_predictions)
+#   ) %>% 
+#   dplyr::select(ZONE_LOGICAL_AFL, metrics) %>% 
+#   unnest(cols = c(metrics))
+# 
+# df_proc_nest
+
+
+vi_plotdf = df_proc_nest %>% 
+  dplyr::mutate(
+    vi = purrr::map(xgb_fit, .f = ~ vi((.x %>% pull_workflow_fit())$fit))
+  ) %>% 
+  dplyr::select(ZONE_LOGICAL_AFL, vi) %>% 
+  unnest(cols = c(vi))
+
+vi_plotdf
+
+vi_plotdf %>% 
+  ggplot(aes(x = ZONE_LOGICAL_AFL, 
+             y = Variable,
+             fill = Importance)) +
+  geom_tile() +
+  scale_fill_distiller(palette = "Spectral") +
+  theme(axis.text.y = element_blank())
+
+vi_mat = vi_plotdf %>% 
+  pivot_wider(names_from = ZONE_LOGICAL_AFL, 
+              values_from = Importance) %>% 
+  dplyr::mutate(across(where))
+
 ```
+
+
