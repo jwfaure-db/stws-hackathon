@@ -379,121 +379,119 @@ xgb_defaults <- boost_tree(
 
 # Initial Screening of Variables
 ```{r}
-for(i in unique(df$ZONE_LOGICAL_AFL))
-X_total <- df %>% dplyr::filter(ZONE_LOGICAL_AFL == "F50") %>% dplyr::select(-ZONE_LOGICAL_AFL) %>% preprocess(response = RESPONSE, predictors = considered_columns)
-X <- X_total$main
+for(z in unique(df$AFL_ZONE)){
+  X_total <- df %>% dplyr::filter(AFL_ZONE == z) %>% dplyr::select(-AFL_ZONE) %>% preprocess(response = RESPONSE, predictors = considered_columns)
+  X <- X_total$main
 
-# Determine which columns are factors (needing to be one-hot-encoded)
-factors = X %>% 
-  select(where(is.factor)) %>% 
-  names()
+  # Determine which columns are factors (needing to be one-hot-encoded)
+  factors = X %>% 
+    select(where(is.factor)) %>% 
+    names()
 
-# Leave the response variable as-is
-factors <- factors[factors != "Y"]
-
-```
-
-## Dataset creation for modelling
-```{r}
-data_split <- initial_split(X, strata = "Y", p = 0.8)
-train = training(data_split)
-test = testing(data_split)
-
-train_x = train %>% select(-Y)
-train_y = train %>% pull(Y)
-```
-
-## Random Forest
-```{r}
-rf <- rf_defaults %>% 
-  set_mode("classification") %>% 
-  set_engine("ranger", importance = "impurity") %>% 
-  fit_xy(
-    x = train_x,
-    y = train_y
-  )
-
-# Summarise performance
-get_test_results(rf, test) %>% metrics(truth = Observed, estimate = Predicted)
-```
-
-```{r}
-# Predicted vs Observed
-evaluate_model(rf, train, test)
-```
-
-```{r fig.width=10, fig.height=20}
-imp <- rf$fit$variable.importance
-imp <- tibble(
-  Variable = names(imp),
-  Importance = imp
-) %>% 
-  arrange(
-    desc(Importance)
-  ) %>% 
-  mutate(
-    Variable = factor(Variable, levels = Variable, ordered = T)
-  )
-
-imp_rev <- imp %>% 
-  arrange(
-    Importance
-  ) %>% 
-  mutate(
-    Variable = factor(Variable, levels = Variable, ordered = T)
-  )
-
-imp_rev %>% 
-  head(20) %>%
-  ggplot(
-    aes(
-      x = Variable,
-      y = Importance
+  # Leave the response variable as-is
+  factors <- factors[factors != "Y"]
+  
+  ## Dataset creation for modelling
+  data_split <- initial_split(X, strata = "Y", p = 0.8)
+  train = training(data_split)
+  test = testing(data_split)
+  
+  train_x = train %>% select(-Y)
+  train_y = train %>% pull(Y)
+  
+  ## Random Forest
+  rf <- rf_defaults %>% 
+    set_mode("classification") %>% 
+    set_engine("ranger", importance = "impurity") %>% 
+    fit_xy(
+      x = train_x,
+      y = train_y
     )
-  ) + 
-  geom_bar(stat = 'identity', na.rm = T) + 
-  coord_flip() + 
-  theme_bw(12)
-```
-
-# Plot the top 100 influences:
-```{r fig.width=15, fig.height=8}
-i = 1
-i_max = 5
-# for(var in imp$Variable){
-for(i in 1:100){
-  if(i <= i_max){
-    var = imp$Variable[i]
-    
-    if(var != "MATCH_DATE"){
-      dt = tibble(
-        res = X$Y,
-        variable = X[[var]]
+  
+  # Summarise performance
+  get_test_results(rf, test) %>% metrics(truth = Observed, estimate = Predicted)
+  
+  # Predicted vs Observed
+  evaluate_model(rf, train, test)
+  
+  imp <- rf$fit$variable.importance
+  imp <- tibble(
+    Variable = names(imp),
+    Importance = imp
+  ) %>% 
+    arrange(
+      desc(Importance)
+    ) %>% 
+    mutate(
+      Variable = factor(Variable, levels = Variable, ordered = T)
+    )
+  
+  imp_rev <- imp %>% 
+    arrange(
+      Importance
+    ) %>% 
+    mutate(
+      Variable = factor(Variable, levels = Variable, ordered = T)
+    )
+  
+  plotter <- imp_rev %>% 
+    head(20) %>%
+    ggplot(
+      aes(
+        x = Variable,
+        y = Importance
       )
+    ) + 
+    geom_bar(stat = 'identity', na.rm = T) + 
+    coord_flip() + 
+    theme_linedraw() +
+    theme(line = element_blank())
+  
+  png(filename = paste0("plots/", z, "_var_imp.png"))
+  print(plotter)
+  dev.off()
+  
+  i = 1
+  i_max = 5
+  pr <- list()
+  # for(var in imp$Variable){
+  for(i in 1:100){
+    if(i <= i_max){
+      var = imp$Variable[i]
       
-      corr_plot = dt %>% 
-        ggplot(
-          aes(
-            x = res,
-            y = variable,
-            colour = variable
-          )
-        ) + 
-        theme_bw(12) + 
-        scale_colour_gradientn(colours = wes_palette("Zissou1", type = "continuous")) +
-        xlab(X_total$response) + 
-        ylab(var) +
-        geom_smooth(method = "lm", linetype = "dashed", formula = y ~ x)
-      
-      if(is.factor(dt$res)){
-        corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 1, alpha = 0.9, height = 0.25)
-      }else{
-        corr_plot <- corr_plot + geom_point(na.rm = T, size = 1, alpha = 0.9)
+      if(var != "MATCH_DATE"){
+        dt = tibble(
+          res = X$Y,
+          variable = X[[var]]
+        )
+        
+        corr_plot = dt %>% 
+          ggplot(
+            aes(
+              x = res,
+              y = variable,
+              colour = variable
+            )
+          ) + 
+          theme_linedraw() +
+          theme(line = element_blank()) +
+          scale_colour_gradientn(colours = wes_palette("Zissou1", type = "continuous")) +
+          xlab(X_total$response) + 
+          ylab(var) +
+          geom_smooth(method = "lm", linetype = "dashed", formula = y ~ x)
+        
+        if(is.factor(dt$res)){
+          corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 1, alpha = 0.9, height = 0.25)
+        }else{
+          corr_plot <- corr_plot + geom_point(na.rm = T, size = 1, alpha = 0.9)
+        }
+        pr[[i]] <- corr_plot
       }
-      
-      plot(corr_plot)
+      png(filename = paste0("plots/", z, "_", str_replace_all(var, "[[:punct:]]", " "), ".png"))
+    print(pr[[i]])
+    dev.off()
     }
-    
   }
+  
 }
 ```
