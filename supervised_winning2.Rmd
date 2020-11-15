@@ -382,6 +382,8 @@ xgb_defaults <- boost_tree(
 for(z in unique(df$AFL_ZONE)){
   X_total <- df %>% dplyr::filter(AFL_ZONE == z) %>% dplyr::select(-AFL_ZONE) %>% preprocess(response = RESPONSE, predictors = considered_columns)
   X <- X_total$main
+  
+  mean(X$TIME_IN_POSS_SQUAD_RATE, na.rm = TRUE)
 
   # Determine which columns are factors (needing to be one-hot-encoded)
   factors = X %>% 
