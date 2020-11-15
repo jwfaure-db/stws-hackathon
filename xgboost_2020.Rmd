@@ -1,0 +1,309 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(lubridate)
+library(tidymodels)
+library(recipes)
+library(xgboost)
+library(vip)
+library(furrr)
+library(ComplexHeatmap)
+library(fastshap)
+
+plan(multisession(workers = 5))
+# system.time(furrr::future_map(.x = c(1,1,1), .f = ~ Sys.sleep(.x)))
+# system.time(purrr::map(.x = c(1,1,1), .f = ~ Sys.sleep(.x)))
+furrroptions = furrr_options(packages = c("tidymodels"), globals = TRUE)
+
+source("preprocess_evaluate.R")
+
+# Load the data
+target_file = "team_rates"
+
+team_rates <- readRDS("clean_data/team_rates.rds") %>% 
+  dplyr::mutate(
+    is_2020 = ifelse(SEASON_ID == "2020",  "is_2020", "not_2020") %>% as.factor,
+    ZONE = ifelse(ZONE_LOGICAL_AFL %in% c("AM", "DM"), "MIDFIELD", ZONE_LOGICAL_AFL)
+    # MATCH_TIME = MATCH_TIME %>% as.numeric
+  )
+
+# Set the default response column
+RESPONSE = "is_2020"
+
+# Columns to be intentionally excluded entirely, in all cases
+dropped_columns = c(
+  "MATCH_ID",
+  "HOME_SQUAD_ID",
+  "AWAY_SQUAD_ID",
+  "SEASON_ID",
+  "file_name",
+  "MATCH_DATE",
+  "MATCH_TIME",
+  "MATCH_TIME_MELB",
+  "HOME_SQUAD_TRAVEL",
+  "VENUE_STATE",
+  "VENUE_NAME",
+  "VENUE_LOCATION",
+  "INT_CAP_TOTAL",
+  colnames(team_rates)[str_detect(colnames(team_rates), "TIME")],
+  "GROUP_ROUND_NO",
+  "PERIOD_LENGTH",
+  "PERIOD",
+  "ZONE_LOGICAL_AFL"
+)
+
+# Potential response columns (will generally only consider one at a time)
+response_columns = c(
+  "MARGIN",
+  "SQUAD_MARGIN",
+  "SCORE",
+  "GOAL",
+  "EXPECTED_SCORE",
+  "HOME_SCORE",
+  "AWAY_SCORE",
+  "SCORING_SHOTS",
+  # "SHOT_AT_GOAL",
+  "GOAL_ASSIST"
+)
+
+# Columns potentially removed in some cases (separated for simple commenting out)
+screened_columns = c(
+  
+)
+
+## not_considered_columns are any columns that will be removed
+not_considered_columns = c(dropped_columns, screened_columns, response_columns)
+
+## considered_columns will always include any remaining columns, and a special column "Y"
+considered_columns = c(names(team_rates)[!(names(team_rates) %in% not_considered_columns)], "Y")
+```
+
+# Pre-processing (Isaac's code)
+```{r}
+for(n in names(team_rates)){
+  team_rates[[n]][is.infinite(team_rates[[n]])] <- NA
+}
+
+team_rates_proc <- (team_rates %>% preprocess(response = RESPONSE, predictors = considered_columns, na.rm = TRUE))$main
+```
+
+# XGBoost (single run for testing, not evaluated)
+
+```{r}
+data_split <- initial_split(team_rates_proc %>% select(-ZONE), strata = "Y", p = 0.8)
+train = training(data_split)
+test = testing(data_split)
+
+xgb_model = parsnip::boost_tree(
+  mode = "classification",
+  trees = 1000) %>%
+  set_engine("xgboost", objective = "reg:squarederror")
+
+xgb_recipe = recipes::recipe(Y ~ ., data = train) %>%
+  step_knnimpute(all_predictors()) %>%
+  step_dummy(all_nominal(), -Y, one_hot = TRUE) %>%
+  # step_scale(all_numeric, sds = 0.8)
+  prep()
+
+xgb_recipe %>% bake(train) %>% map(class) %>% unlist %>% table
+
+xgb_wf = workflows::workflow() %>%
+  add_model(xgb_model) %>%
+  # add_recipe(xgb_recipe)
+  add_formula(Y ~ .)
+
+metrics = metric_set(roc_auc, pr_auc, accuracy)
+```
+
+
+```{r, eval = FALSE}
+xgb_fit = xgb_wf %>% fit(data = train)
+
+xgb_final_fit = last_fit(xgb_fit, 
+                         split = data_split, 
+                         metrics = metrics)
+
+xgb_final_fit
+
+xgb_final_fit %>% collect_metrics()
+
+xgb_final_fit %>% collect_predictions()
+
+# Get our model object
+xgb_model2 <- pull_workflow_fit(xgb_fit)
+
+vip(xgb_model2$fit)
+
+
+# library(fastshap)
+# 
+# # Apply the preprocessing steps with prep and juice to the training data
+# X <- prep(xgb_recipe, train) %>% 
+#   juice() %>% 
+#   select(-Y) %>% 
+#   as.matrix()
+# 
+# shap <- explain(xgb_model2$fit, X = X, exact = TRUE)
+# 
+# 
+# autoplot(shap)
+# 
+# feat <- prep(xgb_recipe, train) %>% 
+#   juice()
+# 
+# autoplot(shap, 
+#          type = "dependence", 
+#          # feature = "Amount", 
+#          X = feat,
+#          smooth = TRUE, 
+#          color_by = "Y")
+```
+
+# Constructing xgboost by spliting on zones
+
+```{r, eval = FALSE}
+team_rates_proc_nest = team_rates_proc %>% 
+  group_by(ZONE) %>% 
+  nest() %>% 
+  dplyr::mutate(
+    split = purrr::map(.x = data, .f = ~ initial_split(.x, strata = "Y", p = 0.8)),
+    xgb_fit = furrr::future_map(.x = split, .f = ~ xgb_wf %>% fit(data = training(.x)),
+                                .options = furrroptions),
+    xgb_final_fit = furrr::future_map2(.x = split, .y = xgb_fit,
+                                       .f = ~ last_fit(object = .y,
+                                                       split = .x,
+                                                       metrics = metrics),
+                                       .options = furrroptions)
+  )
+
+saveRDS(team_rates_proc_nest, "clean_data/xgboost_2020_team_rates_results.rds")
+```
+
+```{r}
+team_rates_proc_nest = readRDS("clean_data/xgboost_2020_team_rates_results.rds")
+
+X = prep(xgb_recipe, train) %>% 
+  juice() %>% 
+  select(-Y) %>% 
+  as.matrix()
+
+colnames(X) = colnames(X) %>% 
+  str_remove_all("_|[.]| ") %>% 
+  sort
+
+team_rates_proc_nest = team_rates_proc_nest %>% 
+  dplyr::mutate(
+    xgb_fit_name_fix = purrr::map(.x = xgb_fit, .f = function(x){
+      pull_fit = pull_workflow_fit(x)
+      pull_fit$fit$feature_names = pull_fit$fit$feature_names %>% 
+        str_remove_all("_|[.]| ") %>% 
+        sort()
+      return(pull_fit)
+    }),
+    shap_results = purrr::map(xgb_fit_name_fix, ~explain(.x$fit, X = X, exact = TRUE))
+  )
+
+
+theme_set(theme_minimal(12))
+
+team_rates_proc_nest %>% 
+  dplyr::transmute(
+    all_metrics = purrr::map(xgb_final_fit, collect_metrics),
+    all_pred = purrr::map(xgb_final_fit, collect_predictions))
+
+team_rates_xgb_shap_plots = map2(
+  .x = team_rates_proc_nest$shap_results, 
+  .y = team_rates_proc_nest$ZONE, 
+  .f = ~ autoplot(.x, type = "contribution", num_features = 10, row_num = 10) +
+    labs(title = .y))
+names(team_rates_xgb_shap_plots) = team_rates_proc_nest$ZONE
+
+ggsave(plot = team_rates_xgb_shap_plots$D50, filename = "plots/xgboost_pred2020_byZONE_D50.png", width = 6, height = 4)
+ggsave(plot = team_rates_xgb_shap_plots$MIDFIELD, filename = "plots/xgboost_pred2020_byZONE_MIDFIELD.png", width = 6, height = 4)
+ggsave(plot = team_rates_xgb_shap_plots$F50, filename = "plots/xgboost_pred2020_byZONE_F50.png", width = 6, height = 4)
+ggsave(plot = team_rates_xgb_shap_plots$X, filename = "plots/xgboost_pred2020_byZONE_X.png", width = 6, height = 4)
+
+# vi_plotdf = df_bind_proc_nest %>% 
+#   dplyr::mutate(
+#     vi = purrr::map(xgb_fit, .f = ~ vi((.x %>% pull_workflow_fit())$fit))
+#   ) %>% 
+#   dplyr::select(ZONE_LOGICAL_AFL, norm_type, vi) %>% 
+#   unnest(cols = c(vi))
+# 
+# library(ggrepel)
+# vi_plotdf_long = vi_plotdf %>% 
+#   pivot_wider(names_from = norm_type, 
+#               values_from = Importance) %>% 
+#   dplyr::mutate_if(is.numeric, coalesce, 0) %>%
+#   mutate(label = ifelse(unnorm >= quantile(unnorm, 0.99) | norm >= quantile(norm, 0.99),
+#                         Variable, NA))
+# vi_plotdf_long %>% 
+#   ggplot(aes(x = unnorm, y = norm)) +
+#   geom_point(size = 2) +
+#   geom_label_repel(aes(label = label)) +
+#   facet_wrap(~ZONE_LOGICAL_AFL, scales = "free") +
+#   scale_x_continuous(trans = "sqrt") +
+#   scale_y_continuous(trans = "sqrt") 
+# 
+# # vi_plotdf %>% 
+# #   ggplot(aes(x = ZONE_LOGICAL_AFL, 
+# #              y = Variable,
+# #              fill = Importance)) +
+# #   geom_tile() +
+# #   scale_fill_distiller(palette = "Spectral") +
+# #   theme(axis.text.y = element_blank())
+# 
+# list_vi_mat = vi_plotdf %>%
+#   pivot_wider(names_from = ZONE_LOGICAL_AFL,
+#               values_from = Importance) %>%
+#   dplyr::mutate_if(is.numeric, coalesce, 0) %>%
+#   split.data.frame(f = .$norm_type) %>% 
+#   map(as.data.frame) %>%
+#   map(.x = ., .f = ~ .x %>% select(-norm_type)) %>% 
+#   map(tibble::column_to_rownames, "Variable")
+# 
+# vi_mat_reduced_names = purrr::map(.x = list_vi_mat[c("norm", "unnorm")], .f = ~ .x[apply(.x, 2, function(x){x >= quantile(x, 0.99)}) %>% apply(1, any),]) %>% 
+#   map(rownames) %>% unlist %>% unique
+# 
+# h1 = Heatmap(list_vi_mat$norm[vi_mat_reduced_names,], name = "VI",
+#              col = c("white", RColorBrewer::brewer.pal(9, "Spectral") %>% rev), cluster_columns = FALSE,
+#              column_title = "Top variables separating before/after COVID (Normalised)")
+# 
+# h2 = Heatmap(list_vi_mat$unnorm[vi_mat_reduced_names,], name = "VI",
+#              col = c("white", RColorBrewer::brewer.pal(9, "Spectral") %>% rev), cluster_columns = FALSE,
+#              column_title = "Top variables separating before/after COVID (Unnormalised)")
+# h1 + h2
+```
+
+
+<!-- ```{r} -->
+<!-- vi_norm_reduced = list_vi_mat$norm[apply(list_vi_mat$norm, 2, function(x){x >= quantile(x, 0.99)}) %>% apply(1, any),] -->
+
+<!-- Heatmap(vi_norm_reduced, name = "VI", -->
+<!--         col = c("white", RColorBrewer::brewer.pal(9, "Spectral") %>% rev), cluster_columns = FALSE, -->
+<!--         column_title = "Top variables separating before/after COVID (Normalised)") -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- for(i in rownames(vi_norm_reduced)){ -->
+
+<!--   plotdf = df_norm %>%  -->
+<!--     dplyr::select(is_2020, y = one_of(i), ZONE_LOGICAL_AFL) -->
+
+<!--   plotdf %>%  -->
+<!--     ggplot(aes(x = is_2020, y = y, -->
+<!--                colour = ZONE_LOGICAL_AFL)) + -->
+<!--     geom_jitter(alpha = 0.5) + -->
+<!--     ggsci::scale_color_d3() + -->
+<!--     labs(title = i) -->
+<!-- } -->
+<!-- ``` -->
+
+

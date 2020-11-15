@@ -1,0 +1,499 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(lubridate)
+library(pins)
+library(tidymodels)
+library(patchwork)
+library(recipes)
+library(embed)
+library(corrplot)
+library(dbscan)
+source("preprocess_evaluate.R")
+`%notin%` <- Negate(`%in%`)
+
+# Load the data
+target_file = "match_summary"
+df <- readRDS(paste0("clean_data/", target_file, ".rds"))
+
+df <- df %>% dplyr::transmute(
+  HOME_AWAY = ifelse(SQUAD_NAME == HOME_SQUAD, "home", "away"), # whether squad of interest is home team
+  RESULT = ifelse(SQUAD_MARGIN == 0, "draw", ifelse(SQUAD_MARGIN > 0, "won", "lost")), # our outcome variable
+  MATCH_ID = MATCH_ID,
+  GROUP_ROUND_NO = GROUP_ROUND_NO,
+  SQUAD_NAME = SQUAD_NAME,
+  OPP_SQUAD_NAME = OPP_SQUAD_NAME,
+  # PERIOD = PERIOD,
+  BU_RESULT_SCORE = BU_SCORE_LAUNCH / BALL_UP,
+  BU_RESULT_IN50 = BU_IN50_LAUNCH / BALL_UP,
+  CB_RESULT_SCORE = CB_SCORE_LAUNCH / CENTRE_BOUNCE,
+  CB_RESULT_IN50 = CB_IN50_LAUNCH / CENTRE_BOUNCE,
+  CM_NET_PG = CHAIN_METRES_NET_PG / CHAIN_METRES_NET,
+  CM_NET_STOPPAGES = CHAIN_METRES_NET_ST / CHAIN_METRES_NET,
+  CLANGER = CLANGER / POSSESSION,
+  NON_DISPOSAL_CLANGERS = sum(CLANGER_GROUND_KICK, CLANGER_HANDBALL, CLANGER_KICK, na.rm = TRUE) / CLANGER,
+  CP_PROP = CONTESTED_POSSESSION / POSSESSION,
+  CRUMB_RATE = CRUMB / MARK_DROPPED,
+  D50_REB_SCORE = D50_REB_SCORE / sum(D50_REB_IN50, D50_REBOUND, na.rm = TRUE),
+  EFFECTIVE_DISPOSAL = EFFECTIVE_DISPOSAL / DISPOSAL,
+  FIRST_POSSESSION_TO_CLEAR = FIRST_POSSESSION_TO_CLEAR / FIRST_POSSESSION,
+  FREE_FOR_AGAINST_RATIO = FREE_FOR / FREE_AGAINST,
+  GATHER_RATE = GATHER / KNOCK_ON,
+  GROUND_BALL_GET = GROUND_BALL_GET,
+  HANBALL_GAIN_METRES_PER_HANDBALL = HANDBALL_GAIN_METRES / HANDBALL,
+  INEFFECTIVE_HANDBALL_RATE = INEFFECTIVE_HANDBALL / HANDBALL,
+  IN50_KICK_EFFECTIVE = IN50_KICK_RETAIN / IN50_KICK,
+  IN50_TARGET_RESULT_SCORE = IN50_TARGET_TEAM_SCORE / IN50_TARGET,
+  INEFFECTIVE_KICK_RATE = INEFFECTIVE_KICK / KICK,
+  KI_RESULT_SCORE = KI_SCORE_LAUNCH / KICK_IN,
+  KI_RESULT_IN50 = KI_IN50_LAUNCH / KICK_IN,
+  HARD_BALL_GET_RATE = HARD_BALL_GET / sum(HARD_BALL_GET, LOOSE_BALL_GET, na.rm = TRUE),
+  HIT_OUT_TO_ADVANTAGE_RATE = HIT_OUT_TO_ADVANTAGE / HITOUT,
+  DROPPED_MARK_RATE = MARK_DROPPED / MARK,
+  MISSED_SHOT_RATE = MISSED_SHOT / SHOT_AT_GOAL,
+  TACKLE_RATE = TACKLE / sum(MISSED_TACKLE, TACKLE, na.rm = TRUE),
+  OUT_ON_FULL_RATE = OUT_ON_FULL / KICK,
+  INTERCEPT_SCORES = sum(PG_GOAL_LAUNCH, PG_BEHIND_LAUNCH, na.rm = TRUE) / INTERCEPT,
+  INTERCEPT_RESULT_IN50 = PG_IN50_LAUNCH / INTERCEPT,
+  RETAIN_DISPOSAL = RETAIN_DISPOSAL / DISPOSAL,
+  R50_TEAMMATE = sum(RE50_RESULT_TEAM_CP, RE50_RESULT_TEAM_UP, na.rm = TRUE) / REBOUND_50,
+  RUNDOWN_TACKLE_RATE = RUNDOWN_TACKLE / TACKLE,
+  THROW_IN_CLEARANCE = THROW_IN_CLEARANCE / THROW_IN,
+  SCORE_FROM_STOPPAGE = ST_SCORE_LAUNCH / STOPPAGE,
+  SPOIL_GAINING_POSSESSION = SPOIL_GAINING_POSSESSION / SPOIL,
+  TI_SCORE = TI_SCORE_LAUNCH / THROW_IN,
+  TI_IN50 = TI_IN50_LAUNCH / THROW_IN,
+  TIME_IN_POSS_SQUAD_RATE = TIME_IN_POSS_SQUAD / TIME_IN_POSS_TOTAL,
+  TURNOVER_RATE = TURNOVER / POSSESSION,
+  SQUAD_PRESSURE_RATE = SQUAD_PRESSURE_ACTS / SQUAD_PRESSURE_CHANCE,
+  STOPPAGE_SCORE_RATE = ST_SCORE_LAUNCH / STOPPAGE,
+  EFFECTIVE_CLEARANCE_RATE = EFFECTIVE_CLEARANCE / CLEARANCE,
+  RATING = RATING,
+  STOP_EXIT_KICK_RATE = STOP_EXIT_K / STOP_EXIT,
+  SWITCH_SCORE_RATE = SWITCH_SCORE / SWITCH_COMPLETE,
+  SWITCH_IN50_RATE = SWITCH_IN50 / SWITCH_COMPLETE,
+  SWITCH_BATTLE = SWITCH_COMPLETE / sum(SWITCH_COMPLETE, SWITCH_OPP, na.rm = TRUE),
+  HOME_AWAY = HOME_AWAY,
+  RESULT = RESULT,
+  # MATCH_TYPE = MATCH_TYPE,
+  HOME_SQUAD_TRAVEL = HOME_SQUAD_TRAVEL,
+  AWAY_SQUAD_TRAVEL = AWAY_SQUAD_TRAVEL,
+  AFL_ZONE = ifelse(ZONE_LOGICAL_AFL == "AM" | ZONE_LOGICAL_AFL == "DM", "MID", ZONE_LOGICAL_AFL),
+  AVG_PLAYER_AGE = AVG_PLAYER_AGE,
+  AVG_PLAYER_HT = AVG_PLAYER_HT,
+  AVG_PLAYER_WT = AVG_PLAYER_WT,
+  BROWNLOW_MEDALISTS = BROWNLOW_MEDALISTS, 
+  AVG_CAREER_MATCHES = AVG_CAREER_MATCHES,
+  OPP_AVG_PLAYER_AGE = OPP_AVG_PLAYER_AGE,
+  OPP_AVG_PLAYER_HT = OPP_AVG_PLAYER_HT,         
+  OPP_AVG_PLAYER_WT = OPP_AVG_PLAYER_WT,        
+  OPP_BROWNLOW_MEDALISTS = OPP_BROWNLOW_MEDALISTS,
+  OPP_AVG_CAREER_MATCHES = OPP_AVG_CAREER_MATCHES 
+)
+
+# Set the default response column
+RESPONSE = "RESULT"
+
+get_test_results <- function(
+  model,
+  test
+){
+  test_x = test %>% select(-Y)
+  test_y = test %>% pull(Y)
+  test_prediction = predict(model, new_data = test_x)
+  test_results = test %>% 
+    select(Y) %>% 
+    bind_cols(
+      test_prediction
+    )
+  
+  if(".pred" %in% names(test_results)){
+    test_results <- test_results %>% 
+      rename(
+        "Predicted" = ".pred",
+        "Observed" = "Y"
+      )
+  }else if(".pred_res" %in% names(test_results)){
+    test_results <- test_results %>% 
+      rename(
+        "Predicted" = ".pred_res",
+        "Observed" = "Y"
+      )
+  }else if(".pred_class" %in% names(test_results)){
+    test_results <- test_results %>% 
+      rename(
+        "Predicted" = ".pred_class",
+        "Observed" = "Y"
+      )
+  }
+  
+  return(test_results)
+}
+
+get_train_results <- function(
+  model,
+  train
+){
+  train_x = train %>% select(-Y)
+  train_y = train %>% pull(Y)
+  train_prediction = predict(model, new_data = train_x)
+  train_results = train %>% 
+    select(Y) %>% 
+    bind_cols(
+      train_prediction
+    )
+  
+  if(".pred" %in% names(train_results)){
+    train_results <- train_results %>% 
+      rename(
+        "Predicted" = ".pred",
+        "Observed" = "Y"
+      )
+  }else if(".pred_res" %in% names(train_results)){
+    train_results <- train_results %>% 
+      rename(
+        "Predicted" = ".pred_res",
+        "Observed" = "Y"
+      )
+  }else if(".pred_class" %in% names(train_results)){
+    train_results <- train_results %>% 
+      rename(
+        "Predicted" = ".pred_class",
+        "Observed" = "Y"
+      )
+  }
+  
+  return(train_results)
+}
+
+# Evaluate Model
+evaluate_model <- function(
+  model,
+  train,
+  test
+){
+  train_results = get_train_results(model, train)
+  test_results = get_test_results(model, test)
+  results <- train_results %>% 
+    mutate(Case = "Train") %>% 
+    bind_rows(
+      test_results %>% 
+        mutate(Case = "Test")
+    )
+  
+  if("factor" %in% class(results$Predicted)){
+    # train_matrix <- train_results %>% 
+    #   mutat
+    # TODO: Plot this instead as two matrices of correspondence between predicted and observed
+    
+    gg <- results %>% dplyr::mutate(
+      correct = ifelse(Predicted == Observed, 1, 0)
+    ) %>% dplyr::group_by(Observed) %>% 
+      dplyr::summarise(
+        correctly_predicted = mean(correct, na.rm = TRUE)
+      ) %>% 
+      ggplot(
+        aes(
+          x = Observed,
+          y = correctly_predicted,
+        )
+      ) + 
+      geom_col(na.rm = T) + 
+      theme_bw(12)
+    
+    return(gg)
+  }else{
+    limit = c(min(c(results$Predicted, results$Observed), na.rm = T), max(c(results$Predicted, results$Observed), na.rm = T))
+  
+    gg <- results %>% 
+      ggplot(
+        aes(
+          x = Predicted,
+          y = Observed,
+          colour = Case,
+          alpha = Case
+        )
+      ) + 
+      geom_point(na.rm = T) + 
+      theme_bw(12) + 
+      geom_abline(slope = 1, intercept = 0) + 
+      scale_colour_manual(values = c("Train" = "grey", "Test" = "blue")) + 
+      scale_alpha_manual(values = c("Train" = 0.2, "Test" = 0.5)) + 
+      ylim(limit) + 
+      xlim(limit)
+  }
+  
+  return(gg)
+}
+
+# Initial filtering and manipulation
+## TODO
+
+## Force some variables to be factor
+# df <- df %>% 
+#   mutate_at(
+#     vars(),
+#     factor
+#   )
+
+## Some preprocessing
+
+
+# Columns to be intentionally excluded entirely, in all cases
+dropped_columns = c(
+  "file_name", 
+  "SEASON_ID",
+  "MATCH_DATE",
+  "MATCH_TIME",
+  "MATCH_TIME_MELB",
+  "MATCH_ID",
+  "GROUP_ROUND_NO",
+  "PERIOD"
+)
+
+# Potential response columns (will generally only consider one at a time)
+response_columns = c(
+  "RESULT",
+  "MARGIN",
+  "SQUAD_MARGIN",
+  "SCORE",
+  "GOAL",
+  "EXPECTED_SCORE",
+  "HOME_SCORE",
+  "AWAY_SCORE",
+  "SCORING_SHOTS",
+  # "SHOT_AT_GOAL",
+  "GOAL_ASSIST"
+)
+
+# Columns potentially removed in some cases (separated for simple commenting out)
+screened_columns = c(
+  
+)
+
+## not_considered_columns are any columns that will be removed
+not_considered_columns = c(dropped_columns, screened_columns, response_columns)
+
+## considered_columns will always include any remaining columns, and a special column "Y"
+considered_columns = names(df)[!(names(df) %in% not_considered_columns)]
+considered_columns = c(considered_columns, "Y")
+
+# General purpose preprocessing function
+preprocess <- function(
+  df, 
+  response = NULL, 
+  predictors = considered_columns, 
+  drop_at_na_level = 0.99, 
+  max_categorical_levels = 50,
+  na.rm = T
+){
+  X = df
+
+  if(!is.null(response)){
+    # Filter out any NA in the response
+    X = X[!is.na(X[[response]]), ]
+  }
+  
+  # Drop columns with too many NAs
+  ## This is specified by the "drop_at_na_level" parameter, where only columns with at least that fraction non-na will be retained
+  not_too_many_na = function(x, threshold = 1 - drop_at_na_level){
+    n_na = sum(is.na(x))
+    n = length(x)
+    return(
+      (n_na/n) <= threshold
+    )
+  }
+  X <- X %>% select(where(not_too_many_na))
+  
+  if(na.rm){
+    # Drop NA rows
+    X <- na.omit(X)
+  }
+  
+  # Drop columns with too many (or not enough) categorical variables
+  not_too_many_categorical = function(x, threshold = max_categorical_levels){
+    if(!is.character(x)){
+      return(TRUE)
+    }else{
+      n = length(unique(x))
+      if(!is.null(threshold)){
+        return(n <= threshold & n >= 2)
+      }else{
+        return(n >= 2)
+      }
+    }
+  }
+  X <- X %>% select(where(not_too_many_categorical))
+  
+  if(!is.null(response)){
+    # Rename the response
+    names(X)[names(X) == response] <- "Y"
+  }else{
+    # Do nothing
+  }
+  
+  # Factorise X
+  X <- X %>% 
+    mutate_if(
+      is.character,
+      as.factor
+    )
+  
+  if(!is.null(predictors)){
+    # Drop irrelevant variables
+    # cat(paste0('"', paste0(names(X), collapse = '",\n"'), '"'))
+    X_ <- X[, -which(names(X) %in% predictors)]
+    X <- X[, which(names(X) %in% predictors)]
+  }else{
+    X_ <- X[,NULL]
+  }
+  
+  return(
+    list(
+      "main" = X,
+      "secondary" = X_,
+      "response" = response
+    )
+  )
+}
+
+# Set the default for random forest
+rf_defaults <- rand_forest(mode = "regression")
+
+# Set the default for xgboost
+xgb_defaults <- boost_tree(
+  trees = 1000, 
+  # tree_depth = tune(), min_n = tune(), 
+  # loss_reduction = tune(),                     ## first three: model complexity
+  # sample_size = tune(), mtry = tune(),         ## randomness
+  # learn_rate = tune(),                         ## step size
+) %>% 
+  set_engine("xgboost") %>% 
+  set_mode("classification")
+```
+
+# Initial Screening of Variables
+```{r}
+for(i in unique(df$ZONE_LOGICAL_AFL))
+X_total <- df %>% dplyr::filter(ZONE_LOGICAL_AFL == "F50") %>% dplyr::select(-ZONE_LOGICAL_AFL) %>% preprocess(response = RESPONSE, predictors = considered_columns)
+X <- X_total$main
+
+# Determine which columns are factors (needing to be one-hot-encoded)
+factors = X %>% 
+  select(where(is.factor)) %>% 
+  names()
+
+# Leave the response variable as-is
+factors <- factors[factors != "Y"]
+
+```
+
+## Dataset creation for modelling
+```{r}
+data_split <- initial_split(X, strata = "Y", p = 0.8)
+train = training(data_split)
+test = testing(data_split)
+
+train_x = train %>% select(-Y)
+train_y = train %>% pull(Y)
+```
+
+## Random Forest
+```{r}
+rf <- rf_defaults %>% 
+  set_mode("classification") %>% 
+  set_engine("ranger", importance = "impurity") %>% 
+  fit_xy(
+    x = train_x,
+    y = train_y
+  )
+
+# Summarise performance
+get_test_results(rf, test) %>% metrics(truth = Observed, estimate = Predicted)
+```
+
+```{r}
+# Predicted vs Observed
+evaluate_model(rf, train, test)
+```
+
+```{r fig.width=10, fig.height=20}
+imp <- rf$fit$variable.importance
+imp <- tibble(
+  Variable = names(imp),
+  Importance = imp
+) %>% 
+  arrange(
+    desc(Importance)
+  ) %>% 
+  mutate(
+    Variable = factor(Variable, levels = Variable, ordered = T)
+  )
+
+imp_rev <- imp %>% 
+  arrange(
+    Importance
+  ) %>% 
+  mutate(
+    Variable = factor(Variable, levels = Variable, ordered = T)
+  )
+
+imp_rev %>% 
+  head(20) %>%
+  ggplot(
+    aes(
+      x = Variable,
+      y = Importance
+    )
+  ) + 
+  geom_bar(stat = 'identity', na.rm = T) + 
+  coord_flip() + 
+  theme_bw(12)
+```
+
+# Plot the top 100 influences:
+```{r fig.width=15, fig.height=8}
+i = 1
+i_max = 5
+# for(var in imp$Variable){
+for(i in 1:100){
+  if(i <= i_max){
+    var = imp$Variable[i]
+    
+    if(var != "MATCH_DATE"){
+      dt = tibble(
+        res = X$Y,
+        variable = X[[var]]
+      )
+      
+      corr_plot = dt %>% 
+        ggplot(
+          aes(
+            x = res,
+            y = variable,
+            colour = variable
+          )
+        ) + 
+        theme_bw(12) + 
+        scale_colour_gradientn(colours = wes_palette("Zissou1", type = "continuous")) +
+        xlab(X_total$response) + 
+        ylab(var) +
+        geom_smooth(method = "lm", linetype = "dashed", formula = y ~ x)
+      
+      if(is.factor(dt$res)){
+        corr_plot <- corr_plot + geom_jitter(na.rm = T, size = 1, alpha = 0.9, height = 0.25)
+      }else{
+        corr_plot <- corr_plot + geom_point(na.rm = T, size = 1, alpha = 0.9)
+      }
+      
+      plot(corr_plot)
+    }
+    
+  }
+}
+```
