@@ -30,7 +30,7 @@ df_unnorm <- readRDS(paste0("clean_data/", target_file, ".rds")) %>%
                 PERIOD = PERIOD %>% as.factor()
                 # MATCH_TIME = MATCH_TIME %>% as.numeric
   )
-  # sample_n(1000)
+# sample_n(1000)
 
 df_norm_is_2020 = df_unnorm %>% filter(is_2020 == "is_2020") %>% 
   dplyr::mutate(dplyr::across(.cols = where(is.numeric), .fns = ~ .x/0.8))
@@ -38,6 +38,83 @@ df_norm_is_2020 = df_unnorm %>% filter(is_2020 == "is_2020") %>%
 df_norm_not_2020 = df_unnorm %>% filter(is_2020 == "not_2020")
 
 df_norm = bind_rows(df_norm_is_2020, df_norm_not_2020)
+
+df_rates <- df_unnorm %>% dplyr::transmute(
+  HOME_AWAY = ifelse(SQUAD_NAME == HOME_SQUAD, "home", "away"), # whether squad of interest is home team
+  RESULT = ifelse(SQUAD_MARGIN == 0, "draw", ifelse(SQUAD_MARGIN > 0, "won", "lost")), # our outcome variable
+  Y = ifelse(SEASON_ID == "2020",  "is_2020", "not_2020") %>% as.factor,
+  PERIOD = PERIOD %>% as.factor(),
+  MATCH_ID = MATCH_ID,
+  GROUP_ROUND_NO = GROUP_ROUND_NO,
+  SQUAD_NAME = SQUAD_NAME,
+  OPP_SQUAD_NAME = OPP_SQUAD_NAME,
+  PERIOD = PERIOD,
+  BU_RESULT_SCORE = BU_SCORE_LAUNCH / BALL_UP,
+  BU_RESULT_IN50 = BU_IN50_LAUNCH / BALL_UP,
+  CB_RESULT_SCORE = CB_SCORE_LAUNCH / CENTRE_BOUNCE,
+  CB_RESULT_IN50 = CB_IN50_LAUNCH / CENTRE_BOUNCE,
+  CM_NET_PG = CHAIN_METRES_NET_PG / CHAIN_METRES_NET,
+  CM_NET_STOPPAGES = CHAIN_METRES_NET_ST / CHAIN_METRES_NET,
+  CLANGER = CLANGER / POSSESSION,
+  NON_DISPOSAL_CLANGERS = sum(CLANGER_GROUND_KICK, CLANGER_HANDBALL, CLANGER_KICK, na.rm = TRUE) / CLANGER,
+  CP_PROP = CONTESTED_POSSESSION / POSSESSION,
+  CRUMB_RATE = CRUMB / MARK_DROPPED,
+  D50_REB_SCORE = D50_REB_SCORE / sum(D50_REB_IN50, D50_REBOUND, na.rm = TRUE),
+  EFFECTIVE_DISPOSAL = EFFECTIVE_DISPOSAL / DISPOSAL,
+  FIRST_POSSESSION_TO_CLEAR = FIRST_POSSESSION_TO_CLEAR / FIRST_POSSESSION,
+  FREE_FOR_AGAINST_RATIO = FREE_FOR / FREE_AGAINST,
+  GATHER_RATE = GATHER / KNOCK_ON,
+  GROUND_BALL_GET = GROUND_BALL_GET,
+  HANBALL_GAIN_METRES_PER_HANDBALL = HANDBALL_GAIN_METRES / HANDBALL,
+  INEFFECTIVE_HANDBALL_RATE = INEFFECTIVE_HANDBALL / HANDBALL,
+  IN50_KICK_EFFECTIVE = IN50_KICK_RETAIN / IN50_KICK,
+  IN50_TARGET_RESULT_SCORE = IN50_TARGET_TEAM_SCORE / IN50_TARGET,
+  INEFFECTIVE_KICK_RATE = INEFFECTIVE_KICK / KICK,
+  KI_RESULT_SCORE = KI_SCORE_LAUNCH / KICK_IN,
+  KI_RESULT_IN50 = KI_IN50_LAUNCH / KICK_IN,
+  HARD_BALL_GET_RATE = HARD_BALL_GET / sum(HARD_BALL_GET, LOOSE_BALL_GET, na.rm = TRUE),
+  HIT_OUT_TO_ADVANTAGE_RATE = HIT_OUT_TO_ADVANTAGE / HITOUT,
+  DROPPED_MARK_RATE = MARK_DROPPED / MARK,
+  MISSED_SHOT_RATE = MISSED_SHOT / SHOT_AT_GOAL,
+  TACKLE_RATE = TACKLE / sum(MISSED_TACKLE, TACKLE, na.rm = TRUE),
+  OUT_ON_FULL_RATE = OUT_ON_FULL / KICK,
+  INTERCEPT_SCORES = sum(PG_GOAL_LAUNCH, PG_BEHIND_LAUNCH, na.rm = TRUE) / INTERCEPT,
+  INTERCEPT_RESULT_IN50 = PG_IN50_LAUNCH / INTERCEPT,
+  RETAIN_DISPOSAL = RETAIN_DISPOSAL / DISPOSAL,
+  R50_TEAMMATE = sum(RE50_RESULT_TEAM_CP, RE50_RESULT_TEAM_UP, na.rm = TRUE) / REBOUND_50,
+  RUNDOWN_TACKLE_RATE = RUNDOWN_TACKLE / TACKLE,
+  THROW_IN_CLEARANCE = THROW_IN_CLEARANCE / THROW_IN,
+  SCORE_FROM_STOPPAGE = ST_SCORE_LAUNCH / STOPPAGE,
+  SPOIL_GAINING_POSSESSION = SPOIL_GAINING_POSSESSION / SPOIL,
+  TI_SCORE = TI_SCORE_LAUNCH / THROW_IN,
+  TI_IN50 = TI_IN50_LAUNCH / THROW_IN,
+  TIME_IN_POSS_SQUAD_RATE = TIME_IN_POSS_SQUAD / TIME_IN_POSS_TOTAL,
+  TURNOVER_RATE = TURNOVER / POSSESSION,
+  SQUAD_PRESSURE_RATE = SQUAD_PRESSURE_ACTS / SQUAD_PRESSURE_CHANCE,
+  STOPPAGE_SCORE_RATE = ST_SCORE_LAUNCH / STOPPAGE,
+  EFFECTIVE_CLEARANCE_RATE = EFFECTIVE_CLEARANCE / CLEARANCE,
+  RATING = RATING,
+  STOP_EXIT_KICK_RATE = STOP_EXIT_K / STOP_EXIT,
+  SWITCH_SCORE_RATE = SWITCH_SCORE / SWITCH_COMPLETE,
+  SWITCH_IN50_RATE = SWITCH_IN50 / SWITCH_COMPLETE,
+  SWITCH_BATTLE = SWITCH_COMPLETE / sum(SWITCH_COMPLETE, SWITCH_OPP, na.rm = TRUE),
+  HOME_AWAY = HOME_AWAY,
+  RESULT = RESULT,
+  MATCH_TYPE = MATCH_TYPE,
+  HOME_SQUAD_TRAVEL = HOME_SQUAD_TRAVEL,
+  AWAY_SQUAD_TRAVEL = AWAY_SQUAD_TRAVEL,
+  ZONE_LOGICAL_AFL = ZONE_LOGICAL_AFL,
+  AVG_PLAYER_AGE = AVG_PLAYER_AGE,
+  AVG_PLAYER_HT = AVG_PLAYER_HT,
+  AVG_PLAYER_WT = AVG_PLAYER_WT,
+  BROWNLOW_MEDALISTS = BROWNLOW_MEDALISTS, 
+  AVG_CAREER_MATCHES = AVG_CAREER_MATCHES,
+  OPP_AVG_PLAYER_AGE = OPP_AVG_PLAYER_AGE,
+  OPP_AVG_PLAYER_HT = OPP_AVG_PLAYER_HT,         
+  OPP_AVG_PLAYER_WT = OPP_AVG_PLAYER_WT,        
+  OPP_BROWNLOW_MEDALISTS = OPP_BROWNLOW_MEDALISTS,
+  OPP_AVG_CAREER_MATCHES = OPP_AVG_CAREER_MATCHES 
+)
 
 
 # Set the default response column
@@ -93,6 +170,8 @@ df_norm_proc <- (df_norm %>% preprocess(response = RESPONSE, predictors = consid
 
 df_unnorm_proc <- (df_unnorm %>% preprocess(response = RESPONSE, predictors = considered_columns))$main
 # glimpse(df_unnorm_proc)
+
+# df_rates
 ```
 
 # XGBoost (single run for testing, not evaluated)
@@ -171,10 +250,10 @@ df_unnorm_proc_nest = df_unnorm_proc %>%
     xgb_fit = furrr::future_map(.x = split, .f = ~ xgb_wf %>% fit(data = training(.x)), 
                                 .options = furrroptions),
     xgb_final_fit = furrr::future_map2(.x = split, .y = xgb_fit,
-                                .f = ~ last_fit(object = .y,
-                                                split = .x,
-                                                metrics = metrics),
-                                .options = furrroptions)
+                                       .f = ~ last_fit(object = .y,
+                                                       split = .x,
+                                                       metrics = metrics),
+                                       .options = furrroptions)
   )
 
 
@@ -187,23 +266,40 @@ df_norm_proc_nest = df_norm_proc %>%
     xgb_fit = furrr::future_map(.x = split, .f = ~ xgb_wf %>% fit(data = training(.x)), 
                                 .options = furrroptions),
     xgb_final_fit = furrr::future_map2(.x = split, .y = xgb_fit,
-                                .f = ~ last_fit(object = .y,
-                                                split = .x,
-                                                metrics = metrics),
-                                .options = furrroptions)
+                                       .f = ~ last_fit(object = .y,
+                                                       split = .x,
+                                                       metrics = metrics),
+                                       .options = furrroptions)
+  )
+
+
+df_rates_nest = df_rates %>% 
+  group_by(ZONE_LOGICAL_AFL) %>% 
+  nest() %>% 
+  dplyr::mutate(
+    split = purrr::map(.x = data, .f = ~ initial_split(.x, strata = "Y", p = 0.8)),
+    xgb_fit = furrr::future_map(.x = split, .f = ~ xgb_wf %>% fit(data = training(.x)), 
+                                .options = furrroptions),
+    xgb_final_fit = furrr::future_map2(.x = split, .y = xgb_fit,
+                                       .f = ~ last_fit(object = .y,
+                                                       split = .x,
+                                                       metrics = metrics),
+                                       .options = furrroptions)
   )
 
 saveRDS(df_unnorm_proc_nest, "clean_data/xgboost_2020_unnorm_results.rds")
 saveRDS(df_norm_proc_nest, "clean_data/xgboost_2020_norm_results.rds")
+saveRDS(df_rates_nest, "clean_data/xgboost_2020_rates_results.rds")
 ```
 
 ```{r}
 df_unnorm_proc_nest = readRDS("clean_data/xgboost_2020_unnorm_results.rds")
 df_norm_proc_nest = readRDS("clean_data/xgboost_2020_norm_results.rds")
-
+df_rates_nest = readRDS("clean_data/xgboost_2020_rates_results.rds")
 
 df_bind_proc_nest = bind_rows(df_unnorm_proc_nest %>% dplyr::mutate(norm_type = "unnorm"), 
-                              df_norm_proc_nest %>% dplyr::mutate(norm_type = "norm"))
+                              df_norm_proc_nest %>% dplyr::mutate(norm_type = "norm"),
+                              df_rates_nest %>% dplyr::mutate(norm_type = "rates"))
 
 # df_proc_nest %>% 
 #   dplyr::mutate(
@@ -224,19 +320,23 @@ vi_plotdf = df_bind_proc_nest %>%
   unnest(cols = c(vi))
 
 library(ggrepel)
-
-vi_plotdf %>% 
+vi_plotdf_long = vi_plotdf %>% 
   pivot_wider(names_from = norm_type, 
               values_from = Importance) %>% 
   dplyr::mutate_if(is.numeric, coalesce, 0) %>%
   mutate(label = ifelse(unnorm >= quantile(unnorm, 0.99) | norm >= quantile(norm, 0.99),
-                        Variable, NA)) %>% 
+                        Variable, NA))
+vi_plotdf_long %>% 
   ggplot(aes(x = unnorm, y = norm)) +
   geom_point(size = 2) +
   geom_label_repel(aes(label = label)) +
   facet_wrap(~ZONE_LOGICAL_AFL, scales = "free") +
   scale_x_continuous(trans = "sqrt") +
   scale_y_continuous(trans = "sqrt") 
+
+vi_plotdf_long %>% 
+  ggplot(aes(x = rates)) +
+  geom_histogram()
 
 # vi_plotdf %>% 
 #   ggplot(aes(x = ZONE_LOGICAL_AFL, 
@@ -255,17 +355,41 @@ list_vi_mat = vi_plotdf %>%
   map(.x = ., .f = ~ .x %>% select(-norm_type)) %>% 
   map(tibble::column_to_rownames, "Variable")
 
-vi_mat_reduced_names = purrr::map(.x = list_vi_mat, .f = ~ .x[apply(.x, 2, function(x){x >= quantile(x, 0.99)}) %>% apply(1, any),]) %>% 
+vi_mat_reduced_names = purrr::map(.x = list_vi_mat[c("norm", "unnorm")], .f = ~ .x[apply(.x, 2, function(x){x >= quantile(x, 0.99)}) %>% apply(1, any),]) %>% 
   map(rownames) %>% unlist %>% unique
 
 h1 = Heatmap(list_vi_mat$norm[vi_mat_reduced_names,], name = "VI",
-        col = c("white", RColorBrewer::brewer.pal(9, "Spectral") %>% rev), cluster_columns = FALSE,
-        column_title = "Top variables separating before/after COVID (Normalised)")
+             col = c("white", RColorBrewer::brewer.pal(9, "Spectral") %>% rev), cluster_columns = FALSE,
+             column_title = "Top variables separating before/after COVID (Normalised)")
 
 h2 = Heatmap(list_vi_mat$unnorm[vi_mat_reduced_names,], name = "VI",
-        col = c("white", RColorBrewer::brewer.pal(9, "Spectral") %>% rev), cluster_columns = FALSE,
-        column_title = "Top variables separating before/after COVID (Unnormalised)")
-
+             col = c("white", RColorBrewer::brewer.pal(9, "Spectral") %>% rev), cluster_columns = FALSE,
+             column_title = "Top variables separating before/after COVID (Unnormalised)")
 h1 + h2
 ```
+
+
+```{r}
+vi_norm_reduced = list_vi_mat$norm[apply(list_vi_mat$norm, 2, function(x){x >= quantile(x, 0.99)}) %>% apply(1, any),]
+
+Heatmap(vi_norm_reduced, name = "VI",
+             col = c("white", RColorBrewer::brewer.pal(9, "Spectral") %>% rev), cluster_columns = FALSE,
+             column_title = "Top variables separating before/after COVID (Normalised)")
+```
+
+```{r}
+for(i in rownames(vi_norm_reduced)){
+  
+  plotdf = df_norm %>% 
+  dplyr::select(is_2020, y = one_of(i), ZONE_LOGICAL_AFL)
+  
+  plotdf %>% 
+    ggplot(aes(x = is_2020, y = y,
+               colour = ZONE_LOGICAL_AFL)) +
+    geom_jitter(alpha = 0.5) +
+    ggsci::scale_color_d3() +
+    labs(title = i)
+}
+```
+
 
