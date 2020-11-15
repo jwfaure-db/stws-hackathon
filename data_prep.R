@@ -99,3 +99,40 @@ process_team_summary = function(){
 
 process_player_summary()
 process_team_summary()
+
+
+process_match_summary = function(){
+  (team_summary_names = list.files(path = "./raw_data", pattern = "Team Summary", full.names = TRUE))
+  team_summary_list = purrr::map(team_summary_names, readr::read_csv)
+  names(team_summary_list) = team_summary_names
+  
+  # team_summary_list
+  
+  # team_summary_list %>% map_int(ncol)
+  # gplots::venn(team_summary_list %>% map(colnames))
+  
+  match_summary = team_summary_list %>% bind_rows(.id = "file_name") %>% 
+    dplyr::mutate(MATCH_ID = MATCH_ID %>% as.character() %>% as.factor()) %>% 
+    left_join(fixtures, by = c("MATCH_ID", "SEASON_ID", "GROUP_ROUND_NO", "VENUE_NAME")) %>% 
+    group_by(MATCH_ID, SEASON_ID, GROUP_ROUND_NO, VENUE_NAME, SQUAD_NAME, OPP_SQUAD_NAME, 
+             SQUAD_MARGIN, ZONE_LOGICAL_AFL, HOME_SQUAD, AWAY_SQUAD,
+             HOME_SQUAD_TRAVEL, AWAY_SQUAD_TRAVEL) %>% 
+    dplyr::summarise(
+      across(where(is.numeric), sum)
+    ) %>% select(-c(PERIOD, AWAY_SQUAD_ID, HOME_SCORE, AWAY_SCORE, ATTENDANCE)) %>% ungroup()
+  
+  opp_team_player_summary = team_player_summary %>% dplyr::rename_all(function(x) paste0("OPP_", x))
+  
+  match_summary = match_summary %>% dplyr::left_join(team_player_summary, by = c("SEASON_ID" = "SEASON_ID", "SQUAD_NAME" = "SQUAD_NAME")) %>% 
+    dplyr::left_join(opp_team_player_summary, by = c("SEASON_ID" = "OPP_SEASON_ID", "OPP_SQUAD_NAME" = "OPP_SQUAD_NAME"))
+  
+  message("Missing values: ", sum(is.na(match_summary)))
+  message("Saving match_summary data...")
+  
+  message("Variables with highest proportion of missing values: ")
+  print(team_summary %>% is.na %>% colMeans %>% sort %>% rev() %>% head())
+  
+  saveRDS(object = match_summary, file = "./clean_data/match_summary.rds")
+}
+
+process_match_summary()

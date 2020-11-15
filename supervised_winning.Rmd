@@ -18,7 +18,7 @@ source("preprocess_evaluate.R")
 `%notin%` <- Negate(`%in%`)
 
 # Load the data
-target_file = "team_summary"
+target_file = "match_summary"
 df <- readRDS(paste0("clean_data/", target_file, ".rds"))
 
 df <- df %>% dplyr::transmute(
@@ -28,7 +28,7 @@ df <- df %>% dplyr::transmute(
   GROUP_ROUND_NO = GROUP_ROUND_NO,
   SQUAD_NAME = SQUAD_NAME,
   OPP_SQUAD_NAME = OPP_SQUAD_NAME,
-  PERIOD = PERIOD,
+  # PERIOD = PERIOD,
   BU_RESULT_SCORE = BU_SCORE_LAUNCH / BALL_UP,
   BU_RESULT_IN50 = BU_IN50_LAUNCH / BALL_UP,
   CB_RESULT_SCORE = CB_SCORE_LAUNCH / CENTRE_BOUNCE,
@@ -80,7 +80,7 @@ df <- df %>% dplyr::transmute(
   SWITCH_BATTLE = SWITCH_COMPLETE / sum(SWITCH_COMPLETE, SWITCH_OPP, na.rm = TRUE),
   HOME_AWAY = HOME_AWAY,
   RESULT = RESULT,
-  MATCH_TYPE = MATCH_TYPE,
+  # MATCH_TYPE = MATCH_TYPE,
   HOME_SQUAD_TRAVEL = HOME_SQUAD_TRAVEL,
   AWAY_SQUAD_TRAVEL = AWAY_SQUAD_TRAVEL,
   ZONE_LOGICAL_AFL = ZONE_LOGICAL_AFL,
