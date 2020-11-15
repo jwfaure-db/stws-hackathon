@@ -18,7 +18,7 @@ source("preprocess_evaluate.R")
 `%notin%` <- Negate(`%in%`)
 
 # Load the data
-target_file = "team_summary"
+target_file = "match_summary"
 df <- readRDS(paste0("clean_data/", target_file, ".rds"))
 
 df <- df %>% dplyr::transmute(
@@ -28,7 +28,7 @@ df <- df %>% dplyr::transmute(
   GROUP_ROUND_NO = GROUP_ROUND_NO,
   SQUAD_NAME = SQUAD_NAME,
   OPP_SQUAD_NAME = OPP_SQUAD_NAME,
-  PERIOD = PERIOD,
+  # PERIOD = PERIOD,
   BU_RESULT_SCORE = BU_SCORE_LAUNCH / BALL_UP,
   BU_RESULT_IN50 = BU_IN50_LAUNCH / BALL_UP,
   CB_RESULT_SCORE = CB_SCORE_LAUNCH / CENTRE_BOUNCE,
@@ -80,7 +80,7 @@ df <- df %>% dplyr::transmute(
   SWITCH_BATTLE = SWITCH_COMPLETE / sum(SWITCH_COMPLETE, SWITCH_OPP, na.rm = TRUE),
   HOME_AWAY = HOME_AWAY,
   RESULT = RESULT,
-  MATCH_TYPE = MATCH_TYPE,
+  # MATCH_TYPE = MATCH_TYPE,
   HOME_SQUAD_TRAVEL = HOME_SQUAD_TRAVEL,
   AWAY_SQUAD_TRAVEL = AWAY_SQUAD_TRAVEL,
   ZONE_LOGICAL_AFL = ZONE_LOGICAL_AFL,
@@ -384,55 +384,6 @@ test = testing(data_split)
 
 train_x = train %>% select(-Y)
 train_y = train %>% pull(Y)
-```
-
-## XGBoost
-```{r}
-rec <- recipe(Y ~ ., data = train) %>%
-  step_knnimpute(all_predictors()) %>% 
-  step_dummy(all_of(factors), one_hot = T) %>% 
-  prep()
-
-# Just some sensible values, not optimised by any means!
-mod <- boost_tree(trees = 500, 
-                  mtry = 6, 
-                  min_n = 10,
-                  tree_depth = 5) %>%
-  set_engine("xgboost") %>%
-  set_mode("classification")
-
-xgboost_wflow <- workflow() %>%
-  add_recipe(rec) %>%
-  add_model(mod) %>% 
-  fit(train)
-
-xg_res <- last_fit(xgboost_wflow,
-                   data_split,
-                   metrics = metric_set(roc_auc, pr_auc, accuracy))
-
-preds <- xg_res %>% 
-  collect_predictions()
-
-xg_res %>% 
-  collect_metrics()
-
-
-xgb <- xgb_defaults %>%  
-  fit_xy(
-    x = train_x,
-    y = train_y
-  )
-
-# Summarise performance
-get_test_results(xgb, test) %>% metrics(truth = Observed, estimate = Predicted)
-
-# Summarise performance
-get_test_results(xgb, test) %>% metrics(truth = Observed, estimate = Predicted)
-```
-
-```{r}
-# Predicted vs Observed
-evaluate_model(rf, train, test)
 ```
 
 ## Random Forest
